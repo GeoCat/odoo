@@ -12,7 +12,7 @@ Log in to Odoo.sh to move deployments from development to staging and production
 
 For local development, it is recommended to use PyCharm as the IDE.
 
-For development, clone this repository into a folder on your local machine (e.g. `GeoCatERP`).
+For development, **clone this repository as `geocat`** into a folder on your local machine (e.g. `GeoCatERP`).
 Then, also clone the community [`odoo`](https://github.com/odoo/odoo) repository into that same folder,
 as well as the private [`enterprise`](https://github.com/odoo/enterprise) repository if you have access to it.
 As paying `Odoo.sh` customers, we should have read-only access to the `enterprise` repository, so if you do not
@@ -29,7 +29,7 @@ Then, install the requirements from the `odoo` repository in this virtual enviro
 pip install -r odoo/requirements.txt
 ```
 
-The folder structure should now look like this:
+The folder structure should now look like this, where `geocat` is this repository and `odoo` and `enterprise` are the official Odoo repositories:
 
 ```
 GeoCatERP/
