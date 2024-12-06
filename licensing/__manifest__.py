@@ -19,24 +19,18 @@
         'base',
         'sale_subscription',
         'portal',
+        'product',
         'base_automation',
-        # 'sale_management',
-        # 'web_cohort',
     ],
-    # 'data': [
-    #     'views/contact_views.xml',
-    # ],
-    # 'demo': [
-    #     'data/mail_demo.xml',
-    # ],
+    'data': [
+        'views/product_template_views.xml',
+        'views/sale_order_views.xml',
+    ],
+    'pre_init_hook': '_pre_init_hook',
+    'uninstall_hook': '_uninstall_hook',
     'application': True,
     'installable': True,
     'author': 'GeoCat B.V.',
     'maintainer': 'Sander Schaminée',
-    'license': 'Other proprietary',
-    # 'assets': {
-    #     'web.assets_tests': [
-    #         'contacts/static/tests/tours/**/*',
-    #     ],
-    # }
+    'license': 'Other proprietary'
 }

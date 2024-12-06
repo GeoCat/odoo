@@ -24,9 +24,10 @@ have access yet, please contact Odoo and tell them your GitHub username, so they
 Make sure that the `odoo` and `enterprise` repositories are both set to the same version branch 
 that corresponds to the version of Odoo that you are running (e.g. `18.0`).
 
-Now set up a virtual environment in PyCharm in the `venv` folder inside the main `GeoCatERP` folder.
-Then, install the requirements from the `odoo` repository in this virtual environment from the PyCharm terminal 
-(which should now be running from the activated virtual environment):
+Now set up a virtual environment in PyCharm in the `venv` folder inside the main `GeoCatERP` folder.  
+Although Odoo supports higher Python versions, it is recommended to use Python `3.12` for development.
+
+Next, install the requirements from the `odoo` repository in the activated virtual environment from the PyCharm terminal:
 
 ```bash
 pip install -r odoo/requirements.txt
