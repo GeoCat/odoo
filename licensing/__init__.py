@@ -10,7 +10,7 @@ def _pre_init_hook(env):
     """
     env.cr.execute("""
         ALTER TABLE "sale_order_line"
-        ADD COLUMN "num_bridge_seats" int4
+        ADD COLUMN IF NOT EXISTS "num_bridge_seats" int4
     """)
 
 
@@ -20,5 +20,7 @@ def _uninstall_hook(env):
     """
     env.cr.execute("""
         ALTER TABLE "sale_order_line"
-        DROP COLUMN "num_bridge_seats"
+        DROP COLUMN IF EXISTS "num_bridge_seats";
+        ALTER TABLE "product_template"
+        DROP COLUMN IF EXISTS "num_bridge_seats";
     """)
