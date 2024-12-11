@@ -19,10 +19,13 @@
         'base',
         'sale_subscription',
         'portal',
-        'product',
-        'base_automation',
+        'product'
     ],
     'data': [
+        'security/licensing_security.xml',
+        'security/ir.model.access.csv',
+        'views/licensing_views.xml',
+        'views/licensing_menus.xml',
         'views/product_template_views.xml',
         'views/sale_order_views.xml',
     ],

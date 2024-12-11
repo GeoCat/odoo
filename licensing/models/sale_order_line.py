@@ -1,7 +1,7 @@
 from odoo import fields, models, api
 
 
-class SaleOrderLine(models.Model):
+class LicensedSaleOrderLine(models.Model):
     """ Extends the sale.order.line model to include the number of included GeoCat Bridge seats.
 
     This number is taken from the product template, but it can also be explicitly set/overridden.
@@ -16,6 +16,9 @@ A license key will be valid for the number of seats (simultaneous users) specifi
         readonly=False,
         store=True
     )
+
+    licenses = fields.One2many('license.keys', 'order_line_id', string='License Keys', copy=False,
+                               help='Generated Bridge license keys that belong to this order line.', readonly=True)
 
     @api.onchange('product_id', 'product_template_id')
     @api.depends('product_id', 'product_template_id')
@@ -33,3 +36,7 @@ A license key will be valid for the number of seats (simultaneous users) specifi
         if self.product_template_id and self.product_template_id.num_bridge_seats > 0:
             num_seats = self.product_template_id.num_bridge_seats
         return num_seats
+
+    @api.onchange('num_bridge_seats', 'invoice_status', 'state', 'next_invoice_date')
+    def _update_licenses(self):
+        pass

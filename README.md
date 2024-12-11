@@ -14,6 +14,8 @@ Then, search for the GeoCat modules and install/activate them.
 ## Development
 
 For local development, it is recommended to use PyCharm as the IDE.
+For PyCharm, it's also highly recommended to install the (paid) [Odoo plugin](https://plugins.jetbrains.com/plugin/13499-odoo), 
+which provides syntax highlighting and autocompletion for Odoo modules.
 
 For development, clone this repository as `geocat` (!!) into a folder on your local machine (e.g. `GeoCatERP`).
 Then, also clone the community [`odoo`](https://github.com/odoo/odoo) repository into that same folder,

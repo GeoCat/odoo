@@ -1,7 +1,7 @@
 from odoo import fields, models
 
 
-class ProductTemplate(models.Model):
+class LicensedProductTemplate(models.Model):
     """ Extends the product.template model to include the number of included GeoCat Bridge seats.
 
     When this is set to a value greater than 0, a license key will be generated for each sold product.

@@ -23,4 +23,5 @@ def _uninstall_hook(env):
         DROP COLUMN IF EXISTS "num_bridge_seats";
         ALTER TABLE "product_template"
         DROP COLUMN IF EXISTS "num_bridge_seats";
+        DROP TABLE IF EXISTS "license_keys";
     """)

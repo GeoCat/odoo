@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="license_keys_view_list" model="ir.ui.view">
+        <field name="name">License Keys List</field>
+        <field name="model">license.keys</field>
+        <field name="arch" type="xml">
+            <list string="License Keys" multi_edit="1" sample="1">
+                <field name="key" string="Key" readonly="True"/>
+<!--                <field name="order_line_id" class="field_name" string="Order Line"/>-->
+                <field name="seats" string="Seats" widget="integer"/>
+                <field name="status" string="Status" widget="selection"/>
+                <field name="end_user" string="End User" widget="text"/>
+                <field name="extended_date" string="Extended Date" widget="date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="dashboard_action_main" model="ir.actions.act_window">
+        <field name="name">Licensing Overview</field>
+        <field name="path">licensing</field>
+        <field name="res_model">license.keys</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="view_id" ref="licensing.license_keys_view_list"/>
+        <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+                No licenses found
+            </p>
+            <p>
+                Create licenses for sold Bridge subscriptions.
+            </p>
+        </field>
+    </record>
+</odoo>
