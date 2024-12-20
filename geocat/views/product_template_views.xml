@@ -9,7 +9,7 @@
                 <page string="Licensing" name="licensing">
                     <group name="properties">
                         <group>
-                            <field name="num_bridge_seats" string="Bridge Seats"/>
+                            <field name="bridge_seats" string="Bridge Seats"/>
                         </group>
                         <group/>
                     </group>

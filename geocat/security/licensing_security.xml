@@ -12,11 +12,11 @@
         <record id="group_license_user" model="res.groups">
             <field name="name">User</field>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
-            <field name="category_id" ref="licensing.module_category_license_management"/>
+            <field name="category_id" ref="geocat.module_category_license_management"/>
         </record>
         <record id="group_license_manager" model="res.groups">
             <field name="name">Administrator</field>
-            <field name="category_id" ref="licensing.module_category_license_management"/>
+            <field name="category_id" ref="geocat.module_category_license_management"/>
             <field name="implied_ids" eval="[(4, ref('group_license_user')), (4, ref('mail.group_mail_canned_response_admin'))]"/>
             <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
         </record>
@@ -24,13 +24,13 @@
         <!-- Rules -->
         <record id="license_manager_rule" model="ir.rule">
             <field name="name">License Administrator</field>
-            <field name="model_id" ref="model_license_keys"/>
+            <field name="model_id" ref="model_geocat_license_keys"/>
             <field name="domain_force">[(1,'=',1)]</field>
             <field name="groups" eval="[(4, ref('group_license_manager'))]"/>
         </record>
         <record id="license_user_rule" model="ir.rule">
             <field name="name">License User</field>
-            <field name="model_id" ref="model_license_keys"/>
+            <field name="model_id" ref="model_geocat_license_keys"/>
             <field name="groups" eval="[(4, ref('group_license_user'))]"/>
         </record>
     </data>

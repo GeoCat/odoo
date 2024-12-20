@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="license_keys_view_list" model="ir.ui.view">
+        <field name="name">geocat.license.key.list</field>
+        <field name="model">geocat.license.keys</field>
+        <field name="arch" type="xml">
+            <list string="License Keys">
+                <field name="display_name" string="Key" readonly="True" />
+                <field name="seats" string="Incl. Seats" widget="integer"/>
+                <field name="status" string="Status" widget="badge"
+                       decoration-muted="status == 'issued'" decoration-warning="status == 'suspended'"
+                       decoration-success="status == 'active'" decoration-danger="status == 'terminated'"
+                       decoration-primary="status == 'expired'"/>
+                <field name="order_line_id" readonly="True"/>
+                <field name="end_user" string="End User" widget="text"/>
+                <field name="expiry_date" widget="date" />
+            </list>
+        </field>
+    </record>
+
+    <record id="license_keys_view_form" model="ir.ui.view">
+        <field name="name">geocat.license.key.form</field>
+        <field name="model">geocat.license.keys</field>
+        <field name="arch" type="xml">
+            <form string="License Key">
+                <sheet>
+                    <widget name="web_ribbon" title="Terminated" bg_color="text-bg-danger" invisible="status != 'terminated'"/>
+                    <widget name="web_ribbon" title="Suspended" bg_color="text-bg-warning" invisible="status != 'suspended'"/>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-primary" invisible="status != 'expired'"/>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="display_name" readonly="True"/>
+                        </h2>
+                    </div>
+                    <group string="License Data">
+                        <group>
+                            <field name="order_line_id" options="{'no_create': True}"/>
+                            <field name="expiry_date" widget="date"/>
+                            <field name="end_user"/>
+                        </group>
+                        <group>
+                            <field name="seats" widget="integer"/>
+                            <field name="status" widget="selection"/>
+                            <field name="allow_download"/>
+                            <field name="related_licenses"/>
+                        </group>
+                    </group>
+                    <group string="License Notes">
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="license_dashboard_action_main" model="ir.actions.act_window">
+        <field name="name">Licensing Overview</field>
+        <field name="path">licensing</field>
+        <field name="res_model">geocat.license.keys</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="view_id" ref="geocat.license_keys_view_list"/>
+        <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+            No GeoCat Bridge licenses found
+        </p>
+        </field>
+    </record>
+</odoo>

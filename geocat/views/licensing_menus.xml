@@ -4,15 +4,15 @@
         id="menu_licensing_root"
         name="Licensing"
         sequence="89"
-        web_icon="licensing,static/description/icon.png"
-        groups="licensing.group_license_user">
+        web_icon="geocat,static/description/bridge_icon.png"
+        groups="geocat.group_license_user">
 
         <menuitem
             id="licensing_menu_dashboard"
             name="Overview"
-            action="licensing.dashboard_action_main"
+            action="geocat.license_dashboard_action_main"
             sequence="5"
-            groups="licensing.group_license_user"/>
+            groups="geocat.group_license_user"/>
 
     </menuitem>
 </odoo>
