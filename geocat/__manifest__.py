@@ -34,15 +34,11 @@
         'views/sale_order_views.xml',
         'views/subscription_plan_views.xml',
     ],
-    # 'assets': {
-        # 'web._assets_primary_variables': [
-        #     'geocat/static/src/scss/primary_variables.scss',
-        #     'geocat/static/src/scss/primary_variables.dark.scss',
-        # ],
-        # 'web.assets_frontend': [
-        #     'geocat/static/src/js/geocat.js',
-        # ]
-    # },
+    'assets': {
+        'web._assets_primary_variables': [
+            ('before', 'web_enterprise/static/src/scss/primary_variables.scss', 'geocat/static/src/scss/primary_variables.scss'),
+        ],
+    },
     'pre_init_hook': '_pre_init_hook',
     'uninstall_hook': '_uninstall_hook',
     'application': True,
