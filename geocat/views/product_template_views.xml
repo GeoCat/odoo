@@ -8,8 +8,10 @@
             <page name="invoicing" position="after">
                 <page string="Licensing" name="licensing">
                     <group name="properties">
-                        <group>
-                            <field name="bridge_seats" string="Bridge Seats"/>
+                        <group string="GeoCat Bridge Licensing">
+                            <field name="has_bridge_licenses"/>
+                            <field name="bridge_plan_name"/>
+                            <field name="bridge_seats"/>
                         </group>
                         <group/>
                     </group>

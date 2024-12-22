@@ -24,6 +24,7 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='qty_delivered']"
                    position="attributes">
                 <attribute name="options">{"digits":[0,0]}</attribute>
+                <attribute name="optional">hide</attribute>
             </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='qty_invoiced']"
                    position="attributes">

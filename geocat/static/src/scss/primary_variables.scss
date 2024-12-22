@@ -12,13 +12,13 @@ $o-gray-200: #e7e9ed !default;
 $o-gray-300: #d8dadd !default;
 $o-gray-400: #9a9ca5 !default;
 $o-gray-500: #7c7f89 !default;
-$o-gray-600: #5f636f !default;
-$o-gray-700: #44475A !default;
-$o-gray-800: #2A2C46 !default;
-$o-gray-900: #0f1031 !default;
+$o-gray-600: #5f636f !default;  // Original Odoo greys up til here
+$o-gray-700: #4D4F6A !default;  // Custom gradient
+$o-gray-800: #3B3A64 !default;  // Custom gradient
+$o-gray-900: #29265F !default;  // GeoCat website dark blue
 
-$o-enterprise-color: #0092ff !default;
-$o-enterprise-action-color: #0d97ce !default;
+$o-enterprise-color: #0092ff !default;  // GeoCat website light blue
+$o-enterprise-action-color: #0092ff !default;  // GeoCat website light blue
 
 $o-opacity-disabled: .5 !default;
 $o-opacity-muted: .76 !default;
@@ -105,3 +105,6 @@ $o-btns-bs-outline-override: map-merge((
         active-color: $o-gray-900,
     ),
 ), $o-btns-bs-outline-override);
+
+// GeoCat font override (replaces Segoe UI with Inter)
+$o-system-fonts: (-apple-system, BlinkMacSystemFont, "Inter", Roboto, "Helvetica Neue", Ubuntu, "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji") !default;

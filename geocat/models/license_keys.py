@@ -33,16 +33,26 @@ class GeoCatBridgeLicense(models.Model):
         ('key_not_null', 'CHECK(key IS NOT NULL)', 'License key cannot be NULL.')
     ]
 
-    def _generate_key(self):
-        """ Generates a new unique 35-char license key. """
-        new_key = utils.generate_bridge_key()
-        while self.search_count([('key', '=', new_key)]) > 0:
-            new_key = utils.generate_bridge_key()
-        return new_key
-
     # def _is_sold_subscription(self) -> bool:
     #     """ Check if the order was placed and is a subscription. """
     #     return self.order_id and self.order_id.state == 'sale' and self.order_id.is_subscription
+
+    def _generate_key(self):
+        """ Generates a new unique 35-char license key when a new record is created (and no key is present). """
+        # new_key = utils.generate_bridge_key()
+        # while self.search_count([('key', '=', new_key)]) > 0:
+        #     new_key = utils.generate_bridge_key()
+        # return new_key
+        for lic in self:
+            if utils.REGEX_LICKEY.match(lic.key or '') and self.search_count([('key', '=', lic.key)]) == 1:
+                # Key has been set and exists only once: keep it
+                continue
+            # Generate a new unique key
+            new_key = utils.generate_bridge_key()
+            while self.search_count([('key', '=', new_key)]) > 0:
+                # Likely overkill, but in case of a collision, try again
+                new_key = utils.generate_bridge_key()
+            lic.update({'key': new_key})
 
     @api.depends('order_line_id')
     def _compute_expiry_date(self):
@@ -90,8 +100,8 @@ class GeoCatBridgeLicense(models.Model):
     # === FIELD DEFINITIONS ===
 
     # Unique license key. This is generated once and cannot be changed.
-    key = fields.Char(string='Internal Key', index=True, size=35, default=_generate_key, readonly=True,
-                      help='Unique license key. This is generated once and cannot be changed.')
+    key = fields.Char(string='Internal Key', index=True, size=35, readonly=True, compute='_generate_key', store=True,
+                      help='Unique license key. This is generated once and cannot be changed.', precompute=True)
 
     # For human-readable display purposes, we show the key in groups of 5 characters.
     display_name = fields.Char(string='License Key', compute='_compute_display_name', readonly=True)
@@ -178,6 +188,15 @@ class GeoCatBridgeLicense(models.Model):
     #         self.status = 'suspended'
     #     elif self.status in ('suspended', 'terminated'):
     #         self.status = 'active'
+
+    # @api.model
+    # def new(self, values=None, origin=None, ref=None):
+    #     values = values or {}
+    #     new_key = utils.generate_bridge_key()
+    #     while self.search_count([('key', '=', new_key)]) > 0:
+    #         new_key = utils.generate_bridge_key()
+    #     values['key'] = new_key
+    #     return super(GeoCatBridgeLicense, self).new(values, origin, ref)
 
     def copy(self, default=None):
         """ Do not allow duplication of licenses. """

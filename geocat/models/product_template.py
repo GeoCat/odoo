@@ -16,11 +16,21 @@ class LicensedProductTemplate(models.Model):
                 continue
             product.bridge_plan_name = product.name
 
+    @api.depends('bridge_seats')
+    def _compute_has_bridge_licenses(self):
+        for product in self:
+            product.has_bridge_licenses = product.bridge_seats > 0
+
+    has_bridge_licenses = fields.Boolean(
+        string='Enabled',
+        compute='_compute_has_bridge_licenses'
+    )
+
     bridge_plan_name = fields.Char(
         string='Plan Name',
         help='The name of the GeoCat Bridge subscription plan for this product.\n'
              'This will be visible in the license details in the software.',
-        compute='_compute_bridge_plan_name',
+        compute='_compute_bridge_plan_name', readonly=False,
         store=True
     )
 
