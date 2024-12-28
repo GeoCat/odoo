@@ -5,21 +5,19 @@
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
-            <!-- Add extra tab to Sale Order for license management -->
-<!--            <xpath expr="//form/sheet/notebook/page[@name='other_information']"-->
+            <!-- Add buttons to manage license keys -->
+<!--            <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='name']"-->
 <!--                   position="after">-->
-<!--                <page name="bridge_licenses" string="Bridge Licenses">-->
-<!--                    <h3>TODO</h3>-->
-<!--                </page>-->
-<!--                <field name="num_bridge_seats"-->
-<!--                       width="102px"-->
-<!--                       readonly="False"-->
-<!--                       optional="show"/>-->
+<!--                    <button name="issue_new_license" type="object" icon="fa-plus" width="20px" context="{'order_line_id': id}"-->
+<!--                            help="Issue new GeoCat Bridge license" invisible="hide_bridge_license_issue_button" />-->
+<!--                    <button name="view_licenses" type="object" icon="fa-eye" width="20px"-->
+<!--                            help="View all GeoCat Bridge licenses" invisible="hide_bridge_license_show_button" />-->
 <!--            </xpath>-->
             <!-- No one wants to see floats for quantities. -->
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='product_uom_qty']"
                    position="attributes">
                 <attribute name="options">{"digits":[0,0]}</attribute>
+                <attribute name="align">left</attribute>
             </xpath>
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='qty_delivered']"
                    position="attributes">
@@ -29,7 +27,21 @@
             <xpath expr="//form/sheet/notebook/page[@name='order_lines']/field[@name='order_line']/list/field[@name='qty_invoiced']"
                    position="attributes">
                 <attribute name="options">{"digits":[0,0]}</attribute>
+                <attribute name="align">left</attribute>
             </xpath>
+        </field>
+    </record>
+
+    <record id="view_sales_order_filter_licensing" model="ir.ui.view">
+        <field name="name">sale.order.filter.licensing</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <filter name="my_sale_orders_filter" position="after">
+                <separator/>
+                <filter string="Has License Keys" name="has_licenses" domain="[('license_count', '>', 0)]"/>
+                <filter string="No License Keys" name="no_licenses" domain="[('license_count', '=', 0)]"/>
+            </filter>
         </field>
     </record>
 </odoo>

@@ -6,24 +6,53 @@ class GeoCatSaleOrderLine(models.Model):
 
     _inherit = 'sale.order.line'
 
-    @api.depends('product_template_id', 'product_id', 'qty_invoiced', 'product_uom_qty')
+    # === FIELD DEFINITIONS ===
+    bridge_licenses = fields.One2many('geocat.license.keys', 'order_line_id', string='Bridge Keys',
+                                      help='Bridge license keys attached to the ordered subscription plan.',
+                                      readonly=True)
+
+    max_bridge_seats = fields.Integer(string='Max. Bridge Seats', compute='_compute_max_seats', store=True,
+                                      help='The maximum number of included Bridge seats for the ordered plan and quantity.')
+
+    # hide_bridge_license_issue_button = fields.Boolean(compute='_compute_hide_license_buttons',
+    #                                                   help='Whether the "Issue License" button should be hidden.')
+    #
+    # hide_bridge_license_show_button = fields.Boolean(compute='_compute_hide_license_buttons',
+    #                                                  help='Whether the "Show Licenses" button should be hidden.')
+
+    @api.depends('product_template_id', 'product_id', 'qty_invoiced', 'product_uom_qty', 'order_id')
     def _compute_max_seats(self):
         for order in self:
+            is_subscription = order.order_id.is_subscription
             quantity = int(order.qty_invoiced or order.product_uom_qty)
-            if (not order.product_template_id or quantity == 0
-                    or order.order_id.state != 'sale'
-                    or not order.order_id.is_subscription):
+            if not order.product_template_id or quantity == 0 or not is_subscription:
                 order.max_bridge_seats = 0
                 continue
             order.max_bridge_seats = order.product_template_id.bridge_seats * quantity
 
-    # === FIELD DEFINITIONS ===
-    bridge_licenses = fields.One2many('geocat.license.keys', 'order_line_id', string='Bridge Keys',
-                                      help='Included Bridge license keys for the ordered subscription plan.',
-                                      readonly=True)
-
-    max_bridge_seats = fields.Integer(string='Max. Bridge Seats', compute=_compute_max_seats, store=True,
-                                      help='The maximum number of included Bridge seats for the ordered plan and quantity.')
+    # def issue_new_license(self):
+    #     self.ensure_one()
+    #     return {
+    #         "type": "ir.actions.act_window",
+    #         "res_model": "geocat.license.keys",
+    #         "views": [[False, "form"]],
+    #         "context": {
+    #             'order_id': self.order_id,
+    #             'default_order_line_id': self.id,
+    #         },
+    #     }
+    #
+    # def view_licenses(self):
+    #     self.ensure_one()
+    #     return {
+    #         "type": "ir.actions.act_window",
+    #         "res_model": "geocat.license.keys",
+    #         "views": [[False, "list"]],
+    #         "context": {
+    #             'order_id': self.order_id,
+    #             'default_order_line_id': self.id,
+    #         },
+    #     }
 
     # @api.depends('product_template_id')
     # def _compute_max_bridge_seats(self):

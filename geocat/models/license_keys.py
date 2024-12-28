@@ -37,46 +37,6 @@ class GeoCatBridgeLicense(models.Model):
     #     """ Check if the order was placed and is a subscription. """
     #     return self.order_id and self.order_id.state == 'sale' and self.order_id.is_subscription
 
-    def _generate_key(self):
-        """ Generates a new unique 35-char license key when a new record is created (and no key is present). """
-        # new_key = utils.generate_bridge_key()
-        # while self.search_count([('key', '=', new_key)]) > 0:
-        #     new_key = utils.generate_bridge_key()
-        # return new_key
-        for lic in self:
-            if utils.REGEX_LICKEY.match(lic.key or '') and self.search_count([('key', '=', lic.key)]) == 1:
-                # Key has been set and exists only once: keep it
-                continue
-            # Generate a new unique key
-            new_key = utils.generate_bridge_key()
-            while self.search_count([('key', '=', new_key)]) > 0:
-                # Likely overkill, but in case of a collision, try again
-                new_key = utils.generate_bridge_key()
-            lic.update({'key': new_key})
-
-    @api.depends('order_line_id')
-    def _compute_expiry_date(self):
-        for record in self:
-            if not record.order_line_id or record.order_line_id.next_invoice_date == fields.Date.today():
-                # If there is no order yet, or the invoice is from today, set the expiry date to a year from now
-                record.expiry_date = utils.default_expiry_date()
-            else:
-                record.expiry_date = record.order_line_id.next_invoice_date
-
-    @api.depends('expiry_date')
-    def _update_status(self):
-        for record in self:
-            if not record.expiry_date:
-                continue
-            if record.expiry_date < fields.Date.today() and record.status in ('active', 'issued'):
-                record.status = 'expired'
-            elif record.status == 'expired' and record.expiry_date >= fields.Date.today():
-                record.status = 'active'
-
-    @api.depends('key')
-    def _compute_display_name(self):
-        for record in self:
-            record.display_name = '-'.join([record.key[i:i+5] for i in range(0, len(record.key), 5)])
 
     # @api.constrains('seats')
     # def _compute_seats(self):
@@ -120,7 +80,7 @@ class GeoCatBridgeLicense(models.Model):
 
     # Extended license expiry date. The license expiry date is normally based on the subscription renewal date.
     # However, there may be cases where we need to override this date (e.g. when there are payment issues).
-    expiry_date = fields.Date(string='Expiry Date', compute=_compute_expiry_date, store=True,
+    expiry_date = fields.Date(string='Expiry Date', compute='_compute_expiry_date', store=True,
                               help='Manually override (extend) the subscription renewal/expiry date.\n'
                                    'If omitted, the next invoice date from the linked order will be used.')
 
@@ -143,8 +103,49 @@ class GeoCatBridgeLicense(models.Model):
     # Related licenses (on same subscription sale order)
     related_licenses = fields.One2many('geocat.license.keys', string='Related Keys', store=False,
                                        related='order_line_id.bridge_licenses', readonly=True,
-                                       help='Other license keys on the same subscription.',
-                                       domain="[('key', '!=', self.key)]")
+                                       help='Other license keys on the same subscription.')
+
+    @api.depends('key')
+    def _generate_key(self):
+        """ Generates a new unique 35-char license key when a new record is created (and no key is present). """
+        # new_key = utils.generate_bridge_key()
+        # while self.search_count([('key', '=', new_key)]) > 0:
+        #     new_key = utils.generate_bridge_key()
+        # return new_key
+        for lic in self:
+            if utils.REGEX_LICKEY.match(lic.key or '') and self.search_count([('key', '=', lic.key)]) == 1:
+                # Key has been set and exists only once: keep it
+                continue
+            # Generate a new unique key
+            new_key = utils.generate_bridge_key()
+            while self.search_count([('key', '=', new_key)]) > 0:
+                # Likely overkill, but in case of a collision, try again
+                new_key = utils.generate_bridge_key()
+            lic.update({'key': new_key})
+
+    @api.depends('order_line_id')
+    def _compute_expiry_date(self):
+        for record in self:
+            if not record.order_line_id or record.order_line_id.next_invoice_date == fields.Date.today():
+                # If there is no order yet, or the invoice is from today, set the expiry date to a year from now
+                record.expiry_date = utils.default_expiry_date()
+            else:
+                record.expiry_date = record.order_line_id.next_invoice_date
+
+    @api.depends('expiry_date')
+    def _update_status(self):
+        for record in self:
+            if not record.expiry_date:
+                continue
+            if record.expiry_date < fields.Date.today() and record.status in ('active', 'issued'):
+                record.status = 'expired'
+            elif record.status == 'expired' and record.expiry_date >= fields.Date.today():
+                record.status = 'active'
+
+    @api.depends('key')
+    def _compute_display_name(self):
+        for record in self:
+            record.display_name = '-'.join([record.key[i:i+5] for i in range(0, len(record.key), 5)])
 
     # checkouts: fields.One2many
     # downloads: OneToMany

@@ -9,21 +9,9 @@ class LicensedProductTemplate(models.Model):
 
     _inherit = 'product.template'
 
-    @api.depends('name')
-    def _compute_bridge_plan_name(self):
-        for product in self:
-            if product.bridge_plan_name:
-                continue
-            product.bridge_plan_name = product.name
-
-    @api.depends('bridge_seats')
-    def _compute_has_bridge_licenses(self):
-        for product in self:
-            product.has_bridge_licenses = product.bridge_seats > 0
-
-    has_bridge_licenses = fields.Boolean(
+    can_have_bridge_licenses = fields.Boolean(
         string='Enabled',
-        compute='_compute_has_bridge_licenses'
+        compute='_compute_can_have_bridge_licenses'
     )
 
     bridge_plan_name = fields.Char(
@@ -42,3 +30,15 @@ class LicensedProductTemplate(models.Model):
              'total here has been reached.',
         default=0
     )
+
+    @api.depends('name')
+    def _compute_bridge_plan_name(self):
+        for product in self:
+            if product.bridge_plan_name:
+                continue
+            product.bridge_plan_name = product.name
+
+    @api.depends('bridge_seats')
+    def _compute_can_have_bridge_licenses(self):
+        for product in self:
+            product.can_have_bridge_licenses = product.bridge_seats > 0

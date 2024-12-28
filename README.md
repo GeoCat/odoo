@@ -15,7 +15,8 @@ Then, search for the GeoCat modules and install/activate them.
 
 For local development, it is recommended to use PyCharm as the IDE.
 For PyCharm, it's also highly recommended to install the (paid) [Odoo plugin](https://plugins.jetbrains.com/plugin/13499-odoo), 
-which provides syntax highlighting and autocompletion for Odoo modules.
+which provides syntax highlighting and autocompletion for Odoo modules.  
+The same developer has also released a free `pydevd-odoo` package on PyPI, which improves the Odoo debug experience.
 
 For development, clone this repository as `geocat` (!!) into a folder on your local machine (e.g. `GeoCatERP`).
 Then, also clone the community [`odoo`](https://github.com/odoo/odoo) repository into that same folder,
@@ -63,3 +64,7 @@ So in the PyCharm _Run Configuration_, set the script path to `odoo-bin` and set
 In the example above, the `odoo-local` database is created with the `odoo` role as the owner (with the same password).
 
 Now you can run Odoo from PyCharm and access it in your browser at `localhost:8069`.
+
+**Tip**: You can also add the [`--dev` flag](https://www.odoo.com/documentation/18.0/developer/reference/cli.html#developer-features) 
+to the script parameters to enable the developer mode in Odoo. Furthermore, you can add the `-u geocat` flag to only update the 
+GeoCat module when the server (re)starts.

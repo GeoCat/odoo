@@ -6,6 +6,28 @@ class GeoCatSaleOrder(models.Model):
 
     _inherit = 'sale.order'
 
+    license_count = fields.Integer(compute='_compute_license_count', search='_search_license_count', string='Bridge License Count')
+
+    @api.depends('order_line.bridge_licenses')
+    def _compute_license_count(self):
+        for order in self:
+            order.license_count = len(order.mapped('order_line.bridge_licenses'))
+
+    @api.model
+    def _search_license_count(self, operator, value):
+        if operator not in ['=', '!=', '<', '>'] or not isinstance(value, int):
+            raise NotImplementedError('Operation not supported.')
+        sale_orders = self.env['sale.order'].search([])
+        if operator == '=':
+            sale_orders = sale_orders.filtered(lambda m: len(m.order_line.bridge_licenses) == value)
+        elif operator == '!=':
+            sale_orders = sale_orders.filtered(lambda m: len(m.order_line.bridge_licenses) != value)
+        elif operator == '<':
+            sale_orders = sale_orders.filtered(lambda m: len(m.order_line.bridge_licenses) < value)
+        elif operator == '>':
+            sale_orders = sale_orders.filtered(lambda m: len(m.order_line.bridge_licenses) > value)
+        return [('id', 'in', sale_orders.ids)]
+
     @api.depends('partner_id')
     def _compute_payment_term_id(self):
         default_term = self.env['account.payment.term'].search([('is_default', '=', True), ('active', '=', True)], limit=1)
@@ -25,3 +47,10 @@ class GeoCatSaleOrder(models.Model):
                 order.plan_id = order.sale_order_template_id.plan_id
             elif default_plan:
                 order.plan_id = default_plan[0].id
+    #
+    # @api.onchange('state', 'order_line', 'subscription_state', 'plan_id')
+    # def _update_max_seats(self):
+    #     for order in self:
+    #         if not order.order_line:
+    #             continue
+    #         self.order_line._update_bridge_seats()
