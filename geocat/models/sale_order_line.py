@@ -14,11 +14,25 @@ class GeoCatSaleOrderLine(models.Model):
     max_bridge_seats = fields.Integer(string='Max. Bridge Seats', compute='_compute_max_seats', store=True,
                                       help='The maximum number of included Bridge seats for the ordered plan and quantity.')
 
+    display_name = fields.Char(compute='_compute_display_name', readonly=True)
+
     # hide_bridge_license_issue_button = fields.Boolean(compute='_compute_hide_license_buttons',
     #                                                   help='Whether the "Issue License" button should be hidden.')
     #
     # hide_bridge_license_show_button = fields.Boolean(compute='_compute_hide_license_buttons',
     #                                                  help='Whether the "Show Licenses" button should be hidden.')
+
+    @api.depends()
+    def _compute_display_name(self):
+        i = 1
+        for line in self:
+            names = line.name.splitlines()
+            name = names[0]
+            description = ''
+            if len(names) > 1:
+                description = f' ({", ".join(names[1:])})'
+            line.display_name = f'{name}{description} - {line.order_id.name} - {line.order_id.partner_id.name}'
+            i += 1
 
     @api.depends('product_template_id', 'product_id', 'qty_invoiced', 'product_uom_qty', 'order_id')
     def _compute_max_seats(self):

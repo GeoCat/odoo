@@ -61,17 +61,19 @@ class GeoCatBridgeLicense(models.Model):
 
     # Unique license key. This is generated once and cannot be changed.
     key = fields.Char(string='Internal Key', index=True, size=35, readonly=True, compute='_generate_key', store=True,
-                      help='Unique license key. This is generated once and cannot be changed.', precompute=True)
+                      help='Unique license key. Generated once and cannot be changed.', precompute=True)
 
     # For human-readable display purposes, we show the key in groups of 5 characters.
-    display_name = fields.Char(string='License Key', compute='_compute_display_name', readonly=True)
+    display_name = fields.Char(string='License Key', compute='_compute_display_name', readonly=True,
+                               search='_search_display_name')
 
     # Keep reference to the sale.order that this license is associated with.
     # The maximum number of seats that a license can support are computed based on the ordered product templates (num_bridge_seats).
     # Note that if the order is deleted, we do NOT necessarily want to delete the license!
     order_line_id = fields.Many2one('sale.order.line', string='Subscription Plan', index=True, required=True, copy=True,
-                                    domain="[('order_id.is_subscription', '=', True), ('state', '=', 'sale'), ('max_bridge_seats', '>', 0)]",
-                                    ondelete='cascade', help='Reference to the sold subscription plan this license key is associated with.')
+                                    domain="[('order_id.is_subscription', '=', True), ('max_bridge_seats', '>', 0), "
+                                           "('order_id.subscription_state', 'in', ('3_progress', '5_renewed'))]",
+                                    ondelete='cascade', help='Reference to the associated subscription plan of the license key.')
 
     # License status. This is used to determine if the license is still valid (along with the expiry/renewal date).
     status = fields.Selection(LICENSE_STATUS, string='Status', required=True, default='issued', index=True,
@@ -89,7 +91,7 @@ class GeoCatBridgeLicense(models.Model):
 
     # End user name. This is optional and can also be set by the customer. Does not need to be a portal user.
     end_user = fields.Char(string='End User', default=None, copy=False,
-                           help='Optional name of the end user(s) of this license key.\n'
+                           help='Optional name of the end user(s) of the license key.\n'
                                 'The specified name is displayed in the software as the licensed user(s).\n'
                                 'If omitted, the customer name from the linked order will be used.')
 
@@ -101,27 +103,37 @@ class GeoCatBridgeLicense(models.Model):
     notes = fields.Text(string='Internal Notes', help='Custom remarks or label related to this license key.')
 
     # Related licenses (on same subscription sale order)
-    related_licenses = fields.One2many('geocat.license.keys', string='Related Keys', store=False,
-                                       related='order_line_id.bridge_licenses', readonly=True,
-                                       help='Other license keys on the same subscription.')
+    related_licenses = fields.One2many('geocat.license.keys', string='Related Keys', compute='_compute_related_licenses',
+                                       help='Other license keys on the same subscription.', readonly=True)
 
-    @api.depends('key')
+    order_ref = fields.Char(string='Order Number', related='order_line_id.order_id.name', store=False, readonly=True)
+    customer_name = fields.Char(string='Customer Name', related='order_line_id.order_partner_id.name', store=False, readonly=True)
+
+    def _ensure_unique_key(self) -> str:
+        new_key = utils.generate_bridge_key()
+        while self.search_count([('key', '=', new_key)]) > 0:
+            # Likely overkill, but in case of a collision, try again
+            new_key = utils.generate_bridge_key()
+        return new_key
+
+    @api.depends('order_line_id')
     def _generate_key(self):
         """ Generates a new unique 35-char license key when a new record is created (and no key is present). """
-        # new_key = utils.generate_bridge_key()
-        # while self.search_count([('key', '=', new_key)]) > 0:
-        #     new_key = utils.generate_bridge_key()
-        # return new_key
         for lic in self:
             if utils.REGEX_LICKEY.match(lic.key or '') and self.search_count([('key', '=', lic.key)]) == 1:
                 # Key has been set and exists only once: keep it
                 continue
             # Generate a new unique key
-            new_key = utils.generate_bridge_key()
-            while self.search_count([('key', '=', new_key)]) > 0:
-                # Likely overkill, but in case of a collision, try again
-                new_key = utils.generate_bridge_key()
-            lic.update({'key': new_key})
+            lic.key = self._ensure_unique_key()
+
+    @api.constrains('seats')
+    def _check_seats(self):
+        for lic in self:
+            if not lic.order_line_id:
+                continue
+            max_seats = lic.order_line_id.max_bridge_seats
+            if lic.seats > max_seats:
+                raise ValidationError(f"Number of seats may not exceed the maximum ({max_seats}) for the current plan.")
 
     @api.depends('order_line_id')
     def _compute_expiry_date(self):
@@ -145,7 +157,32 @@ class GeoCatBridgeLicense(models.Model):
     @api.depends('key')
     def _compute_display_name(self):
         for record in self:
+            if not record.key:
+                record.key = self._ensure_unique_key()
             record.display_name = '-'.join([record.key[i:i+5] for i in range(0, len(record.key), 5)])
+
+    @api.depends('order_line_id')
+    def _compute_related_licenses(self):
+        self.ensure_one()
+        order_id = self.order_line_id.order_id.id
+        other_lics = self.env['geocat.license.keys'].search([('order_line_id.order_id.id', '=', order_id), ('id', '!=', self.id)])
+        self.related_licenses = other_lics
+
+    @api.model
+    def _search_display_name(self, operator, value):
+        value = str(value)
+        if operator not in ['=', '!=', 'like', 'ilike']:
+            raise NotImplementedError('Operation not supported.')
+        licenses = self.env['geocat.license.keys'].search([])
+        if operator == '=':
+            licenses = licenses.filtered(lambda lic: lic.display_name == value)
+        elif operator == '!=':
+            licenses = licenses.filtered(lambda lic: lic.display_name != value)
+        elif operator == 'like':
+            licenses = licenses.filtered(lambda lic: value in lic.display_name)
+        elif operator == 'ilike':
+            licenses = licenses.filtered(lambda lic: value.casefold() in lic.display_name.casefold())
+        return [('id', 'in', licenses.ids)]
 
     # checkouts: fields.One2many
     # downloads: OneToMany

@@ -5,14 +5,25 @@
         <field name="model">geocat.license.keys</field>
         <field name="arch" type="xml">
             <search string="License Keys">
-                <field name="key" string="Key" filter_domain="[('key', 'ilike', self)]"/>
-                <field name="order_line_id" string="Customer" filter_domain="['|', ('order_line_id', 'ilike', self), ('order_line_id.order_partner_id.display_name', 'ilike', self)]"/>
+                <field name="key" string="Key" filter_domain="['|', ('key', 'ilike', self), ('display_name', 'ilike', self)]"/>
+                <field name="customer_name" string="Customer"
+                       filter_domain="['|', ('customer_name', 'ilike', self), ('order_line_id.order_partner_id.display_name', 'ilike', self)]"/>
+                <field name="end_user" string="End User" filter_domain="[('end_user', 'ilike', self)]"/>
+                <field name="order_ref" string="Order" filter_domain="[('order_ref', 'ilike', self)]"/>
                 <separator/>
                 <filter name="valid_licenses" string="Valid" domain="[('status', 'in', ['issued', 'active'])]"/>
                 <filter name="invalid_licenses" string="Invalid" domain="[('status', 'not in', ['issued', 'active'])]"/>
                 <separator/>
+                <filter name="issued_licenses" string="Issued / Unused" domain="[('status', '=', 'issued')]"/>
+                <filter name="active_licenses" string="Active" domain="[('status', '=', 'active')]"/>
+                <filter name="expired_licenses" string="Expired" domain="['|', ('status', '=', 'expired'), ('expiry_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="suspended_licenses" string="Suspended" domain="[('status', '=', 'suspended')]"/>
+                <filter name="terminated_licenses" string="Terminated" domain="[('status', '=', 'terminated')]"/>
+                <separator/>
                 <group expand="0" string="Group By">
                     <filter string="License Status" name="license_status" domain="[]" context="{'group_by': 'status'}"/>
+                    <filter string="Customer" name="customer" domain="[]" context="{'group_by': 'customer_name'}"/>
+                    <filter string="Order" name="order_ref" domain="[]" context="{'group_by': 'order_ref'}"/>
                 </group>
             </search>
         </field>
@@ -60,11 +71,13 @@
                             <field name="seats" widget="integer"/>
                             <field name="status" widget="selection"/>
                             <field name="allow_download"/>
-<!--                            <field name="related_licenses"/>-->
                         </group>
                     </group>
                     <group string="License Notes">
                         <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                    <group string="Related Licenses">
+                        <field name="related_licenses" nolabel="1"/>
                     </group>
                 </sheet>
             </form>
