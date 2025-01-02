@@ -43,18 +43,24 @@
             ('before', 'web_enterprise/static/src/scss/bootstrap_overridden.scss',
              'geocat/static/src/scss/bootstrap_overridden.scss'),
         ],
-        # 'web.assets_frontend': [
-        #     'geocat/static/src/webclient/home_menu/home_menu_background.scss',
-        # ],
+        'web.assets_frontend': [
+            ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
+             'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
+        ],
+        'web.assets_backend': [
+            ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
+             'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
+        ],
         "web.dark_mode_variables": [
-            # web._assets_primary_variables
+            # Dark mode override for web._assets_primary_variables
             ('before', 'geocat/static/src/scss/primary_variables.scss',
              'geocat/static/src/scss/primary_variables.dark.scss'),
         ],
-        # "web.assets_web_dark": [
-        #     # web._assets_frontend
-        #     'geocat/static/src/webclient/home_menu/home_menu_background.dark.scss',
-        # ],
+        "web.assets_web_dark": [
+            # Dark mode override for web._assets_frontend, web._assets_backend
+            ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.dark.scss',
+             'geocat/static/src/webclient/home_menu/home_menu_background.dark.scss'),
+        ],
     },
     'pre_init_hook': '_pre_init_hook',
     'uninstall_hook': '_uninstall_hook',
