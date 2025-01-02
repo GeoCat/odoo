@@ -1,3 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_license_keys_manage,Manage License Keys,model_geocat_license_keys,geocat.group_license_manager,1,1,1,1
 access_license_keys_internal_user,Issue/View License Keys,model_geocat_license_keys,geocat.group_license_user,1,0,1,0
+access_license_checkouts_manage,Manage License Checkouts,model_geocat_license_checkouts,geocat.group_license_manager,1,1,0,0
+access_license_checkouts_internal_user,See License Checkouts,model_geocat_license_checkouts,geocat.group_license_user,1,0,0,0
+access_license_downloads_manage,Manage License Downloads,model_geocat_license_downloads,geocat.group_license_manager,1,1,0,0
+access_license_downloads_internal_user,See License Downloads,model_geocat_license_downloads,geocat.group_license_user,1,0,0,0

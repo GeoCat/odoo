@@ -27,35 +27,12 @@ class GeoCatBridgeLicense(models.Model):
     _table = 'geocat_license_keys'
     _description = 'GeoCat Bridge Licenses'
     _order = 'order_line_id asc, create_date desc'
+    _inherit = ["mail.thread"]
 
     _sql_constraints = [
         ('key_unique', 'unique(key)', 'License key must be unique.'),
         ('key_not_null', 'CHECK(key IS NOT NULL)', 'License key cannot be NULL.')
     ]
-
-    # def _is_sold_subscription(self) -> bool:
-    #     """ Check if the order was placed and is a subscription. """
-    #     return self.order_id and self.order_id.state == 'sale' and self.order_id.is_subscription
-
-
-    # @api.constrains('seats')
-    # def _compute_seats(self):
-    #     lookup = {}
-    #     for row in self.env['license.keys'].search([('order_id', '!=', None), ('order_id.max_bridge_seats', '>', 0)]):
-    #         lookup.setdefault(row.order_id.id, 0)
-    #         lookup[row.order_id.id] += row.seats
-    #
-    #     # Now check if
-    #     for record in self:
-    #         max_seats = record.order_id.max_bridge_seats if record.order_id else 0
-    #         if max_seats == 0:
-    #             raise ValidationError("License must be associated with an order that includes Bridge seats.")
-    #
-    #
-    #         if not record._is_sold_subscription():
-    #             record.seats = 1
-    #         else:
-    #             record.seats = record.order_id.max_bridge_seats
 
     # === FIELD DEFINITIONS ===
 
@@ -73,30 +50,33 @@ class GeoCatBridgeLicense(models.Model):
     order_line_id = fields.Many2one('sale.order.line', string='Subscription Plan', index=True, required=True, copy=True,
                                     domain="[('order_id.is_subscription', '=', True), ('max_bridge_seats', '>', 0), "
                                            "('order_id.subscription_state', 'in', ('3_progress', '5_renewed'))]",
-                                    ondelete='cascade', help='Reference to the associated subscription plan of the license key.')
+                                    ondelete='cascade', help='Reference to the associated subscription plan of the license key.',
+                                    tracking=True)
 
     # License status. This is used to determine if the license is still valid (along with the expiry/renewal date).
     status = fields.Selection(LICENSE_STATUS, string='Status', required=True, default='issued', index=True,
                               help='Current license status. Issued means that the license was created, '
-                                   'but never checked out (or downloaded) by the customer.')
+                                   'but never checked out (or downloaded) by the customer.', tracking=True)
 
     # Extended license expiry date. The license expiry date is normally based on the subscription renewal date.
     # However, there may be cases where we need to override this date (e.g. when there are payment issues).
-    expiry_date = fields.Date(string='Expiry Date', compute='_compute_expiry_date', store=True,
+    expiry_date = fields.Date(string='Expiry Date', compute='_compute_expiry_date', store=True, tracking=True,
                               help='Manually override (extend) the subscription renewal/expiry date.\n'
-                                   'If omitted, the next invoice date from the linked order will be used.')
+                                   'If omitted, the next invoice date from the linked order will be used.',
+                              recursive=True)
 
     # Number of seats that this license is valid for. This is taken from the ordered product by default.
-    seats = fields.Integer(string='Seats', default=1, help='Number of seats (simultaneous users) for this license key.')
+    seats = fields.Integer(string='Seats', default=1, tracking=True,
+                           help='Number of seats (simultaneous users) for the license key.')
 
     # End user name. This is optional and can also be set by the customer. Does not need to be a portal user.
-    end_user = fields.Char(string='End User', default=None, copy=False,
+    end_user = fields.Char(string='End User', default=None, copy=False, tracking=True,
                            help='Optional name of the end user(s) of the license key.\n'
                                 'The specified name is displayed in the software as the licensed user(s).\n'
                                 'If omitted, the customer name from the linked order will be used.')
 
     # Whether the customer is allowed to download a license file for this key. Default is True.
-    allow_download = fields.Boolean(string='Allow Download', default=True,
+    allow_download = fields.Boolean(string='Allow Download', default=True, tracking=True,
                                     help='Allow the customer to download offline license files (.lic).')
 
     # Custom notes
@@ -104,7 +84,13 @@ class GeoCatBridgeLicense(models.Model):
 
     # Related licenses (on same subscription sale order)
     related_licenses = fields.One2many('geocat.license.keys', string='Related Keys', compute='_compute_related_licenses',
-                                       help='Other license keys on the same subscription.', readonly=True)
+                                       help='Other license keys on the same subscription.', readonly=True, recursive=True)
+
+    # Related checkouts and license file downloads
+    checkouts = fields.One2many('geocat.license.checkouts', 'license_id', string='Key Checkouts', copy=False, readonly=True)
+    downloads = fields.One2many('geocat.license.downloads', 'license_id', string='File Downloads', copy=False, readonly=True)
+    num_checkouts = fields.Integer(string='Checkouts', compute='_compute_num_checkouts', readonly=True)
+    num_downloads = fields.Integer(string='Downloads', compute='_compute_num_downloads', readonly=True)
 
     order_ref = fields.Char(string='Order Number', related='order_line_id.order_id.name', store=False, readonly=True)
     customer_name = fields.Char(string='Customer Name', related='order_line_id.order_partner_id.name', store=False, readonly=True)
@@ -125,6 +111,16 @@ class GeoCatBridgeLicense(models.Model):
                 continue
             # Generate a new unique key
             lic.key = self._ensure_unique_key()
+
+    @api.depends('checkouts')
+    def _compute_num_checkouts(self):
+        for record in self:
+            record.num_checkouts = sum(record.checkouts.mapped('num_checkouts'))
+
+    @api.depends('downloads')
+    def _compute_num_downloads(self):
+        for record in self:
+            record.num_downloads = sum(record.downloads.mapped('num_downloads'))
 
     @api.constrains('seats')
     def _check_seats(self):
@@ -192,49 +188,6 @@ class GeoCatBridgeLicense(models.Model):
     # end_user: nullable
     # str
     # notes(?)
-
-    # @api.onchange('order_line_id')
-    # def _update_license(self):
-    #     """ Compute the expiry date based on the order and update the license status accordingly. """
-    #     for line in self:
-    #         order_line = line.order_line_id
-    #
-    #         if not order_line or not order_line.num_bridge_seats > 0 or order_line.state == 'cancel':
-    #             # Suspend if the order is lost or cancelled, or the number of seats is not set (or 0):
-    #             # This means that an action is required by GeoCat or the customer.
-    #             line.status = 'suspended'
-    #             line.extended_date = None
-    #             continue
-    #
-    #         if order_line.next_invoice_date
-    #
-    #         if order_line.order_id.subscription_state in ('3_progress', :
-    #
-    #         line.expires = order_line.order_id.
-
-    # @api.constrains('order_line_id')
-    # def test(self):
-    #     pass
-
-    # def unlink(self):
-    #     raise UserError(_("License keys cannot be deleted!"))
-
-    # def toggle_active(self):
-    #     """ Toggles the license status between active and suspended. """
-    #     self.ensure_one()
-    #     if self.status == 'active':
-    #         self.status = 'suspended'
-    #     elif self.status in ('suspended', 'terminated'):
-    #         self.status = 'active'
-
-    # @api.model
-    # def new(self, values=None, origin=None, ref=None):
-    #     values = values or {}
-    #     new_key = utils.generate_bridge_key()
-    #     while self.search_count([('key', '=', new_key)]) > 0:
-    #         new_key = utils.generate_bridge_key()
-    #     values['key'] = new_key
-    #     return super(GeoCatBridgeLicense, self).new(values, origin, ref)
 
     def copy(self, default=None):
         """ Do not allow duplication of licenses. """

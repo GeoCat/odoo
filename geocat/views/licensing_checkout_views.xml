@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="license_checkouts_view_search" model="ir.ui.view">
+        <field name="name">geocat.license.checkouts.search</field>
+        <field name="model">geocat.license.checkouts</field>
+        <field name="arch" type="xml">
+            <search string="License Checkouts">
+                <field name="license_id" string="Key" filter_domain="['|', ('license_id.key', 'ilike', self), ('license_id.display_name', 'ilike', self)]"/>
+                <field name="customer_name" string="Customer"
+                       filter_domain="['|', ('customer_name', 'ilike', self), ('license_id.order_line_id.order_partner_id.display_name', 'ilike', self)]"/>
+                <field name="end_user" string="End User" filter_domain="[('end_user', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="License Status" name="license_status" domain="[]" context="{'group_by': 'status'}"/>
+                    <filter string="Customer" name="customer" domain="[]" context="{'group_by': 'customer_name'}"/>
+                    <filter string="Machine/Domain ID" name="domain" domain="[]" context="{'group_by': 'domain_hash'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="license_checkouts_view_list" model="ir.ui.view">
+        <field name="name">geocat.license.checkouts.list</field>
+        <field name="model">geocat.license.checkouts</field>
+        <field name="arch" type="xml">
+            <list string="License Checkouts" create="False" edit="False" delete="False" import="False" duplicate="False">
+                <field name="license_id" string="Key" readonly="True" />
+                <field name="user_hash"/>
+                <field name="num_checkouts"/>
+                <field name="write_date" string="Last Checkout"/>
+                <field name="customer_name"/>
+                <field name="end_user"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="license_checkouts_view_form" model="ir.ui.view">
+        <field name="name">geocat.license.checkouts.form</field>
+        <field name="model">geocat.license.checkouts</field>
+        <field name="arch" type="xml">
+            <form string="License Checkouts">
+                <sheet>
+                    <widget name="web_ribbon" title="Terminated" bg_color="text-bg-danger" invisible="status != 'terminated'"/>
+                    <widget name="web_ribbon" title="Suspended" bg_color="text-bg-warning" invisible="status != 'suspended'"/>
+                    <widget name="web_ribbon" title="Expired" bg_color="text-bg-primary" invisible="status != 'expired'"/>
+                    <div class="oe_title">
+                        <h2>
+                            <field name="license_id" readonly="True"/>
+                        </h2>
+                    </div>
+                    <group string="Checkout Data">
+                        <group>
+                            <field name="customer_name" readonly="True"/>
+                            <field name="end_user" readonly="True"/>
+                            <field name="domain_hash" readonly="True"/>
+                            <field name="client_hash" readonly="True"/>
+                        </group>
+                        <group>
+                            <field name="num_checkouts"/>
+                            <field name="create_date" string="First Checkout"/>
+                            <field name="write_date" string="Last Checkout"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="license_checkouts_action_main" model="ir.actions.act_window">
+        <field name="name">Checkouts</field>
+        <field name="path">licensing-checkouts</field>
+        <field name="res_model">geocat.license.checkouts</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="search_view_id" eval='license_checkouts_view_search'/>
+        <field name="view_id" ref="geocat.license_checkouts_view_list"/>
+        <field name="help" type="html">
+        <p class="o_view_nocontent_neutral_face">
+            No GeoCat Bridge license checkouts found
+        </p>
+        </field>
+    </record>
+
+</odoo>

@@ -20,6 +20,7 @@
     'depends': [
         'base',
         'portal',
+        'website',
         'product',
         'account_payment',
         'sale_subscription',
@@ -27,12 +28,15 @@
     'data': [
         'security/licensing_security.xml',
         'security/ir.model.access.csv',
+        'views/licensing_checkout_views.xml',
+        'views/licensing_download_views.xml',
         'views/licensing_views.xml',
         'views/licensing_menus.xml',
         'views/product_template_views.xml',
         'views/account_payment_term_views.xml',
         'views/sale_order_views.xml',
         'views/subscription_plan_views.xml',
+        # 'views/website_templates.xml',
     ],
     'assets': {
         'web._assets_primary_variables': [

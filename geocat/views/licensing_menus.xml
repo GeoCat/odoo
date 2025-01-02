@@ -9,9 +9,23 @@
 
         <menuitem
             id="licensing_menu_dashboard"
-            name="Overview"
+            name="Keys"
             action="geocat.license_dashboard_action_main"
             sequence="5"
+            groups="geocat.group_license_user"/>
+
+        <menuitem
+            id="licensing_menu_checkouts"
+            name="Checkouts"
+            action="geocat.license_checkouts_action_main"
+            sequence="10"
+            groups="geocat.group_license_user"/>
+
+        <menuitem
+            id="licensing_menu_downloads"
+            name="Downloads"
+            action="geocat.license_downloads_action_main"
+            sequence="15"
             groups="geocat.group_license_user"/>
 
     </menuitem>

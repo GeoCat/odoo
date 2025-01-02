@@ -33,16 +33,18 @@
         <field name="name">geocat.license.key.list</field>
         <field name="model">geocat.license.keys</field>
         <field name="arch" type="xml">
-            <list string="License Keys">
+            <list string="License Keys" delete="False" duplicate="False">
                 <field name="display_name" string="Key" readonly="True" />
-                <field name="seats" string="Incl. Seats" widget="integer"/>
+                <field name="seats" string="Seats" widget="integer"/>
                 <field name="status" string="Status" widget="badge"
                        decoration-muted="status == 'issued'" decoration-warning="status == 'suspended'"
                        decoration-success="status == 'active'" decoration-danger="status == 'terminated'"
                        decoration-primary="status == 'expired'"/>
                 <field name="order_line_id" readonly="True"/>
-                <field name="end_user" string="End User" widget="text"/>
+                <field name="end_user" string="End User"/>
                 <field name="expiry_date" widget="date" />
+                <field name="num_checkouts" string="Checkouts"/>
+                <field name="num_downloads" string="Downloads"/>
             </list>
         </field>
     </record>
@@ -65,16 +67,36 @@
                         <group>
                             <field name="order_line_id" options="{'no_create': True}"/>
                             <field name="expiry_date" widget="date"/>
-                            <field name="end_user"/>
+                            <field name="seats" widget="integer"/>
                         </group>
                         <group>
-                            <field name="seats" widget="integer"/>
                             <field name="status" widget="selection"/>
+                            <field name="end_user"/>
                             <field name="allow_download"/>
                         </group>
                     </group>
                     <group string="License Notes">
                         <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                    <group>
+                        <group string="License Key Checkouts">
+                            <field name="checkouts" options="{'no_create': True}" nolabel="1">
+                                <list>
+                                    <field name="user_hash"/>
+                                    <field name="num_checkouts" width="150px" align="left"/>
+                                    <field name="write_date" string="Last Checkout"/>
+                                </list>
+                            </field>
+                        </group>
+                        <group string="License File Downloads">
+                            <field name="downloads" options="{'no_create': True}" nolabel="1">
+                                <list>
+                                    <field name="user_hash"/>
+                                    <field name="num_downloads" width="150px" align="left"/>
+                                    <field name="write_date" string="Last Download"/>
+                                </list>
+                            </field>
+                        </group>
                     </group>
                     <group string="Related Licenses">
                         <field name="related_licenses" nolabel="1"/>
@@ -85,7 +107,7 @@
     </record>
 
     <record id="license_dashboard_action_main" model="ir.actions.act_window">
-        <field name="name">Licensing Overview</field>
+        <field name="name">License Keys</field>
         <field name="path">licensing</field>
         <field name="res_model">geocat.license.keys</field>
         <field name="view_mode">list,form</field>
