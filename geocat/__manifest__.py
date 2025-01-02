@@ -48,6 +48,7 @@
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
         ],
         'web.assets_backend': [
+            ('after', 'web/static/src/views/view.scss', 'geocat/static/src/views/view.scss'),
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
         ],

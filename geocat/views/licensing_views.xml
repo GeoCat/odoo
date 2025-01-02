@@ -93,7 +93,7 @@
         <field name="search_view_id" eval='license_view_search'/>
         <field name="view_id" ref="geocat.license_keys_view_list"/>
         <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
+        <p class="o_view_nocontent_neutral_face">
             No GeoCat Bridge licenses found
         </p>
         </field>
