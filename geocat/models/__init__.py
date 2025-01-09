@@ -1,3 +1,4 @@
+from . import res_company
 from . import product_template
 from . import sale_subscription_plan
 from . import sale_order

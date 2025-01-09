@@ -56,15 +56,18 @@
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
         ],
-        "web.dark_mode_variables": [
+        'web.dark_mode_variables': [
             # Dark mode override for web._assets_primary_variables
             ('before', 'geocat/static/src/scss/primary_variables.scss',
              'geocat/static/src/scss/primary_variables.dark.scss'),
         ],
-        "web.assets_web_dark": [
+        'web.assets_web_dark': [
             # Dark mode override for web._assets_frontend, web._assets_backend
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.dark.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.dark.scss'),
+        ],
+        'web.report_assets_common': [
+            ('after', 'web/static/fonts/fonts.scss', '/geocat/static/fonts/geocat_fonts.scss'),
         ],
     },
     'pre_init_hook': '_pre_init_hook',
