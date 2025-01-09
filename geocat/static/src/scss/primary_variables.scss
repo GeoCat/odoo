@@ -107,4 +107,4 @@ $o-btns-bs-outline-override: map-merge((
 ), $o-btns-bs-outline-override);
 
 // GeoCat font override (replaces Segoe UI with Inter)
-$o-system-fonts: (-apple-system, BlinkMacSystemFont, "Inter", Roboto, "Helvetica Neue", Ubuntu, "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji") !default;
+$o-system-fonts: (-apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Ubuntu, "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji") !default;

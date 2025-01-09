@@ -55,6 +55,8 @@
             ('after', 'web/static/src/views/view.scss', 'geocat/static/src/views/view.scss'),
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
+            ('after', 'web_editor/static/src/scss/web_editor.common.scss',
+             'geocat/static/src/scss/web_editor.common.scss'),
         ],
         'web.dark_mode_variables': [
             # Dark mode override for web._assets_primary_variables
