@@ -8,7 +8,8 @@
     [t-foreach] {
         /* Original background-color: rgba(0, 0, 102, 0.1) !important; */
         /* The original color is too dark and looks weird (especially if multiple "t's" overlap)! */
-        background-color: rgba(200, 200, 202, 0.1) !important;
+        /* The color below is a shade of o-gray-200 from primary_variables.scss */
+        background-color: rgba(231, 233, 237, 0.1) !important;
     }
     t,
     [t-esc],
@@ -48,6 +49,6 @@
     [data-oe-t-group][data-oe-t-selectable] {
         /* Originally outline: 1px dashed rgba(0, 0, 102, 0.4) !important; */
         /* This reflects the changes made above */
-        outline: 1px dashed rgba(200, 200, 202, 0.4) !important;
+        outline: 1px dashed rgba(231, 233, 237, 0.4) !important;
     }
 }
