@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Custom address layout that flips the address and information block used in reports -->
+    <template id="address_layout" inherit_id="web.address_layout">
+        <xpath expr="//div[@t-if='address']" position="replace">
+            <div t-if="address" t-attf-class="address row mb-4" title="This block is not always present depending on the printed document.">
+                <div name="address" class="col-6">
+                    <t t-esc="address or None">
+                        <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
+                            <strong>Address block</strong>
+                            <div>Usually contains the address of the document's recipient.</div>
+                        </div>
+                    </t>
+                </div>
+                <t t-if="information_block">
+                    <t t-set="colclass" t-value="'col-5 offset-1'"/>
+                    <div name="information_block" t-att-class="not custom_layout_address and colclass or address and colclass">
+                        <t t-out="information_block or None">
+                            <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
+                                <strong>Information block</strong>
+                                <div>Usually contains a complementary address (e.g. shipping).</div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Make sure that all standard (a.k.a. Light) report layouts use our address layout  -->
+    <template id="external_layout_standard" inherit_id="web.external_layout_standard">
+        <xpath expr="//t[@t-call='web.address_layout']" position="replace">
+            <t t-call="geocat.address_layout"/>
+        </xpath>
+    </template>
+
+</odoo>

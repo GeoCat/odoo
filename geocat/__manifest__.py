@@ -20,7 +20,7 @@
     'depends': [
         'base',
         'portal',
-        'website',
+        # 'website',
         'product',
         'account_payment',
         'sale_subscription',
@@ -36,6 +36,9 @@
         'views/account_payment_term_views.xml',
         'views/sale_order_views.xml',
         'views/subscription_plan_views.xml',
+        'views/report_templates.xml',
+        'report/sale_order_templates.xml',
+        # 'report/invoice_templates.xml',
         # 'views/website_templates.xml',
     ],
     'assets': {
