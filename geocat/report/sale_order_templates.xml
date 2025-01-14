@@ -5,7 +5,9 @@
              and is the main address or the invoice address -->
         <xpath expr="//t[@t-set='address']" position="replace">
             <t t-set="address">
-                <t t-if="doc.partner_shipping_id != doc.partner_invoice_id and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id">
+                <t t-if="doc.partner_shipping_id != doc.partner_invoice_id
+                         and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
+                         and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
                     <!-- If invoice company does not match shipping and main company, we display a separate invoice address -->
                     <strong>Invoicing Address</strong>
                     <div t-field="doc.partner_invoice_id"
@@ -14,8 +16,20 @@
                 <t t-else="">
                     <!-- Otherwise we only display one main address -->
                     <strong>Customer Address</strong>
-                    <div t-field="doc.partner_id"
-                         t-options="{'widget': 'contact', 'fields': ['address', 'name', 'phone', 'vat'], 'no_marker': True, 'phone_icons': True}"/>
+                    <t t-if="doc.partner_invoice_id.parent_id == doc.partner_id.parent_id or
+                             doc.partner_invoice_id.parent_id == doc.partner_id">
+                        <!-- The invoiced individual belongs to the same company as the main contact -->
+                        <div t-field="doc.partner_invoice_id"
+                             t-options="{'widget': 'contact', 'fields': ['name']}"/>
+                        <!-- To make sure we display the full address, we use the main address here -->
+                        <div t-field="doc.partner_id"
+                             t-options="{'widget': 'contact', 'fields': ['address', 'phone', 'vat'], 'no_marker': True, 'phone_icons': True}"/>
+                    </t>
+                    <t t-else="">
+                        <!-- Just display the main address -->
+                        <div t-field="doc.partner_id"
+                             t-options="{'widget': 'contact', 'fields': ['address', 'name', 'phone', 'vat'], 'no_marker': True, 'phone_icons': True}"/>
+                    </t>
                 </t>
             </t>
         </xpath>
@@ -23,7 +37,9 @@
         <!-- Make sure that our information block (which we placed on the right) contains
              an optional shipping address if different from the main address -->
         <xpath expr="//t[starts-with(@t-if, 'doc.partner_shipping_id == doc.partner_invoice_id')]" position="replace">
-            <t t-if="doc.partner_id.parent_id != doc.partner_invoice_id.parent_id and doc.partner_shipping_id != doc.partner_invoice_id">
+            <t t-if="doc.partner_shipping_id != doc.partner_invoice_id
+                     and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
+                     and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
                 <t t-set="information_block">
                     <strong>Delivery Address</strong>
                     <div t-field="doc.partner_shipping_id"

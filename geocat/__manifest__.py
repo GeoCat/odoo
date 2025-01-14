@@ -22,7 +22,7 @@
         'portal',
         # 'website',
         'product',
-        'account_payment',
+        'account',
         'sale_subscription',
     ],
     'data': [
@@ -38,7 +38,7 @@
         'views/subscription_plan_views.xml',
         'views/report_templates.xml',
         'report/sale_order_templates.xml',
-        # 'report/invoice_templates.xml',
+        'report/invoice_templates.xml',
         # 'views/website_templates.xml',
     ],
     'assets': {
