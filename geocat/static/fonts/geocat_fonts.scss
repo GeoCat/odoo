@@ -1,5 +1,29 @@
 // ------------------------------------------------------------------
-// Add Inter font for GeoCat document layouts
+// Add Inter font for GeoCat document layouts.
+// Inspired by Odoo fonts.scss file that defines Lato font.
 // ------------------------------------------------------------------
 
-@include google-font-pair('Inter');
+$inter-font-path: './Inter';
+
+@mixin inter-font($type, $weight, $style) {
+    @font-face {
+        font-family: 'Inter';
+        src: url('#{$inter-font-path}/Inter-#{$type}.ttf') format('truetype');
+        font-weight: $weight;
+        font-style: $style;
+    }
+}
+
+@mixin inter-font-pair($type, $weight) {
+    @include inter-font('#{$type}', $weight, normal);
+    @include inter-font('#{$type}Italic', $weight, italic);
+}
+
+@include inter-font-pair('Thin', 100);
+@include inter-font-pair('ExtraLight', 200);
+@include inter-font-pair('Light', 300);
+@include inter-font-pair('Regular', 400);
+@include inter-font-pair('Medium', 500);
+@include inter-font-pair('SemiBold', 600);
+@include inter-font-pair('Bold', 700);
+@include inter-font-pair('Black', 900);

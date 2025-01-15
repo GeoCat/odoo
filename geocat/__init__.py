@@ -26,5 +26,11 @@ def _uninstall_hook(env):
         DROP COLUMN IF EXISTS bridge_seats
     """)
     env.cr.execute("""
-        DROP TABLE IF EXISTS "geocat_license_keys"
+        DROP TABLE IF EXISTS "geocat_license_keys" CASCADE
+    """)
+    env.cr.execute("""
+        DROP TABLE IF EXISTS "geocat_license_checkouts"
+    """)
+    env.cr.execute("""
+        DROP TABLE IF EXISTS "geocat_license_downloads"
     """)
