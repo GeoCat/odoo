@@ -70,6 +70,7 @@
             # Dark mode override for web._assets_frontend, web._assets_backend
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.dark.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.dark.scss'),
+            ('after', 'web/static/src/webclient/webclient.scss', 'geocat/static/src/webclient/webclient.dark.scss'),
         ],
         'web.report_assets_common': [
             ('after', 'web/static/fonts/fonts.scss', '/geocat/static/fonts/geocat_fonts.scss'),

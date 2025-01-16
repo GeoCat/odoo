@@ -1,13 +1,10 @@
-///
-/// Odoo Dark-Mode
-///
-///
-
-// = Colors
-// ============================================================================
+/// GeoCat brand dark mode primary variables override
 
 $o-white: #000 !default;
 $o-black: #FFF !default;
+
+$geocat-light-blue: #0092ff !default;  // GeoCat website light blue
+$geocat-dark-blue: #29265F !default;  // GeoCat website dark blue
 
 $o-gray-100: #1B1D26 !default;
 $o-gray-200: #262A36 !default;
@@ -19,9 +16,11 @@ $o-gray-700: #B1B3BC !default;
 $o-gray-800: #D1D1D1 !default;
 $o-gray-900: #E4E4E4 !default;
 
-$o-enterprise-color: #0092ff !default;  // GeoCat website light blue
-$o-brand-primary: $o-enterprise-color !default;
-$o-enterprise-action-color: #0092ff !default;  // GeoCat website light blue
+$o-enterprise-color: $geocat-light-blue !default;
+$o-enterprise-action-color: $geocat-light-blue !default;
+
+$o-brand-odoo: $geocat-light-blue !default;
+$o-brand-primary: $geocat-light-blue !default;
 
 $o-success: #1dc959 !default;
 $o-info: #6AB5FB !default;
@@ -37,7 +36,6 @@ $dark: $o-gray-700 !default;
 
 $o-main-text-color: $o-gray-800 !default;
 $o-main-link-color: $o-action !default;
-$o-enterprise-color: $o-brand-odoo !default;
 $o-main-favorite-color: #ffd532 !default;
 $o-main-code-color: #c58bc8 !default;
 
@@ -50,6 +48,8 @@ $o-theme-text-colors: (
     "danger": #ff5757,
 ) !default;
 
+
+// Overrides below are kept as is from odoo/addons/web/static/src/scss/primary_variables.dark.scss
 
 // = Webclient
 // ============================================================================

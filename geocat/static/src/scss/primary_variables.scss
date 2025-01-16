@@ -1,110 +1,16 @@
-///
-/// This file regroups the variables that style odoo components.
-/// They are available in every asset bundle.
-///
+/// GeoCat brand primary variables override
 
-// Colors
-$o-white: #FFF !default;
-$o-black: #000 !default;
+$geocat-light-blue: #0092ff !default;  // GeoCat website light blue
+$geocat-dark-blue: #29265F !default;  // GeoCat website dark blue
 
-$o-gray-100: #F9FAFB !default;
-$o-gray-200: #e7e9ed !default;
-$o-gray-300: #d8dadd !default;
-$o-gray-400: #9a9ca5 !default;
-$o-gray-500: #7c7f89 !default;
-$o-gray-600: #5f636f !default;  // Original Odoo greys up til here
-$o-gray-700: #4D4F6A !default;  // Custom gradient
-$o-gray-800: #3B3A64 !default;  // Custom gradient
-$o-gray-900: #29265F !default;  // GeoCat website dark blue
-
-$o-enterprise-color: #0092ff !default;  // GeoCat website light blue
-$o-enterprise-action-color: #0092ff !default;  // GeoCat website light blue
-
-$o-opacity-disabled: .5 !default;
-$o-opacity-muted: .76 !default;
+$o-enterprise-color: $geocat-light-blue !default;
+$o-enterprise-action-color: $geocat-light-blue !default;
 
 $o-brand-odoo: $o-enterprise-color !default;
-$o-brand-primary: $o-brand-odoo !default;
-$o-brand-secondary: #8f8f8f !default;
-$o-brand-lightsecondary: $o-gray-100 !default;
+$o-brand-primary: $o-enterprise-color !default;
 
 $o-action: $o-enterprise-action-color !default;
-$o-main-text-color: $o-gray-700 !default;
 $o-main-link-color: $o-enterprise-action-color !default;
-$o-main-color-muted: rgba($o-main-text-color, $o-opacity-muted) !default;
-
-// Components
-$o-component-active-color:  $o-gray-900 !default;
-$o-component-active-bg: mix($o-action, $o-white, 10%) !default;
-$o-component-active-border: $o-action !default;
-
-$o-list-group-header-color: $o-gray-900 !default;
-$o-list-footer-color: $o-gray-900 !default;
-$o-list-footer-bg-color: transparent !default;
-$o-list-footer-font-weight: 500 !default;
-
-$o-form-lightsecondary: $o-gray-200 !default;
-
-// o-inputs
-$o-input-padding-y: 1px !default;
-$o-input-padding-x: 0 !default;
-
-$o-input-border-required: $o-gray-900 !default;
-
-// Badges
-$o-badge-min-width: 2.7ch !default !default;
-
-// Buttons
-// Map of customized values for each button. If a button's design is defined
-// here, the relative values will take priority over default BS ones.
-// Notice: each map's entry is passed directly to the Bootstrap mixin, meaning
-// that all states must be defined, there can't be omissions.
-$o-btns-bs-override: () !default;
-$o-btns-bs-override: map-merge((
-    "primary": (
-        background: $o-brand-primary,
-        border: $o-brand-primary,
-        color: $o-white,
-
-        hover-background: darken($o-brand-primary, 10%),
-        hover-border: darken($o-brand-primary, 10%),
-        hover-color: $o-white,
-
-        active-background: mix($o-brand-primary, $o-white, 10%),
-        active-border:  $o-brand-primary,
-        active-color:$o-brand-primary,
-    ),
-    "secondary": (
-        background: $o-gray-200,
-        border: $o-gray-200,
-        color: $o-gray-700,
-
-        hover-background: $o-gray-300,
-        hover-border: $o-gray-300,
-        hover-color: $o-gray-800,
-
-        active-background: $o-component-active-bg,
-        active-border:  $o-component-active-border,
-        active-color: $o-component-active-color,
-    ),
-), $o-btns-bs-override);
-
-$o-btns-bs-outline-override: () !default;
-$o-btns-bs-outline-override: map-merge((
-    "secondary": (
-        background: transparent,
-        border: $o-gray-300,
-        color: $o-gray-700,
-
-        hover-background: $o-gray-200,
-        hover-border: $o-gray-300,
-        hover-color: $o-gray-800,
-
-        active-background: mix($o-enterprise-action-color, $o-white, 10%),
-        active-border:  $o-enterprise-action-color,
-        active-color: $o-gray-900,
-    ),
-), $o-btns-bs-outline-override);
 
 // GeoCat font override (replaces Segoe UI with Inter)
 $o-system-fonts: (-apple-system, BlinkMacSystemFont, Inter, "Helvetica Neue", Ubuntu, "Noto Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji") !default;
