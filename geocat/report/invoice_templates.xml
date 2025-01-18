@@ -8,7 +8,7 @@
                     <div class="col-6" name="address_not_same_as_shipping">
                         <!-- Note: we moved the address to the left in web.address_layout -->
                         <t t-set="address">
-                            <strong>Invoicing Address</strong>
+                            <strong style="font-weight: 600;">Invoicing Address</strong>
                             <address class="mb-0" t-field="o.partner_id"
                                      t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
                             <div t-if="o.partner_id.vat" id="partner_vat_address_not_same_as_shipping">
@@ -21,7 +21,7 @@
                         <!-- Note: we moved the information_block to the right in web.address_layout -->
                         <t t-set="information_block">
                             <div groups="account.group_delivery_invoice_address" name="shipping_address_block">
-                                <strong>Delivery Address</strong>
+                                <strong style="font-weight: 600;">Delivery Address</strong>
                                 <address class="mb-0" t-field="o.partner_shipping_id"
                                          t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
                             </div>
@@ -32,7 +32,7 @@
                     <!-- Invoiced company matches company where we ship to: show invoice address only -->
                     <div class="col-6" name="address_same_as_shipping">
                         <t t-set="address">
-                            <strong>Customer Address</strong>
+                            <strong style="font-weight: 600;">Customer Address</strong>
                             <address class="mb-0" t-field="o.partner_id"
                                      t-options="{'widget': 'contact', 'fields': ['address', 'name'], 'no_marker': True}"/>
                             <div t-if="o.partner_id.vat" id="partner_vat_address_same_as_shipping">

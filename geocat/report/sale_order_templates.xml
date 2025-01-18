@@ -9,13 +9,13 @@
                          and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
                          and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
                     <!-- If invoice company does not match shipping and main company, we display a separate invoice address -->
-                    <strong>Invoicing Address</strong>
+                    <strong style="font-weight: 600;">Invoicing Address</strong>
                     <div t-field="doc.partner_invoice_id"
                          t-options="{'widget': 'contact', 'fields': ['address', 'name', 'phone', 'vat'], 'no_marker': True, 'phone_icons': True}"/>
                 </t>
                 <t t-else="">
                     <!-- Otherwise we only display one main address -->
-                    <strong>Customer Address</strong>
+                    <strong style="font-weight: 600;">Customer Address</strong>
                     <t t-if="doc.partner_invoice_id.parent_id == doc.partner_id.parent_id or
                              doc.partner_invoice_id.parent_id == doc.partner_id">
                         <!-- The invoiced individual belongs to the same company as the main contact -->
@@ -41,7 +41,7 @@
                      and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
                      and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
                 <t t-set="information_block">
-                    <strong>Delivery Address</strong>
+                    <strong style="font-weight: 600;">Delivery Address</strong>
                     <div t-field="doc.partner_shipping_id"
                          t-options="{'widget': 'contact', 'fields': ['address', 'name', 'phone'], 'no_marker': True, 'phone_icons': True}"/>
                 </t>
