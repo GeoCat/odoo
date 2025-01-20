@@ -1,0 +1,6 @@
+.o_snail_mail {
+    // Also add the top padding to the bottom, so it's not so close to the Order Reference
+    .address {
+        padding-bottom: $o-snailmail-address-padding-top;
+    }
+}

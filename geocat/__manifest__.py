@@ -37,9 +37,10 @@
         'views/sale_order_views.xml',
         'views/subscription_plan_views.xml',
         'views/report_templates.xml',
+        'views/portal_templates.xml',
+        'views/webclient_templates.xml',
         'report/sale_order_templates.xml',
         'report/invoice_templates.xml',
-        # 'views/website_templates.xml',
     ],
     'assets': {
         'web._assets_primary_variables': [
@@ -74,6 +75,8 @@
         ],
         'web.report_assets_common': [
             ('after', 'web/static/fonts/fonts.scss', '/geocat/static/fonts/geocat_fonts.scss'),
+            ('after', 'web/static/src/webclient/actions/reports/report.scss',
+             '/geocat/static/src/webclient/actions/reports/report.scss'),
         ],
     },
     'pre_init_hook': '_pre_init_hook',

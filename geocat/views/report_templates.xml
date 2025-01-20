@@ -40,18 +40,30 @@
             </div>
         </xpath>
 
-        <!-- Set a fixed GeoCat footer company address -->
+        <!-- Set a fixed 2-line GeoCat footer company address (for the active company) -->
         <xpath expr="//div[hasclass('o_footer_content')]//div[@t-field='company.report_footer']" position="replace">
-            <div class="flex-grow-1 text-start me-2">
-                <span t-field="company.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": true}'/>
+            <div class="flex-grow-1 text-start me-2 text-muted">
+                <span t-field="company.partner_id.contact_address_inline"/> | <i class="fa fa-phone"/> <span t-field="company.partner_id.phone_sanitized"/>
+                <br/>
+                VAT <span t-field="company.partner_id.vat"/> |
+                <i class="fa fa-envelope-o"/> <a t-attf-href="mailto:#{company.partner_id.email_normalized}" target="_blank" style="color:inherit !important;">
+                    <span t-field="company.partner_id.email_normalized"/>
+                </a> |
+                <i class="fa fa-globe"/> <a t-att-href="company.partner_id.website" target="_blank" style="color:inherit !important;">
+                    <span t-field="company.partner_id.website"/>
+                </a>
             </div>
         </xpath>
 
-        <!-- Make sure the page number is not wrapped in the footer -->
-        <xpath expr="//div[hasclass('o_footer_content')]//div[hasclass('text-end', 'text-muted')]" position="attributes">
-            <attribute name="class" add="text-nowrap"/>
+        <!-- Remove document name (if any) and move page number 1 line down -->
+        <xpath expr="//div[hasclass('o_footer_content')]//div[hasclass('text-end', 'text-muted')]" position="replace">
+            <div class="text-end text-muted text-nowrap">
+                <br/>
+                <div t-if="report_type == 'pdf'">page <span class="page"/> / <span class="topage"/></div>
+            </div>
         </xpath>
 
+        <!-- Call our own address layout -->
         <xpath expr="//t[@t-call='web.address_layout']" position="replace">
             <t t-call="geocat.address_layout"/>
         </xpath>

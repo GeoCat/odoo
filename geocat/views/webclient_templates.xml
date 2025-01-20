@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Return empty string instead of "powered by odoo" message -->
+    <template id="brand_promotion_message" inherit_id="web.brand_promotion_message">
+        <xpath expr="//t[starts-with(@t-out, 'final_message')]" position="attributes">
+            <attribute name="t-out"/>
+        </xpath>
+    </template>
+
+</odoo>
