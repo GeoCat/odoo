@@ -8,7 +8,7 @@
                 <div name="address" class="col-6">
                     <t t-esc="address or None">
                         <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
-                            <strong>Address block</strong>
+                            <strong style="font-weight: 600;">Address block</strong>
                             <div>Usually contains the address of the document's recipient.</div>
                         </div>
                     </t>
@@ -18,7 +18,7 @@
                     <div name="information_block" t-att-class="not custom_layout_address and colclass or address and colclass">
                         <t t-out="information_block or None">
                             <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
-                                <strong>Information block</strong>
+                                <strong style="font-weight: 600;">Information block</strong>
                                 <div>Usually contains a complementary address (e.g. shipping).</div>
                             </div>
                         </t>
@@ -30,8 +30,10 @@
 
     <!-- Make sure that all standard (a.k.a. Light) report layouts use our address layout  -->
     <template id="external_layout_standard" inherit_id="web.external_layout_standard">
-        <!-- Remove the company address block from the header... -->
-        <xpath expr="//div[@t-attf-class='header o_company_#{company.id}_layout']/div[hasclass('row')]" position="replace"/>
+        <!-- Hide the company address block from the header (we cannot delete it, as there are overrides!) -->
+        <xpath expr="//div[@t-attf-class='header o_company_#{company.id}_layout']//div[@name='company_address']" position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </xpath>
 
         <!-- Set a fixed GeoCat company tag line -->
         <xpath expr="//div[@t-field='company.report_header']" position="replace">
@@ -42,26 +44,98 @@
 
         <!-- Set a fixed 2-line GeoCat footer company address (for the active company) -->
         <xpath expr="//div[hasclass('o_footer_content')]//div[@t-field='company.report_footer']" position="replace">
-            <div class="flex-grow-1 text-start me-2 text-muted">
-                <span t-field="company.partner_id.contact_address_inline"/> | <i class="fa fa-phone"/> <span t-field="company.partner_id.phone_sanitized"/>
+            <div class="flex-grow-1 text-md-center text-muted">
+                <t t-set="details" t-value="company.partner_id"/>
+
+                <!-- FIRST LINE: company name, postal address, and phone -->
+                <span t-field="details.contact_address_inline"/>
+                <t t-if="details.phone or details.mobile">
+                    |
+                    <t t-if="details.mobile and not details.phone">
+                        <span t-field="details.mobile"/>
+                    </t>
+                    <t t-else="">
+                        <span t-field="details.phone"/>
+                    </t>
+                </t>
                 <br/>
-                VAT <span t-field="company.partner_id.vat"/> |
-                <i class="fa fa-envelope-o"/> <a t-attf-href="mailto:#{company.partner_id.email_normalized}" target="_blank" style="color:inherit !important;">
-                    <span t-field="company.partner_id.email_normalized"/>
-                </a> |
-                <i class="fa fa-globe"/> <a t-att-href="company.partner_id.website" target="_blank" style="color:inherit !important;">
-                    <span t-field="company.partner_id.website"/>
-                </a>
+
+                <!-- NOTE: The next 2 lines are dependent on the country of the company -->
+                <t t-if="details.country_code == 'CA'">
+                    <!-- For Canada, we want website, email, GST/HST, and PST on the second line -->
+                    <t t-if="details.website">
+                        <a t-att-href="details.website" target="_blank" style="color:inherit !important;">
+                            <span t-field="details.website"/>
+                        </a> |
+                    </t>
+                    <t t-if="details.email">
+                        <a t-attf-href="mailto:#{details.email_normalized}" target="_blank" style="color:inherit !important;">
+                            <span t-field="details.email_normalized"/>
+                        </a> |
+                    </t>
+                    <t t-if="details.vat">
+                        GST/HST <span t-field="details.vat"/>
+                        <t t-if="details.l10n_ca_pst">
+                            | PST <span t-field="details.l10n_ca_pst"/>
+                        </t>
+                    </t>
+
+                    <!-- For Canada, we want all bank details on the third line -->
+                    <!-- Note: there's no need for a business number, as that is included in the GST/HST number -->
+                    <t t-if="details.bank_ids">
+                        <br/>
+                        <!-- Display the first bank account details only -->
+                        <t t-set="account" t-value="details.bank_ids[0]"/>
+                        <span t-field="account.bank_name"/>
+                        <t t-if="account.bank_bic">
+                            (<span t-field="account.bank_bic"/>)
+                        </t>
+                        <span t-field="account.acc_number"/>
+                        <t t-if="account.l10n_ca_financial_institution_number">
+                            , RN <span t-field="account.l10n_ca_financial_institution_number"/>
+                        </t>
+                    </t>
+                </t>
+                <t t-else="">
+                    <!-- For NL, we want website, email, and business number (KvK) on the second line -->
+                    <t t-if="details.website">
+                        <a t-att-href="details.website" target="_blank" style="color:inherit !important;">
+                            <span t-field="details.website"/>
+                        </a> |
+                    </t>
+                    <t t-if="details.email">
+                        <a t-attf-href="mailto:#{details.email_normalized}" target="_blank" style="color:inherit !important;">
+                            <span t-field="details.email_normalized"/>
+                        </a> |
+                    </t>
+                    <t t-if="details.company_registry">
+                        CoC <span t-field="details.company_registry"/>
+                    </t>
+
+                    <!-- For NL, we want the tax number (BTW) and bank details on the third line -->
+                    <t t-if="details.vat or details.bank_ids">
+                        <br/>
+                    </t>
+                    <t t-if="details.vat">
+                        VAT <span t-field="details.vat"/>
+                    </t>
+                    <t t-if="details.vat and details.bank_ids">|</t>
+                    <t t-if="details.bank_ids">
+                        <!-- Display the first bank account details only -->
+                        <t t-set="account" t-value="details.bank_ids[0]"/>
+                        <span t-field="account.bank_name"/>
+                        <t t-if="account.bank_bic">
+                            (<span t-field="account.bank_bic"/>)
+                        </t>
+                        <span t-field="account.acc_number"/>
+                    </t>
+
+                </t>
             </div>
         </xpath>
 
-        <!-- Remove document name (if any) and move page number 1 line down -->
-        <xpath expr="//div[hasclass('o_footer_content')]//div[hasclass('text-end', 'text-muted')]" position="replace">
-            <div class="text-end text-muted text-nowrap">
-                <br/>
-                <div t-if="report_type == 'pdf'">page <span class="page"/> / <span class="topage"/></div>
-            </div>
-        </xpath>
+        <!-- Remove document name (if any) and page numbering -->
+        <xpath expr="//div[hasclass('o_footer_content')]//div[hasclass('text-end', 'text-muted')]" position="replace"/>
 
         <!-- Call our own address layout -->
         <xpath expr="//t[@t-call='web.address_layout']" position="replace">
@@ -94,19 +168,20 @@
                         color: <t t-esc='secondary'/>;
                     }
 
-                    #informations strong {
+                    #informations strong, #informations strong * {
                         color: <t t-esc='secondary'/>;
-                        font-weight: 600 !important;
+                        font-weight: 600;
                     }
 
-                    .o_total strong {
+                    .o_total strong, .o_total strong * {
                         color: <t t-esc='secondary'/>;
-                        font-weight: 600 !important;
+                        font-weight: 600;
                     }
 
                     .o_company_tagline {
                         color: <t t-esc='secondary'/>;
                         font-size: 1.6em !important;
+                        font-weight: 600;
                         vertical-align: middle;
 
                         span#together {

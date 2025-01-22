@@ -1,3 +1,14 @@
+.article, .article * :not(h2, h2 *, th, th *) {
+    // Make the body article fonts a little lighter
+    font-weight: calc(var(--font-weight, 400) - 100);
+}
+
+.footer, .footer * {
+    // Make the body footer fonts a little lighter and smaller
+    font-weight: calc(var(--font-weight, 400) - 100);
+    font-size: calc(var(--font-size, 1rem) - 0.2rem);
+}
+
 .o_snail_mail {
     // Also add the top padding to the bottom, so it's not so close to the Order Reference
     .address {
