@@ -1,1 +1,1 @@
-from . import checkout
+from . import license_checkout
