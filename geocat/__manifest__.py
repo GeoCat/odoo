@@ -20,7 +20,7 @@
     'depends': [
         'base',
         'portal',
-        # 'website',
+        'website_blog',
         'product',
         'account',
         'sale_subscription',
@@ -39,8 +39,9 @@
         'views/report_templates.xml',
         'views/portal_templates.xml',
         'views/webclient_templates.xml',
-        'report/sale_order_templates.xml',
-        'report/invoice_templates.xml',
+        'data/mail_templates_email_layouts.xml',
+        'data/sale_order_templates.xml',
+        'data/invoice_templates.xml',
     ],
     'assets': {
         'web._assets_primary_variables': [
