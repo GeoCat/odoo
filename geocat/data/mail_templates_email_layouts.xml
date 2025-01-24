@@ -60,7 +60,7 @@
                                 <t t-if="account.bank_bic">
                                     (<t t-out="account.bank_bic"/>)
                                 </t><br/>
-                                BAN <t t-field="account.acc_number"/>
+                                BAN <t t-out="account.acc_number"/>
                                 <t t-if="account.l10n_ca_financial_institution_number">
                                     <br/>BRN <t t-out="account.l10n_ca_financial_institution_number"/>
                                 </t>
@@ -81,7 +81,7 @@
                                 <t t-if="account.bank_bic">
                                     (<t t-out="account.bank_bic"/>)
                                 </t><br/>
-                                IBAN <t t-field="account.acc_number"/>
+                                IBAN <t t-out="account.acc_number"/>
                             </t>
                         </t>
                     </td>
