@@ -92,7 +92,7 @@
                         </t>
                         <span t-field="account.acc_number"/>
                         <t t-if="account.l10n_ca_financial_institution_number">
-                            , RN <span t-field="account.l10n_ca_financial_institution_number"/>
+                            , BRN <span t-field="account.l10n_ca_financial_institution_number"/>
                         </t>
                     </t>
                 </t>
@@ -109,7 +109,7 @@
                         </a> |
                     </t>
                     <t t-if="details.company_registry">
-                        CoC <span t-field="details.company_registry"/>
+                        Reg. No. <span t-field="details.company_registry"/>
                     </t>
 
                     <!-- For NL, we want the tax number (BTW) and bank details on the third line -->
