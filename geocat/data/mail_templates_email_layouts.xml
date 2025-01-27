@@ -110,7 +110,7 @@
 
         <template id="mail_notification_invite" inherit_id="mail.mail_notification_invite">
             <!-- Remove the unfollow link that was placed before the footer for some reason -->
-            <xpath expr="//span[@id='mail_unfollow']" position="replace"/>
+            <xpath expr="//div[@style='margin-top:16px;']/span[@id='mail_unfollow']" position="replace"/>
 
             <!-- And put it back where it was originally... -->
             <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
