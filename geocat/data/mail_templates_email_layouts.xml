@@ -109,9 +109,6 @@
         </template>
 
         <template id="mail_notification_invite" inherit_id="mail.mail_notification_invite">
-            <!-- Always disable button access to avoid awkward situations -->
-            <t t-set="has_button_access" t-value="False"/>
-
             <!-- Remove the unfollow link that was placed before the footer for some reason -->
             <xpath expr="//span[@id='mail_unfollow']" position="replace"/>
 
@@ -124,8 +121,10 @@
         </template>
 
         <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout">
-            <!-- Always disable button access to avoid awkward situations -->
-            <t t-set="has_button_access" t-value="False"/>
+            <xpath expr="//body" position="before">
+                <!-- Always disable button access to avoid awkward situations -->
+                <t t-set="has_button_access" t-value="False"/>
+            </xpath>
 
             <xpath expr="//body" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font -->
@@ -157,8 +156,10 @@
         </template>
 
         <template id="mail_notification_light" inherit_id="mail.mail_notification_light">
-            <!-- Always disable button access to avoid awkward situations -->
-            <t t-set="has_button_access" t-value="False"/>
+            <xpath expr="//body" position="before">
+                <!-- Always disable button access to avoid awkward situations -->
+                <t t-set="has_button_access" t-value="False"/>
+            </xpath>
 
             <xpath expr="//body/table[1][@role='presentation']" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font, make the whole thing full width and without background color -->
@@ -195,9 +196,6 @@
 
         <template id="mail_notification_layout_with_responsible_signature"
                   inherit_id="mail.mail_notification_layout_with_responsible_signature">
-            <!-- Always disable button access to avoid awkward situations -->
-            <t t-set="has_button_access" t-value="False"/>
-
             <!-- Do not use the sender's signature (as the HTML may mess up our email), but use their name instead -->
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
