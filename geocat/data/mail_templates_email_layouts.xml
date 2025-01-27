@@ -4,7 +4,7 @@
         <template id="mail_footer_sub">
             <!-- This contains the privacy policy link and (optional) unsubscribe link -->
             <div style="margin: 10px 30px; color: #B1B3BC; text-align: center; font-size: 10px">
-                <a t-att-href="'%s/privacy-policy' % company.env.base_url" style="color: inherit; text-decoration: none;">
+                <a t-att-href="'%s/privacy-policy' % company.get_base_url()" style="color: inherit; text-decoration: none;">
                     privacy policy
                 </a>
                 <!--suppress XmlDuplicatedId -->
