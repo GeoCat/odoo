@@ -17,11 +17,11 @@
         <template id="mail_footer">
             <!-- Default GeoCat company footer for emails -->
             <table role="presentation" cellspacing="0" cellpadding="0" border="0"
-                   style="background-color: #f8f7fa; border-radius: 16px; font-size: 12px; padding: 30px; color: #7E8392">
+                   style="background-color: #f8f7fa; border-radius: 16px; font-size: 12px; color: #7E8392">
                 <tr>
                     <t t-set="details" t-value="company.partner_id"/>
                     <t t-set="canadian" t-value="details.country_code == 'CA'"/>
-                    <td style="padding-right: 30px; white-space: nowrap;">
+                    <td style="padding: 30px; white-space: nowrap; vertical-align: top;" valign="top">
                         <!-- Address details -->
                         <b t-out="company.name"
                            t-att-style="'color: ' + (company.email_primary_color or 'inherit') + ';'"/>
@@ -53,7 +53,7 @@
                            t-out="details.website"
                            style="color: inherit; text-decoration: none;"/>
                     </td>
-                    <td style="padding: 30px; white-space: nowrap;">
+                    <td style="padding: 30px; white-space: nowrap; vertical-align: top;" valign="top">
                         <!-- Business details -->
                         <br/><!-- Intentional line break! -->
                         <t t-if="canadian">
@@ -96,7 +96,7 @@
                             </t>
                         </t>
                     </td>
-                    <td style="padding-right: 30px; vertical-align: middle; width: 100%; text-align: right"
+                    <td style="padding: 30px; vertical-align: middle; width: 100%; text-align: right"
                         t-if="company and company.logo" width="100%" valign="middle" align="right">
                         <!-- Logo -->
                         <a t-if="company.website" t-att-href="company.website" style="text-decoration: none">
@@ -122,14 +122,22 @@
 
         <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout">
             <xpath expr="//body" position="before">
-                <!-- Always disable button access to avoid awkward situations -->
+                <!-- Try to not show the o_mail_notification summary at the top,
+                     while keeping the actual div, as it is used in overrides -->
                 <t t-set="has_button_access" t-value="False"/>
+                <t t-set="subtitles" t-value="False"/>
             </xpath>
 
             <xpath expr="//body" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font -->
-                <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748;</attribute>
+                <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;</attribute>
             </xpath>
+
+            <!-- Do not show the record name at the top -->
+            <xpath expr="//div[@summary='o_mail_notification']//td[@t-else='']" position="replace"/>
+
+            <!-- Remove the HR at the top -->
+            <xpath expr="//div[@summary='o_mail_notification']//td//hr" position="replace"/>
 
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <!-- Use a general signature for standard emails -->
@@ -163,7 +171,7 @@
 
             <xpath expr="//body/table[1][@role='presentation']" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font, make the whole thing full width and without background color -->
-                <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; width: 100%;</attribute>
+                <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; width: 100%; font-size: 13px;</attribute>
             </xpath>
 
             <xpath expr="//body/table[1]//table[@role='presentation' and @width='590']" position="attributes">
@@ -175,7 +183,7 @@
             <!-- Remove the original footer -->
             <xpath expr="//body/table[1]//table[@role='presentation']//tr[3]" position="replace"/>
 
-            <!-- Remove the ugly header -->
+            <!-- Remove the original header (with record name and logo) -->
             <xpath expr="//body/table[1]//table[@role='presentation']//tr[1]" position="replace"/>
 
             <xpath expr="//body/table[1]/tr/td[@align='center' and @style='min-width: 590px;']/.." position="replace">
