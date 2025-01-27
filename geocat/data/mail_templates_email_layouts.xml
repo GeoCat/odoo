@@ -1,48 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <template id="mail_footer_sub">
+            <!-- This contains the privacy policy link and (optional) unsubscribe link -->
+            <div style="margin: 10px 30px; color: #B1B3BC; text-align: center; font-size: 10px">
+                <a t-att-href="'%s/privacy-policy' % company.env.base_url" style="color: inherit; text-decoration: none;">
+                    privacy policy
+                </a>
+                <!--suppress XmlDuplicatedId -->
+                <span id="mail_unfollow">
+                    | <a href="/mail/unfollow" style="text-decoration:none; color: inherit;">unsubscribe</a>
+                </span>
+            </div>
+        </template>
+
         <template id="mail_footer">
             <!-- Default GeoCat company footer for emails -->
             <table role="presentation" cellspacing="0" cellpadding="0" border="0"
-                   style="width: 100%; background-color: #f8f7fa; border-radius: 16px; font-size: 12px; padding: 30px">
+                   style="background-color: #f8f7fa; border-radius: 16px; font-size: 12px; padding: 30px; color: #7E8392">
                 <tr>
                     <t t-set="details" t-value="company.partner_id"/>
                     <t t-set="canadian" t-value="details.country_code == 'CA'"/>
-                    <td style="padding-right: 30px;" t-if="company and company.logo">
-                        <!-- Logo -->
-                        <img t-att-src="'/logo.png?company=%s' % company.id" style="height: 100px;"
-                             t-att-alt="'%s' % company.name"/>
-                    </td>
                     <td style="padding-right: 30px; white-space: nowrap;">
                         <!-- Address details -->
                         <b t-out="company.name"
                            t-att-style="'color: ' + (company.email_primary_color or 'inherit') + ';'"/>
                         <br/>
                         <t t-out="details.street"/><br/>
-                        <t t-if="details.street2" t-out="details.street2"/><br/>
+                        <t t-if="details.street2">
+                            <t t-out="details.street2"/><br/>
+                        </t>
                         <t t-if="canadian">
                             <!-- Canadian format -->
                             <t t-out="details.city"/>
-                            <t t-if="details.state_id"><t t-out="details.state_id.name"/></t>
-                            <t t-out="details.zip"/>
+                            <t t-if="details.state_id"> <t t-out="details.state_id.name"/> </t>
+                            <t t-out="details.zip"/><br/>
                         </t>
                         <t t-else="">
                             <!-- Dutch format -->
                             <t t-out="details.zip"/>
                             <t t-out="details.city"/><br/>
-                            <t t-out="details.country_id.name"/>
-                        </t><br/>
+                        </t>
+                        <t t-out="details.country_id.name"/><br/>
                         <t t-if="details.mobile and not details.phone">
                             <t t-out="details.phone"/><br/>
                         </t>
                         <t t-elif="details.phone">
                             <t t-out="details.phone"/><br/>
                         </t>
-                        <a t-att-href="details.website"
-                           t-att-style="'color: ' + (company.email_secondary_color or 'inherit') + ';'"
-                           t-out="details.website"/>
+                        <a t-if="details.website"
+                           t-att-href="details.website"
+                           t-out="details.website"
+                           style="color: inherit; text-decoration: none;"/>
                     </td>
-                    <td style="white-space: nowrap;">
+                    <td style="padding: 30px; white-space: nowrap;">
                         <!-- Business details -->
                         <br/><!-- Intentional line break! -->
                         <t t-if="canadian">
@@ -60,9 +71,9 @@
                                 <t t-if="account.bank_bic">
                                     (<t t-out="account.bank_bic"/>)
                                 </t><br/>
-                                BAN <t t-out="account.acc_number"/>
+                                Account No. <t t-out="account.acc_number"/>
                                 <t t-if="account.l10n_ca_financial_institution_number">
-                                    <br/>BRN <t t-out="account.l10n_ca_financial_institution_number"/>
+                                    <br/>Routing No. <t t-out="account.l10n_ca_financial_institution_number"/>
                                 </t>
                             </t>
                         </t>
@@ -85,25 +96,37 @@
                             </t>
                         </t>
                     </td>
+                    <td style="padding-right: 30px; vertical-align: middle; width: 100%; text-align: right"
+                        t-if="company and company.logo" width="100%" valign="middle" align="right">
+                        <!-- Logo -->
+                        <a t-if="company.website" t-att-href="company.website" style="text-decoration: none">
+                            <img t-att-src="'/logo.png?company=%s' % company.id" style="max-width: 150px"
+                                 t-att-alt="'%s' % company.name"/>
+                        </a>
+                    </td>
                 </tr>
             </table>
         </template>
 
         <template id="mail_notification_invite" inherit_id="mail.mail_notification_invite">
+            <!-- Always disable button access to avoid awkward situations -->
+            <t t-set="has_button_access" t-value="False"/>
+
             <!-- Remove the unfollow link that was placed before the footer for some reason -->
             <xpath expr="//span[@id='mail_unfollow']" position="replace"/>
 
             <!-- And put it back where it was originally... -->
             <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
                 <div style="color: #555555; font-size:11px;">
-                    <span id="mail_unfollow">
-                        <a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a>
-                    </span>
+                    <t t-call="geocat.mail_footer_sub"/>
                 </div>
             </xpath>
         </template>
 
         <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout">
+            <!-- Always disable button access to avoid awkward situations -->
+            <t t-set="has_button_access" t-value="False"/>
+
             <xpath expr="//body" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font -->
                 <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748;</attribute>
@@ -128,14 +151,15 @@
             <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
                 <!-- Remove the "Powered by Odoo" line but keep the unfollow link -->
                 <div style="color: #555555; font-size:11px;">
-                    <span id="mail_unfollow">
-                        <a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a>
-                    </span>
+                    <t t-call="geocat.mail_footer_sub"/>
                 </div>
             </xpath>
         </template>
 
         <template id="mail_notification_light" inherit_id="mail.mail_notification_light">
+            <!-- Always disable button access to avoid awkward situations -->
+            <t t-set="has_button_access" t-value="False"/>
+
             <xpath expr="//body/table[1][@role='presentation']" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font, make the whole thing full width and without background color -->
                 <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; width: 100%;</attribute>
@@ -157,27 +181,28 @@
                 <tr>
                     <!-- Add the GeoCat footer -->
                     <td style="padding-top: 16px;">
-                    <t t-call="geocat.mail_footer"/>
-                </td>
+                        <t t-call="geocat.mail_footer"/>
+                    </td>
                 </tr>
                 <tr>
                     <!-- Remove the "Powered by Odoo" line but keep the unfollow link -->
                     <td align="center" style="min-width: 590px;">
-                    <span id="mail_unfollow">
-                        <a href="/mail/unfollow" style="text-decoration:none; color:#555555;">Unfollow</a>
-                    </span>
-                </td>
+                        <t t-call="geocat.mail_footer_sub"/>
+                    </td>
                 </tr>
             </xpath>
         </template>
 
         <template id="mail_notification_layout_with_responsible_signature"
                   inherit_id="mail.mail_notification_layout_with_responsible_signature">
+            <!-- Always disable button access to avoid awkward situations -->
+            <t t-set="has_button_access" t-value="False"/>
+
             <!-- Do not use the sender's signature (as the HTML may mess up our email), but use their name instead -->
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
-                    <div>
-                        Best regards,<br/>
+                    <div style="margin-bottom: 16px;">
+                        Best regards,<br/><br/>
                         <t t-if="email_add_signature and 'user_id' in record and record.user_id and not record.env.user._is_superuser()">
                             <t t-out="record.user_id.sudo().name"/>
                         </t>
