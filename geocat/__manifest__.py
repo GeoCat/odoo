@@ -6,7 +6,8 @@
     'category': 'Customizations/GeoCat',
     'version': '0.1',
     'sequence': 151,
-    'summary': 'Manage and check out subscription-based (desktop) software licenses',
+    'summary': 'GeoCat branding, model and view overrides, and Bridge licensing module',
+    'website': 'https://github.com/GeoCat/odoo',
     'description': """GeoCat Customizations
     
     This module allows internal users to issue and manage software licenses 
@@ -15,7 +16,7 @@
     The customer can see the license key in the portal and generate a license file.
     GeoCat employees can suspend, revoke or (re-)issue licenses.
     
-    This module also overrides some Odoo models and behaviors, and tweaks the UI/UX for GeoCat internal purposes.
+    This module also overrides some Odoo models, templates, and behaviors, and tweaks the UI/UX (views) to meet GeoCat's requirements.
     """,
     'depends': [
         'base',
