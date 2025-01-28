@@ -9,7 +9,7 @@
                 </a>
                 <!--suppress XmlDuplicatedId -->
                 <span id="mail_unfollow">
-                    | <a href="/mail/unfollow" style="text-decoration:none; color: inherit;">unsubscribe</a>
+                    | <a href="/mail/unfollow" style="text-decoration:none; color: inherit;">unfollow</a>
                 </span>
             </div>
         </template>
@@ -17,7 +17,7 @@
         <template id="mail_footer">
             <!-- Default GeoCat company footer for emails -->
             <table role="presentation" cellspacing="0" cellpadding="0" border="0"
-                   style="background-color: #f8f7fa; border-radius: 16px; font-size: 12px; color: #7E8392">
+                   style="background-color: #f8f7fa; border-radius: 16px; font-size: 12px; color: #7E8392; line-height: 1.5;">
                 <tr>
                     <t t-set="details" t-value="company.partner_id"/>
                     <t t-set="canadian" t-value="details.country_code == 'CA'"/>
@@ -108,19 +108,7 @@
             </table>
         </template>
 
-        <template id="mail_notification_invite" inherit_id="mail.mail_notification_invite">
-            <!-- Remove the unfollow link that was placed before the footer for some reason -->
-            <xpath expr="//div[@style='margin-top:16px;']/span[@id='mail_unfollow']" position="replace"/>
-
-            <!-- And put it back where it was originally... -->
-            <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
-                <div style="color: #555555; font-size:11px;">
-                    <t t-call="geocat.mail_footer_sub"/>
-                </div>
-            </xpath>
-        </template>
-
-        <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout">
+        <template id="mail_notification_layout" inherit_id="mail.mail_notification_layout" primary="True">
             <xpath expr="//body" position="before">
                 <!-- Try to not show the o_mail_notification summary at the top,
                      while keeping the actual div, as it is used in overrides -->
@@ -150,13 +138,25 @@
                 <!-- Set a nice and complete GeoCat footer -->
                 <div style="margin-top:16px;">
                     <!-- This HR is used in Odoo's mail_notification_invite override: do not remove but hide instead -->
-                    <hr width="100%" style="display: none;"/>
+                    <hr width="100%" style="background-color: transparent; border: medium none; display:block; min-height:1px; line-height: 0; margin: 16px 0;"/>
                     <t t-call="geocat.mail_footer"/>
                 </div>
             </xpath>
 
             <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
                 <!-- Remove the "Powered by Odoo" line but keep the unfollow link -->
+                <div style="color: #555555; font-size:11px;">
+                    <t t-call="geocat.mail_footer_sub"/>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="mail_notification_invite" inherit_id="mail.mail_notification_invite">
+            <!-- Remove any unfollow link -->
+            <xpath expr="//span[@id='mail_unfollow']" position="replace"/>
+
+            <!-- Now put it back where it was originally, but in our own style... -->
+            <xpath expr="//div[@style='color: #555555; font-size:11px;']" position="replace">
                 <div style="color: #555555; font-size:11px;">
                     <t t-call="geocat.mail_footer_sub"/>
                 </div>
@@ -180,25 +180,29 @@
                 <attribute name="style">border-collapse:separate;</attribute>
             </xpath>
 
-            <!-- Remove the original footer -->
-            <xpath expr="//body/table[1]//table[@role='presentation']//tr[3]" position="replace"/>
-
-            <!-- Remove the original header (with record name and logo) -->
-            <xpath expr="//body/table[1]//table[@role='presentation']//tr[1]" position="replace"/>
-
-            <xpath expr="//body/table[1]/tr/td[@align='center' and @style='min-width: 590px;']/.." position="replace">
-                <tr>
-                    <!-- Add the GeoCat footer -->
-                    <td style="padding-top: 16px;">
-                        <t t-call="geocat.mail_footer"/>
-                    </td>
-                </tr>
-                <tr>
-                    <!-- Remove the "Powered by Odoo" line but keep the unfollow link -->
-                    <td align="center" style="min-width: 590px;">
-                        <t t-call="geocat.mail_footer_sub"/>
-                    </td>
-                </tr>
+            <!-- Replace the entire (!) tbody of the content table -->
+            <xpath expr="//body/table[1]//table[1]/tbody" position="replace">
+                <tbody>
+                    <!-- CONTENT -->
+                    <tr>
+                        <td style="min-width: 590px;">
+                            <t t-out="message.body"/>
+                        </td>
+                    </tr>
+                    <!-- FOOTER -->
+                    <tr>
+                        <!-- Add the GeoCat footer -->
+                        <td style="padding-top: 32px;">
+                            <t t-call="geocat.mail_footer"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- Remove the "Powered by Odoo" line but keep the unfollow link -->
+                        <td align="center" style="min-width: 590px;">
+                            <t t-call="geocat.mail_footer_sub"/>
+                        </td>
+                    </tr>
+                </tbody>
             </xpath>
         </template>
 
@@ -207,7 +211,7 @@
             <!-- Do not use the sender's signature (as the HTML may mess up our email), but use their name instead -->
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
-                    <div style="margin-bottom: 16px;">
+                    <div style="margin-bottom: 32px;">
                         Best regards,<br/><br/>
                         <t t-if="email_add_signature and 'user_id' in record and record.user_id and not record.env.user._is_superuser()">
                             <t t-out="record.user_id.sudo().name"/>
