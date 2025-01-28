@@ -8,4 +8,20 @@
         </xpath>
     </template>
 
+    <!-- Remove Odoo branding, swap order, and add privacy policy link -->
+    <template id="frontend_layout" inherit_id="web.frontend_layout">
+        <xpath expr="//footer//div[hasclass('o_footer_copyright')]//div[hasclass('row')]" position="replace">
+            <div class="row small">
+                <div class="col-sm text-center text-sm-start">
+                    <a t-att-href="'%s/privacy-policy' % res_company.get_base_url()" style="color: inherit !important;">
+                        Privacy Policy
+                    </a>
+                </div>
+                <div class="col-sm text-center text-sm-end text-muted">
+                    <span class="o_footer_copyright_name me-2">Copyright &amp;copy; <span t-field="res_company.name" itemprop="name">Company name</span></span>
+                </div>
+            </div>
+        </xpath>
+    </template>
+
 </odoo>
