@@ -118,7 +118,19 @@
 
             <xpath expr="//body" position="attributes">
                 <!-- Enforce Inter (or something similar) as the default email font -->
+                <!-- Note: this is not supported by several webmail clients, so we also add a <style> tag in the <head> -->
                 <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;</attribute>
+            </xpath>
+
+            <xpath expr="//head" position="inside">
+                <!-- Add a <style> tag to enforce Inter (or something similar) as the default email font -->
+                <style type="text/css">
+                    body, table, td, a {
+                        font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif;
+                        color: #454748;
+                        font-size: 13px;
+                    }
+                </style>
             </xpath>
 
             <!-- Do not show the record name at the top -->
@@ -167,6 +179,23 @@
             <xpath expr="//body" position="before">
                 <!-- Always disable button access to avoid awkward situations -->
                 <t t-set="has_button_access" t-value="False"/>
+            </xpath>
+
+            <xpath expr="//body" position="attributes">
+                <!-- Enforce Inter (or something similar) as the default email font -->
+                <!-- Note: this is not supported by several webmail clients, so we also add a <style> tag in the <head> -->
+                <attribute name="style">font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;</attribute>
+            </xpath>
+
+            <xpath expr="//head" position="inside">
+                <!-- Add a <style> tag to enforce Inter (or something similar) as the default email font -->
+                <style type="text/css">
+                    body, table, td, a {
+                        font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif;
+                        color: #454748;
+                        font-size: 13px;
+                    }
+                </style>
             </xpath>
 
             <xpath expr="//body/table[1][@role='presentation']" position="attributes">
