@@ -8,7 +8,7 @@
     <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get('calendar_template_ignore_recurrence')"></t>
 
     <p>
-        Hello <t t-out="object.common_name or ''">Ready Mat</t>,<br><br>
+        Dear <t t-out="object.common_name or 'customer'">Ready Mat</t>,<br><br>
         <t t-if="is_online and target_responsible">
             <t t-if="customer">
                 The date of your appointment with <t t-out="customer.name or ''">Jesse Brown</t> has been updated.

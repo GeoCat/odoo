@@ -3,7 +3,7 @@
     <t t-set="is_online" t-value="'appointment_type_id' in object.event_id and object.event_id.appointment_type_id"></t>
     <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get('calendar_template_ignore_recurrence')"></t>
     <p>
-        Hello <t t-out="object.common_name or ''">Gemini Furniture</t>,<br><br>
+        Dear <t t-out="object.common_name or 'customer'">Ready Mat</t>,<br><br>
         This is a reminder for an event that you may be participating in.
     </p>
     <div style="margin-left: 145px; margin-bottom: 30px; margin-top: 30px">

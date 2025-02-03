@@ -1,3 +1,5 @@
+from . import mail_template
+from . import mail_composer
 from . import res_company
 from . import product_template
 from . import sale_subscription_plan

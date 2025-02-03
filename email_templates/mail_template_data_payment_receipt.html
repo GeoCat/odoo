@@ -1,0 +1,9 @@
+<div>
+    <p>
+        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,<br><br>
+        Thank you for your payment.<br>
+        Please find the attached receipt for your order <span style="font-weight:bold;" t-out="(object.name or '').replace('/','-') or ''">BNK1-2021-05-0002</span> from <t t-out="object.company_id.name or ''">GeoCat</t>.
+        <br><br>
+        Do not hesitate to contact us if you have any questions.
+    </p>
+</div>

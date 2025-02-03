@@ -6,8 +6,7 @@
     <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get('calendar_template_ignore_recurrence')"></t>
 
     <p>
-        Hello <t t-out="object.common_name or ''">Wood Corner</t>,<br><br>
-
+        Dear <t t-out="object.common_name or 'customer'">Ready Mat</t>,<br><br>
         <t t-if="not target_responsible">
             <t t-if="not object.event_id.user_id.active">
                 You have been invited to the <strong t-out="object.event_id.name or ''">Follow-up for Project proposal</strong> meeting.
