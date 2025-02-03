@@ -1,0 +1,34 @@
+<div>
+    <p>
+        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
+        <br><br>
+        Please find the attached
+        <t t-if="object.name">
+            invoice <span style="font-weight:bold;" t-out="object.name or ''">INV/2021/05/0005</span>
+        </t>
+        <t t-else="">
+            invoice
+        </t>
+        <t t-if="object.invoice_origin">
+            (with reference: <t t-out="object.invoice_origin or ''">SUB003</t>)
+        </t>
+        from <t t-out="object.company_id.name or ''">GeoCat</t>.
+        <br><br>
+        <t t-if="object.payment_state in ('paid', 'in_payment')">
+            This invoice has already been paid.
+        </t>
+        <t t-else="">
+            Please remit payment at your earliest convenience
+            <t t-if="object.payment_reference">
+                and use the following designation:<br>
+                <strong t-out="object.payment_reference or ''">INV/2021/05/0005</strong>
+                <t t-if="object.partner_bank_id">
+                    on account <strong t-out="object.partner_bank_id.acc_number">ING23NL234630350234</strong>
+                </t>
+            </t>
+            .
+        </t>
+        <br><br>
+        Do not hesitate to contact us if you have any questions.
+    </p>
+</div>

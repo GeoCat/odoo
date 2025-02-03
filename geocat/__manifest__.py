@@ -20,6 +20,7 @@
     """,
     'depends': [
         'base',
+        'mail',
         'portal',
         'website_blog',
         'product',

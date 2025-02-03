@@ -7,7 +7,7 @@
     <t t-set="mail_tz" t-value="object._get_mail_tz() or ctx.get('mail_tz')"></t>
 
     <p>
-        Hello <t t-out="object.common_name or ''">Ready Mat</t>,<br><br>
+        Dear <t t-out="object.common_name or 'customer'">Ready Mat</t>,<br><br>
         An event that you are participating in has been updated.
     </p>
     <div>

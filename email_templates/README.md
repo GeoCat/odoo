@@ -26,10 +26,15 @@ you even need to enable the developer mode to see them:
 ![Email Settings](img/email_settings.png)
 
 Also, note that there are 2 layout templates: a regular one (`mail_notification_layout` - which is the one you see when clicking "Update Mail Layout"), and a simplified one.
-The latter can only be found in developer mode: go to `Settings` -> `Technical` -> `User Interface` -> `Views` and search for `mail_notification_light`.
+The latter can only be found in developer mode: go to `Settings` -> `Technical` -> `User Interface` -> `Views` and search for `mail_notification_light`.  
+The simplified layout currently has been changed to look (almost) exactly like the standard one: there is no visible difference, except for the HTML structure.
 
-:warning: There also seems to be a third way how Odoo sends emails: by generating the entire email in Python code, without using any templates at all.
-          This is bad practice of course, and let's assume/hope that Odoo will replace these (rare) cases soon, or that we can make a PR for that.
+:warning: WARNING :warning:  
+Odoo actually allows sending emails without using any wrapper templates at all. In fact, several modules (Subscription, Timesheets, portal invite) render a data template record and send it as-is,
+without specifying a layout template.  
+To make this more consistent, the GeoCat Customization module overrides methods of the `MailTemplate` and `MailComposer` models, so that it always sets the `mail_notification_layout` template if missing.
+This means that in order to avoid "duplicate" layout blocks, all the layout stuff (headers, footers, etc.) has to be removed from the data templates in the `Email Templates` records of Odoo!
+
 
 ## Why do we do this?
 
@@ -81,9 +86,16 @@ If you mess up, you can always revert to the original template by clicking the `
 These ID's are not visible in Odoo itself (record ID's are numeric in the database), but you can find the names of the 
 template files in the `template_fs` field of the `mail_template` model in the database.
 
-| Odoo name               | File name                                 |
-|-------------------------|-------------------------------------------|
-| Calendar: Date Updated  | calendar_template_meeting_changedate.html |
-| Calendar: Event Update | calendar_template_meeting_update.html |
+| Odoo name                    | File name                                 |
+|------------------------------|-------------------------------------------|
+| Payment: Payment Receipt     | mail_template_data_payment_receipt.html   |
+| Invoice: Sending             | email_template_edi_invoice.html           |
+| Credit Note: Sending         | email_template_edi_credit_note.html       |
+| Calendar: Date Updated       | calendar_template_meeting_changedate.html |
+| Calendar: Event Update       | calendar_template_meeting_update.html     |
 | Calendar: Meeting Invitation | calendar_template_meeting_invitation.html |
-| Calendar: Reminder | calendar_template_meeting_reminder.html |
+| Calendar: Reminder           | calendar_template_meeting_reminder.html   |
+| Helpdesk: Ticket Closed      | |
+| Helpdesk: Ticket Received    | |
+|                              | |
+
