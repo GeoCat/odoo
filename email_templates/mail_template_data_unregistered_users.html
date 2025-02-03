@@ -1,0 +1,11 @@
+<div>
+    Dear <t t-out="object.name or ''">Mitchell Admin</t>,
+    <br><br>
+    You added the following user(s) to your database, but they haven't registered yet:
+    <ul>
+        <t t-foreach="invited_users" t-as="invited_user">
+            <li t-out="invited_user or ''">demo@example.com</li>
+        </t>
+    </ul>
+    Follow up with them soon, so they can access your office ERP and start working with you.
+</div>

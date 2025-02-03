@@ -1,0 +1,14 @@
+<div>
+    Dear <t t-out="object.name or ''">Marc Demo</t>,
+    <br><br>
+    Your account with login <strong>
+    <t t-out="object.email or ''">mark.brown23@example.com</t>
+</strong> has been created successfully!<br><br>
+    To access the <t t-out="object.company_id.name or ''">GeoCat</t> customer portal, you can use the following link:
+    <div style="margin: 30px 0; text-align: center">
+        <a t-attf-href="/web/login?auth_login={{object.email}}"
+           style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+            Go to My Account
+        </a>
+    </div>
+</div>
