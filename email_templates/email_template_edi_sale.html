@@ -1,0 +1,39 @@
+<div>
+    <p>
+        <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order'"></t>
+        <t t-set="documents" t-value="object._get_product_documents()"></t>
+
+        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
+        <br><br>
+        Your
+        <t t-if="ctx.get('proforma')">
+            pro forma invoice for <t t-out="doc_name or ''">quotation</t> <strong t-out="object.name or ''">S00052</strong>
+            <t t-if="object.origin">
+                with reference <strong t-out="object.origin or ''">#YOURREF</strong> )
+            </t> is available.
+        </t>
+        <t t-else="">
+            <t t-out="doc_name or ''">quotation</t> <strong t-out="object.name or ''">S00052</strong>
+            <t t-if="object.origin">
+                with reference <strong t-out="object.origin or ''">#YOURREF</strong> )
+            </t> is ready for review.
+        </t>
+        <br><br>
+        <t t-if="documents and len(documents)>0">
+            <t t-if="len(documents)>1">
+                Here are some additional documents that may interest you:
+            </t>
+            <t t-else="">
+                Here is an additional document that may interest you:
+            </t>
+            <ul>
+                <t t-foreach="documents" t-as="document">
+                    <li>
+                        <a t-out="document.ir_attachment_id.name" t-att-href="object.get_portal_url('/document/' + str(document.id))" t-att-target="target">doc link</a>
+                    </li>
+                </t>
+            </ul>
+        </t>
+        Do not hesitate to contact us if you have any questions.
+    <p>
+</div>

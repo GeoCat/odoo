@@ -1,0 +1,26 @@
+<div>
+    <p>
+        <t t-set="transaction_sudo" t-value="object.get_portal_last_transaction()"></t>
+
+        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
+        <br><br>
+        A payment for your order <strong t-out="object.name or ''">S00049</strong>
+        <t t-if="transaction_sudo.reference">
+            with reference <strong t-out="transaction_sudo.reference or ''">#YOURREF</strong>
+        </t>
+        <t t-if="transaction_sudo and transaction_sudo.state == 'pending'">
+            is pending.
+            <t t-if="object.currency_id.compare_amounts(object.amount_paid + transaction_sudo.amount, object.amount_total) >= 0 and object.state in ('draft', 'sent')">
+                <br>
+                Your order will be confirmed once the payment has been received.
+            </t>
+        </t>
+        <t t-else="">
+            has been confirmed.
+        </t>
+        <br><br>
+        Thank you for your trust!
+        <br>
+        Do not hesitate to contact us if you have any questions.
+    </p>
+</div>

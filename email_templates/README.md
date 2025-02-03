@@ -82,20 +82,31 @@ Now you can edit the HTML anyway you like.
 
 If you mess up, you can always revert to the original template by clicking the `Reset Template` button at the top.
 
-**Note**: The HTML files in this folder are named according to the record `id`'s in the Odoo XML template files. 
-These ID's are not visible in Odoo itself (record ID's are numeric in the database), but you can find the names of the 
-template files in the `template_fs` field of the `mail_template` model in the database.
+**Note**:  
+The HTML files in this folder are named according to the record `id`'s in the Odoo XML template files. 
+These ID's are not visible in Odoo itself (record ID's are numeric in the database), but you can find the names of the XML 
+template files that contain the original `<record>` objects in the `template_fs` field of the `mail_template` model 
+in the database. Each `id` value of a `<record>` in the XML files correspond to an HTML file in this folder (i.e. `<id>.html`).
 
-| Odoo name                    | File name                                 |
-|------------------------------|-------------------------------------------|
-| Payment: Payment Receipt     | mail_template_data_payment_receipt.html   |
-| Invoice: Sending             | email_template_edi_invoice.html           |
-| Credit Note: Sending         | email_template_edi_credit_note.html       |
-| Calendar: Date Updated       | calendar_template_meeting_changedate.html |
-| Calendar: Event Update       | calendar_template_meeting_update.html     |
-| Calendar: Meeting Invitation | calendar_template_meeting_invitation.html |
-| Calendar: Reminder           | calendar_template_meeting_reminder.html   |
-| Helpdesk: Ticket Closed      | |
-| Helpdesk: Ticket Received    | |
-|                              | |
+| Odoo name                            | File name                                      |
+|--------------------------------------|------------------------------------------------|
+| Payment: Payment Receipt             | mail_template_data_payment_receipt.html        |
+| Invoice: Sending                     | email_template_edi_invoice.html                |
+| Credit Note: Sending                 | email_template_edi_credit_note.html            |
+| Calendar: Date Updated               | calendar_template_meeting_changedate.html      |
+| Calendar: Event Update               | calendar_template_meeting_update.html          |
+| Calendar: Meeting Invitation         | calendar_template_meeting_invitation.html      |
+| Calendar: Reminder                   | calendar_template_meeting_reminder.html        |
+| Helpdesk: Ticket Closed              | solved_ticket_request_email_template.html      |
+| Helpdesk: Ticket Received            | new_ticket_request_email_template.html         |
+| Portal: User Invite                  | mail_template_data_portal_welcome.html         |
+| Sales: Order Cancellation            | mail_template_sale_cancellation.html           |
+| Sales: Order Confirmation            | mail_template_sale_confirmation.html           |
+| Sales: Payment Done                  | mail_template_sale_payment_executed.html       |
+| Sales: Send Quotation                | email_template_edi_sale.html                   |
+| Settings: New Portal Signup          | set_password_email.html                        |
+| Settings: New User Invite            | mail_template_user_signup_account_created.html |
+| Settings: Unregistered User Reminder | mail_template_data_unregistered_users.html     |
+| Timesheets: Approver Reminder        | mail_template_timesheet_reminder.html          |
+| Timesheets: Employee Reminder        | mail_template_timesheet_reminder_user.html     |
 
