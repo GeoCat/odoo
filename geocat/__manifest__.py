@@ -25,6 +25,7 @@
         'website_blog',
         'product',
         'account',
+        'planning',
         'sale_subscription',
     ],
     'data': [
