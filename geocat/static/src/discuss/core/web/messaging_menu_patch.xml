@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-inherit="mail.MessagingMenu" t-inherit-mode="extension">
+        <!-- Replace the fa-comments icon with an open fa-bell icon -->
+        <xpath expr="//i[hasclass('fa-comments')]" position="attributes">
+            <attribute name="class">fa fa-lg fa-bell-o</attribute>
+        </xpath>
+    </t>
+
+    <t t-inherit="mail.MessagingMenu.content" t-inherit-mode="extension">
+        <!-- Hide the channel selectors and new message buttons -->
+        <xpath expr="//div[hasclass('o-mail-MessagingMenu-header')]" position="attributes">
+            <attribute name="style">visibility: hidden !important; height: 0 !important;</attribute>
+        </xpath>
+
+        <!-- Make sure that we do not show an empty notification list -->
+        <xpath expr="//div[@t-if='store.discuss.searchTerm and !threads.length']" position="attributes">
+            <!--suppress ES6RedundantNestingInTemplateLiteral -->
+            <attribute name="t-if">"store.discuss.searchTerm and (!threads.length or !notificationList.length)"</attribute>
+        </xpath>
+
+        <!-- We only want to see group notifications, no Discuss chats or channels -->
+        <xpath expr="//t[@t-foreach='threads']//NotificationItem" position="attributes">
+            <attribute name="t-if">thread.channel_type === 'group'</attribute>
+        </xpath>
+    </t>
+</templates>
