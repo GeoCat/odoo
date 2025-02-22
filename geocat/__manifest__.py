@@ -66,6 +66,8 @@
             ('after', 'mail/static/src/core/common/chat_hub.xml', 'geocat/static/src/core/common/chat_hub_patch.xml'),
             ('after', 'mail/static/src/discuss/core/web/discuss_core_web_service.js',
              'geocat/static/src/discuss/core/web/discuss_core_web_service_patch.js'),
+            ('after', 'mail/static/src/discuss/core/web/messaging_menu_patch.xml',
+             'geocat/static/src/discuss/core/web/messaging_menu_patch.xml'),
             ('after', 'web/static/src/views/view.scss', 'geocat/static/src/views/view.scss'),
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
