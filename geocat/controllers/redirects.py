@@ -4,8 +4,13 @@ from odoo import http
 
 
 class GeoCatRouter(http.Controller):
+    @http.route(['/docs'], type='http', auth='public')
+    def redirect_docs(self):
+        """ Redirect the /docs to docs.geocat.net (eos). """
+        return werkzeug.utils.redirect(f'https://docs.geocat.net', 301)
+
     @http.route(['/docs/<path:path>'], type='http', auth='public')
-    def redirect_docs(self, path):
+    def redirect_docs_path(self, path):
         """ Redirect the /docs/<path> URL to the GeoCat documentation on docs.geocat.net (eos). """
         return werkzeug.utils.redirect(f'https://docs.geocat.net/{path}', 301)
 
