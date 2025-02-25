@@ -236,7 +236,7 @@
         </template>
 
         <template id="mail_notification_layout_with_responsible_signature"
-                  inherit_id="mail.mail_notification_layout_with_responsible_signature">
+                  inherit_id="mail.mail_notification_layout_with_responsible_signature" primary="True">
             <!-- Do not use the sender's signature (as the HTML may mess up our email), but use their name instead -->
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
