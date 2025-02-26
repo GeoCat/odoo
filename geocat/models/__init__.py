@@ -1,3 +1,4 @@
+from . import mail_thread
 from . import mail_template
 from . import mail_composer
 from . import res_company

@@ -20,6 +20,25 @@ REGEX_LICKEY = re.compile(rf'^{settings.LICENSE_KEY_PREFIX}[0-9a-f]{{32}}$', re.
 REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # legacy key format
 
 
+def fix_email_layout_xmlid(layout: str) -> str:
+    """ Maps original mail layouts to GeoCat ones, or sets a default. """
+    if isinstance(layout, str) and layout.startswith('geocat.'):
+        return layout
+    return {
+        'mail.mail_notification_light': 'geocat.mail_notification_light',
+        'mail.mail_notification_layout': 'geocat.mail_notification_layout',
+        'mail.mail_notification_invite': 'geocat.mail_notification_invite',
+        'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_notification_layout_with_responsible_signature'
+    }.get(layout, 'geocat.mail_notification_layout')
+
+
+def force_email_layout_xmlid_kwarg(**kwargs):
+    """ Forces the email_layout_xmlid keyword argument to be set to the GeoCat notification layout. """
+    email_layout = kwargs.get('email_layout_xmlid')
+    kwargs['email_layout_xmlid'] = fix_email_layout_xmlid(email_layout)
+    return kwargs
+
+
 def clamp(n, minimum, maximum):
     """ Clamps the given number between the minimum and maximum values. """
     if n < minimum:
