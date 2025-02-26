@@ -5,6 +5,7 @@ import uuid
 import re
 from datetime import datetime, UTC, timedelta, date
 from hashlib import md5
+import logging
 
 from odoo import fields
 
@@ -19,17 +20,22 @@ REGEX_HEX32 = re.compile(r'^[0-9a-f]{32}$', re.IGNORECASE)
 REGEX_LICKEY = re.compile(rf'^{settings.LICENSE_KEY_PREFIX}[0-9a-f]{{32}}$', re.IGNORECASE)
 REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # legacy key format
 
+_logger = logging.getLogger(__name__)
+
 
 def fix_email_layout_xmlid(layout: str) -> str:
     """ Maps original mail layouts to GeoCat ones, or sets a default. """
     if isinstance(layout, str) and layout.startswith('geocat.'):
+        _logger.info(f"Preserving GeoCat email layout '{layout}'")
         return layout
-    return {
+    output = {
         'mail.mail_notification_light': 'geocat.mail_notification_light',
         'mail.mail_notification_layout': 'geocat.mail_notification_layout',
         'mail.mail_notification_invite': 'geocat.mail_notification_invite',
         'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_notification_layout_with_responsible_signature'
     }.get(layout, 'geocat.mail_notification_layout')
+    _logger.info(f"Changed email layout from '{layout}' to '{output}'")
+    return output
 
 
 def force_email_layout_xmlid_kwarg(**kwargs):
