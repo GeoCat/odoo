@@ -155,7 +155,7 @@ class GeoCatBridgeLicense(models.Model):
         for record in self:
             if not record.key:
                 record.key = self._ensure_unique_key()
-            record.display_name = '-'.join([record.key[i:i+5] for i in range(0, len(record.key), 5)])
+            record.display_name = utils.format_bridge_key(record.key)
 
     @api.depends('order_line_id')
     def _compute_related_licenses(self):

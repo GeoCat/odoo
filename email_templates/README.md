@@ -9,14 +9,36 @@ but they need to be **manually** set in the Odoo Settings (search for `Email Tem
 
 In Odoo, 2 kinds of email templates exist:
 
-- _Email layout templates_: these contain the outer shell of the email, with the header, footer, and general layout/styling.  
-  These are actually QWeb `<template>` views, which are overridden by the GeoCat Customization module using `<xpath>` expressions.  
-  See `geocat/data/mail_templates_email_layouts.xml` for all overrides.
-- _Email data templates_: these contain the layout and placeholders for the actual content of the email, e.g. the body text.  
-  These templates are stored in `<record>` objects, which are not (!) overridden by the GeoCat Customization module.
-  They often cannot be (easily) overridden either, because some have the `noupdate="1"` attribute set.  
+### Email layout templates
+
+These contain the "outer shell" of the email, with the header, footer, and general layout/styling.  
+These are so-called QWeb `<template>` views, which should normally be overridden if customizations are required. , which are overridden by the GeoCat Customization module using `<xpath>` expressions.  
+
+However, this can be quite cumbersome and can lead to unexpected results, due to other module template overrides interfering.
+
+This is why we created our own layout templates, which are installed by the GeoCat Customization module as a **full replacement** of the Odoo mail layout templates.
+See `geocat/data/mail_templates_email_layouts.xml`. 
+
+The `lib/utils.py` module then provides some methods to explicitly map Odoo templates to our templates as follows:
+
+| Odoo template name                                        | GeoCat template name                                       |
+|-----------------------------------------------------------|------------------------------------------------------------|
+| mail.mail_notification_light                              | geocat.mail_layout_light                                   |
+| mail.mail_notification_layout                             | geocat.mail_layout_master                                  |
+| mail.mail_notification_invite                             | geocat.mail_layout_invite                                  |
+| mail.mail_notification_layout_with_responsible_signature  | geocat.mail_notification_layout_with_responsible_signature |
+
+### Email data templates
+
+These contain the layout and placeholders for the actual content of the email, e.g. the body text.  
+
+These templates are stored in `<record>` objects, which are not (!) overridden by the GeoCat Customization module.
+They often cannot be (easily) overridden either, because some have the `noupdate="1"` attribute set.  
 
 :warning: The folder you are currently in only contains the HTML for these _email data templates_, but not the other settings (like subject, recipient, etc.) stored in the `<record>` (and database).
+
+
+### Template management in Odoo
 
 Odoo modules usually define one or more data templates (in `mail_template_data.xml`), which are then populated at runtime and wrapped in a layout template, before they are sent out.
 

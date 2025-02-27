@@ -2,7 +2,7 @@ from odoo import models
 from ..lib.utils import force_email_layout_xmlid_kwarg
 
 
-class MailThread(models.AbstractModel):
+class GeoCatMailThread(models.AbstractModel):
     _inherit = "mail.thread"
 
     def _notify_thread_by_email(self, message, recipients_data, **kwargs):

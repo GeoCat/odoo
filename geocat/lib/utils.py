@@ -23,25 +23,32 @@ REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # lega
 _logger = logging.getLogger(__name__)
 
 
-def fix_email_layout_xmlid(layout: str) -> str:
-    """ Maps original mail layouts to GeoCat ones, or sets a default. """
-    if isinstance(layout, str) and layout.startswith('geocat.'):
-        _logger.info(f"Preserving GeoCat email layout '{layout}'")
-        return layout
+def map_email_layout_template(template_name: str) -> str:
+    """ Maps original Odoo mail layouts to GeoCat ones, or sets the "light" template as the default.
+        Note that the GeoCat layouts are standalone and do not inherit from the original Odoo ones!
+    """
+    if isinstance(template_name, str) and template_name.startswith('geocat.'):
+        # Already a GeoCat layout: keep it that way
+        _logger.debug(f"Preserving GeoCat email layout template '{template_name}'")
+        return template_name
+
+    # NOTE: The mapping below works for Odoo 18 but may have to be adjusted for future versions!
     output = {
-        'mail.mail_notification_light': 'geocat.mail_notification_light',
-        'mail.mail_notification_layout': 'geocat.mail_notification_layout',
-        'mail.mail_notification_invite': 'geocat.mail_notification_invite',
-        'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_notification_layout_with_responsible_signature'
-    }.get(layout, 'geocat.mail_notification_layout')
-    _logger.info(f"Changed email layout from '{layout}' to '{output}'")
+        'mail.mail_notification_light': 'geocat.mail_layout_light',
+        'mail.mail_notification_layout': 'geocat.mail_layout_master',
+        'mail.mail_notification_invite': 'geocat.mail_layout_invite',
+        'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_layout_master_with_responsible_signature'
+    }.get(template_name, 'geocat.mail_layout_light')
+
+    _logger.debug(f"Changed email layout template from '{template_name}' to '{output}'")
     return output
 
 
 def force_email_layout_xmlid_kwarg(**kwargs):
-    """ Forces the email_layout_xmlid keyword argument to be set to the GeoCat notification layout. """
+    """ Adds the email_layout_xmlid keyword argument (if missing) and
+    sets it to an appropriate GeoCat email layout template. """
     email_layout = kwargs.get('email_layout_xmlid')
-    kwargs['email_layout_xmlid'] = fix_email_layout_xmlid(email_layout)
+    kwargs['email_layout_xmlid'] = map_email_layout_template(email_layout)
     return kwargs
 
 
@@ -58,6 +65,11 @@ def clamp(n, minimum, maximum):
 def generate_bridge_key() -> str:
     """ Generates a new GeoCat Bridge license key, e.g. ``GCB26B30E9978BC440FAADE71EFDB1309C4``. """
     return f"{settings.LICENSE_KEY_PREFIX}{uuid.uuid4().hex}".upper()
+
+
+def format_bridge_key(key: str) -> str:
+    """ Formats the given license key in a more human-readable way (break into parts of 5 chars). """
+    return '-'.join([key[i:i + 5] for i in range(0, 35, 5)])
 
 
 def default_expiry_date() -> date:
