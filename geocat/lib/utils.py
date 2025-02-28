@@ -29,7 +29,6 @@ def map_email_layout_template(template_name: str) -> str:
     """
     if isinstance(template_name, str) and template_name.startswith('geocat.'):
         # Already a GeoCat layout: keep it that way
-        _logger.debug(f"Preserving GeoCat email layout template '{template_name}'")
         return template_name
 
     # NOTE: The mapping below works for Odoo 18 but may have to be adjusted for future versions!
@@ -38,9 +37,14 @@ def map_email_layout_template(template_name: str) -> str:
         'mail.mail_notification_layout': 'geocat.mail_layout_master',
         'mail.mail_notification_invite': 'geocat.mail_layout_invite',
         'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_layout_master_with_responsible_signature'
-    }.get(template_name, 'geocat.mail_layout_light')
+    }.get(template_name)
 
-    _logger.debug(f"Changed email layout template from '{template_name}' to '{output}'")
+    if not output:
+        # There was no template name, or it was not found in the mapping
+        output = 'geocat.mail_layout_light'
+        if template_name:
+            _logger.info(f"Requested mail layout template '{template_name}' has not been mapped: returning default '{output}'")
+
     return output
 
 

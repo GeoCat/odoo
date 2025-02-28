@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <!-- Standard GeoCat email MASTER layout template -->
-        <template id="mail_layout_master" t-name="Mail: GeoCat email master layout template">
+        <template id="mail_layout_master" name="Mail: GeoCat email master layout template">
             <html t-att-lang="lang">
                 <head>
                     <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
@@ -45,7 +45,8 @@
         </template>
 
         <!-- Light version of the GeoCat email layout template -->
-        <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True">
+        <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
+                  name="Mail: GeoCat email layout template for simple notifications">
             <!-- Decrease margin to reflect light footer -->
             <xpath expr="//div[@id='content']" position="attributes">
                 <attribute name="style">margin: 12px; font-size: 13px;</attribute>
@@ -63,7 +64,8 @@
             </xpath>
         </template>
 
-        <template id="mail_layout_invite" inherit_id="geocat.mail_layout_light" primary="True">
+        <template id="mail_layout_invite" inherit_id="geocat.mail_layout_light" primary="True"
+                  name="Mail: GeoCat email layout template for follow invitations">
             <!-- Add an extra message at the top to indicate the user has been added as a follower -->
             <xpath expr="//div[@t-out='message.body']" position="before">
                 <div style="font-size: 12px; color: #555555">
@@ -81,7 +83,8 @@
 
         <!-- Variant of the GeoCat master email layout template with a more personal signature -->
         <template id="mail_layout_master_with_responsible_signature"
-                  inherit_id="geocat.mail_layout_master" primary="True">
+                  inherit_id="geocat.mail_layout_master" primary="True"
+                  name="Mail: GeoCat email master layout template with personal signature">
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
                     <div>

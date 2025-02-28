@@ -19,7 +19,7 @@ However, this can be quite cumbersome and can lead to unexpected results, due to
 This is why we created our own layout templates, which are installed by the GeoCat Customization module as a **full replacement** of the Odoo mail layout templates.
 See `geocat/data/mail_templates_email_layouts.xml`. 
 
-The `lib/utils.py` module then provides some methods to explicitly map Odoo templates to our templates as follows:
+The `lib/utils.py` module provides some methods to explicitly map Odoo templates to GeoCat-branded alternative templates as follows:
 
 | Odoo template name                                        | GeoCat template name                                       |
 |-----------------------------------------------------------|------------------------------------------------------------|
@@ -27,6 +27,8 @@ The `lib/utils.py` module then provides some methods to explicitly map Odoo temp
 | mail.mail_notification_layout                             | geocat.mail_layout_master                                  |
 | mail.mail_notification_invite                             | geocat.mail_layout_invite                                  |
 | mail.mail_notification_layout_with_responsible_signature  | geocat.mail_notification_layout_with_responsible_signature |
+
+:lamp: As long as the GeoCat Customization module is activated, the Odoo mail layout templated will **not be used**.
 
 ### Email data templates
 
@@ -37,7 +39,6 @@ They often cannot be (easily) overridden either, because some have the `noupdate
 
 :warning: The folder you are currently in only contains the HTML for these _email data templates_, but not the other settings (like subject, recipient, etc.) stored in the `<record>` (and database).
 
-
 ### Template management in Odoo
 
 Odoo modules usually define one or more data templates (in `mail_template_data.xml`), which are then populated at runtime and wrapped in a layout template, before they are sent out.
@@ -47,9 +48,12 @@ you even need to enable the developer mode to see them:
 
 ![Email Settings](img/email_settings.png)
 
-Also, note that there are 2 layout templates: a regular one (`mail_notification_layout` - which is the one you see when clicking "Update Mail Layout"), and a simplified one.
-The latter can only be found in developer mode: go to `Settings` -> `Technical` -> `User Interface` -> `Views` and search for `mail_notification_light`.  
-The simplified layout currently has been changed to look (almost) exactly like the standard one: there is no visible difference, except for the HTML structure.
+Note that there are multiple layout templates for different purposes (see mapping table further above). 
+However, only the "master" template is directly accessible in the Odoo settings when you click "Update Mail Layout").
+The GeoCat Customization module should have changed that master from `mail.mail_notification_layout` to `geocat.mail_layout_master`.
+
+If you wish to see the other templates, activate developer mode and go to `Settings` -> `Technical` -> `User Interface` -> `Views` and search for `mail_layout` (key).  
+Note that these templates should not be edited directly (this rule applies to all Odoo templates).
 
 :warning: WARNING :warning:  
 Odoo actually allows sending emails without using any wrapper templates at all. In fact, several modules (Subscription, Timesheets, portal invite) render a data template record and send it as-is,
