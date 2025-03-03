@@ -23,7 +23,7 @@ REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # lega
 _logger = logging.getLogger(__name__)
 
 
-def map_email_layout_template(template_name: str) -> str:
+def map_email_layout_template(template_name: str):
     """ Maps original Odoo mail layouts to GeoCat ones, or sets the "light" template as the default.
         Note that the GeoCat layouts are standalone and do not inherit from the original Odoo ones!
     """
@@ -40,20 +40,35 @@ def map_email_layout_template(template_name: str) -> str:
     }.get(template_name)
 
     if not output:
-        # There was no template name, or it was not found in the mapping
-        output = 'geocat.mail_layout_light'
-        if template_name:
-            _logger.info(f"Requested mail layout template '{template_name}' has not been mapped: returning default '{output}'")
+        # There was no template name (None or False), or it was not found in the mapping
+        output = 'geocat.mail_layout_master'
+
+        if isinstance(template_name, str):
+            # Special cases where the mapping is not exact
+            if 'mail_notification_light' in template_name:
+                # The template appears to be some override of the light layout
+                output = 'geocat.mail_layout_light'
+            elif 'with_responsible_signature' in template_name:
+                # The template appears to be some override of the master layout with responsible signature
+                output = 'geocat.mail_layout_master_with_responsible_signature'
+
+            # Log that we are overriding an unmapped template
+            _logger.info(f"Requested mail layout template '{template_name}' has not been mapped: applying default '{output}'")
 
     return output
 
 
-def force_email_layout_xmlid_kwarg(**kwargs):
+def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
     """ Adds the email_layout_xmlid keyword argument (if missing) and
-    sets it to an appropriate GeoCat email layout template. """
-    email_layout = kwargs.get('email_layout_xmlid')
-    kwargs['email_layout_xmlid'] = map_email_layout_template(email_layout)
-    return kwargs
+    sets it to an appropriate GeoCat email layout template.
+    The argument dictionary is manipulated in-place but also returned.
+    """
+    if not arg_dict:
+        # Some arguments may have been set to 'False', so then the getter would fail
+        arg_dict = {}
+    email_layout = arg_dict.get('email_layout_xmlid')
+    arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout)
+    return arg_dict
 
 
 def clamp(n, minimum, maximum):

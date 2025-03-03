@@ -8,7 +8,8 @@ class MailComposer(models.TransientModel):
 
     def _prepare_mail_values_static(self):
         """ Override Odoo's _prepare_mail_values method to set the default email layout XML ID to a GeoCat one.
-        Note that this means that we will have to remove all layout stuff (headers, footers) from the email template records!
+        Note that this means that we will have to remove all layout-related stuff (headers, footers) from the standard
+        Odoo email template records, else we may get multiple headers/footers in the email.
         """
         values = super(MailComposer, self)._prepare_mail_values_static()
-        return force_email_layout_xmlid_kwarg(**values)
+        return force_email_layout_xmlid_kwarg(values)

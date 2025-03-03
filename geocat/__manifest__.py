@@ -35,6 +35,7 @@
         'views/licensing_download_views.xml',
         'views/licensing_views.xml',
         'views/licensing_menus.xml',
+        'views/res_users_view.xml',
         'views/product_template_views.xml',
         'views/account_payment_term_views.xml',
         'views/sale_order_views.xml',
