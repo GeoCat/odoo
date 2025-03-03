@@ -41,9 +41,11 @@
                                 </div>
                             </t>
                         </div>
+                        <!-- This break makes sure that our margin does not collapse between the divs -->
+                        <br/>
                         <!-- FOOTER -->
                         <!--suppress XmlDuplicatedId -->
-                        <div id="footer" style="margin-top: 24px;">
+                        <div id="footer">
                             <t t-call="geocat.mail_footer"/>
                         </div>
                         <div id="footer_sub" style="color: #555555; font-size:10px;">
@@ -65,7 +67,7 @@
             <!-- Apply the light footer instead, but increase the top margin, so we still have 48px space -->
             <xpath expr="//div[@id='footer']" position="replace">
                 <!--suppress XmlDuplicatedId -->
-                <div id="footer" style="margin-top: 36px;">
+                <div id="footer">
                     <t t-call="geocat.mail_footer_light"/>
                 </div>
             </xpath>
