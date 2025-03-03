@@ -30,7 +30,7 @@
                             <div t-out="message.body"/>
                             <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
                             <t class="o_signature">
-                                <!-- Show a generic signature if the email_add_signature field is set -->
+                                <!-- Show a generic fixed signature if the email_add_signature field is set -->
                                 <div t-if="email_add_signature">
                                     Best regards,
                                     <p>The GeoCat Team</p>
@@ -60,6 +60,9 @@
                 <attribute name="style">margin: 12px; font-size: 13px;</attribute>
             </xpath>
 
+            <!-- Never show a signature in this template -->
+            <xpath expr="//t[hasclass('o_signature')]" position="replace"/>
+
             <!-- Apply the light footer instead, but increase the top margin, so we still have 48px space -->
             <xpath expr="//div[@id='footer']" position="replace">
                 <!--suppress XmlDuplicatedId -->
@@ -69,7 +72,7 @@
             </xpath>
         </template>
 
-        <template id="mail_layout_invite" inherit_id="geocat.mail_layout_light" primary="True"
+        <template id="mail_layout_invite" inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email layout template for follow invitations">
             <!-- Add an extra message at the top to indicate the user has been added as a follower -->
             <xpath expr="//div[@t-out='message.body']" position="before">

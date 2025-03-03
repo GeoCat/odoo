@@ -3,7 +3,6 @@ from . import res_users
 from . import res_company
 from . import mail_thread
 from . import mail_template
-from . import mail_composer
 from . import product_template
 from . import sale_subscription_plan
 from . import sale_order
