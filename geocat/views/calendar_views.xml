@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <!-- Hide "+ Odoo meeting" button -->
+    <record id="view_calendar_event_form" model="ir.ui.view">
+        <field name="name">geocat.event.form</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='set_discuss_videocall_location']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Hide "+ Odoo meeting" button -->
+    <record id="view_calendar_event_form_quick_create" model="ir.ui.view">
+        <field name="name">geocat.event.form.quick_create</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form_quick_create"/>
+        <field name="priority" eval="2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='set_discuss_videocall_location']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

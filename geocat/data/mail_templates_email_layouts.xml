@@ -32,12 +32,14 @@
                             <t class="o_signature">
                                 <!-- Only show a signature if the email_add_signature field is set -->
                                 <div t-if="email_add_signature">
-                                    Best regards,<br/>
-                                    <t t-if="is_html_empty(signature) or record.env.user._is_superuser()">
-                                        <!-- Use generic signature if there is none, or it's a system mail -->
-                                        The GeoCat Team
-                                    </t>
-                                    <t t-else="" t-out="signature"/>
+                                    Best regards,
+                                    <div>
+                                        <t t-if="is_html_empty(signature) or record.env.user._is_superuser()">
+                                            <!-- Use generic signature if there is none, or it's a system mail -->
+                                            <p>The GeoCat Team</p>
+                                        </t>
+                                        <t t-else="" t-out="signature"/>
+                                    </div>
                                 </div>
                             </t>
                         </div>
@@ -98,13 +100,15 @@
                 <t class="o_signature">
                     <!-- Only show a signature if the email_add_signature field is set -->
                     <div t-if="email_add_signature">
-                        Best regards,<br/>
-                        <t t-if="'user_id' in record and record.user_id and not record.env.user._is_superuser()
-                           and not is_html_empty(record.user_id.sudo().signature)" t-out="record.user_id.sudo().signature"/>
-                        <t t-else="">
-                            <!-- Use generic signature if there is none, or it's a system mail -->
-                            The GeoCat Team
-                        </t>
+                        Best regards,
+                        <div>
+                            <t t-if="'user_id' in record and record.user_id and not record.env.user._is_superuser()
+                               and not is_html_empty(record.user_id.sudo().signature)" t-out="record.user_id.sudo().signature"/>
+                            <t t-else="">
+                                <!-- Use generic signature if there is none, or it's a system mail -->
+                                <p>The GeoCat Team</p>
+                            </t>
+                        </div>
                     </div>
                 </t>
             </xpath>
