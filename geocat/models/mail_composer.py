@@ -12,4 +12,4 @@ class MailComposer(models.TransientModel):
         Odoo email template records, else we may get multiple headers/footers in the email.
         """
         values = super(MailComposer, self)._prepare_mail_values_static()
-        return force_email_layout_xmlid_kwarg(values)
+        return force_email_layout_xmlid_kwarg(values, self.env)

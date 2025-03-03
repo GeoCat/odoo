@@ -30,16 +30,10 @@
                             <div t-out="message.body"/>
                             <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
                             <t class="o_signature">
-                                <!-- Only show a signature if the email_add_signature field is set -->
+                                <!-- Show a generic signature if the email_add_signature field is set -->
                                 <div t-if="email_add_signature">
                                     Best regards,
-                                    <div>
-                                        <t t-if="is_html_empty(signature) or record.env.user._is_superuser()">
-                                            <!-- Use generic signature if there is none, or it's a system mail -->
-                                            <p>The GeoCat Team</p>
-                                        </t>
-                                        <t t-else="" t-out="signature"/>
-                                    </div>
+                                    <p>The GeoCat Team</p>
                                 </div>
                             </t>
                         </div>

@@ -58,7 +58,7 @@ def map_email_layout_template(template_name: str):
     return output
 
 
-def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
+def force_email_layout_xmlid_kwarg(arg_dict: dict, env=None) -> dict:
     """ Adds the email_layout_xmlid keyword argument (if missing) and
     sets it to an appropriate GeoCat email layout template.
     The argument dictionary is manipulated in-place but also returned.
@@ -67,7 +67,18 @@ def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
         # Some arguments may have been set to 'False', so then the getter would fail
         arg_dict = {}
     email_layout = arg_dict.get('email_layout_xmlid')
-    arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout)
+    if not email_layout and env and 'ir.model.data' in env and 'subtype_id' in arg_dict:
+        subtype_id = arg_dict.get('subtype_id')
+        if subtype_id == env['ir.model.data']._xmlid_to_res_id('mail.mt_comment'):
+            # For comments (personal messages), we use the responsible signature layout
+            email_layout = 'geocat.mail_layout_master_with_responsible_signature'
+        else:
+            # For other message types, we use the master layout
+            email_layout = 'geocat.mail_layout_master'
+    else:
+        # Use a default layout for all other message types
+        email_layout = map_email_layout_template(email_layout)
+    arg_dict['email_layout_xmlid'] = email_layout
     return arg_dict
 
 
