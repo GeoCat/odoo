@@ -23,39 +23,43 @@ REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # lega
 _logger = logging.getLogger(__name__)
 
 
-def map_email_layout_template(template_name: str):
-    """ Maps original Odoo mail layouts to GeoCat ones, or sets the "light" template as the default.
+def map_email_layout_template(layout_template, force_default: bool = False) -> str:
+    """ Maps original Odoo mail layouts to GeoCat ones, or sets a GeoCat template as the default if not mapped but forced.
         Note that the GeoCat layouts are standalone and do not inherit from the original Odoo ones!
     """
-    if isinstance(template_name, str) and template_name.startswith('geocat.'):
+    if isinstance(layout_template, str) and layout_template.startswith('geocat.'):
         # Already a GeoCat layout: keep it that way
-        return template_name
+        return layout_template
 
-    # NOTE: The mapping below works for Odoo 18 but may have to be adjusted for future versions!
-    output = {
+    # NOTE: The mapping below works for Odoo 18 but may have to be adjusted for future versions!   TODO: add tests!!
+    forced_template = {
         'mail.mail_notification_light': 'geocat.mail_layout_light',
         'mail.mail_notification_layout': 'geocat.mail_layout_master',
         'mail.mail_notification_invite': 'geocat.mail_layout_invite',
         'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_layout_master_with_responsible_signature'
-    }.get(template_name)
+    }.get(layout_template)
 
-    if not output:
-        # There was no template name (None or False), or it was not found in the mapping
-        output = 'geocat.mail_layout_master'
+    if not forced_template:
+        if not force_default:
+            # No mapping found and we don't want to force a default: return the input value
+            return layout_template
 
-        if isinstance(template_name, str):
+        # The layout template was set to False, or no mapping was found (forced_template = None)
+        forced_template = 'geocat.mail_layout_light' if layout_template is False else 'geocat.mail_layout_master'
+
+        if isinstance(layout_template, str):
             # Special cases where the mapping is not exact
-            if 'mail_notification_light' in template_name:
+            if 'mail_notification_light' in layout_template:
                 # The template appears to be some override of the light layout
-                output = 'geocat.mail_layout_light'
-            elif 'with_responsible_signature' in template_name:
+                forced_template = 'geocat.mail_layout_light'
+            elif 'with_responsible_signature' in layout_template:
                 # The template appears to be some override of the master layout with responsible signature
-                output = 'geocat.mail_layout_master_with_responsible_signature'
+                forced_template = 'geocat.mail_layout_master_with_responsible_signature'
 
             # Log that we are overriding an unmapped template
-            _logger.info(f"Requested mail layout template '{template_name}' has not been mapped: applying default '{output}'")
+            _logger.info(f"Requested mail layout template '{layout_template}' has not been mapped: applying default '{forced_template}'")
 
-    return output
+    return forced_template
 
 
 def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
@@ -67,7 +71,7 @@ def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
         # Some arguments may have been set to 'False', so then the getter would fail
         arg_dict = {}
     email_layout = arg_dict.get('email_layout_xmlid')
-    arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout)
+    arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout, True)
     return arg_dict
 
 

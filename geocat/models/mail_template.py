@@ -11,4 +11,4 @@ class MailTemplate(models.Model):
         """ Override to set the default email layout XML ID to a GeoCat one. """
         return super().send_mail_batch(res_ids, force_send=force_send,
                                        raise_exception=raise_exception, email_values=email_values,
-                                       email_layout_xmlid=map_email_layout_template(email_layout_xmlid))
+                                       email_layout_xmlid=map_email_layout_template(email_layout_xmlid, True))

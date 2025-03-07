@@ -15,7 +15,7 @@ class ResConfigSettings(models.TransientModel):
             # Unexpected: we cannot override the res_id if it's missing
             return return_value
 
-        layout_name = map_email_layout_template('mail.mail_notification_layout')
+        layout_name = map_email_layout_template('mail.mail_notification_layout', True)
         layout = self.env.ref(layout_name, raise_if_not_found=False)
         if not layout:
             raise UserError(_("This layout seems to no longer exist."))
