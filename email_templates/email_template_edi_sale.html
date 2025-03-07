@@ -5,18 +5,18 @@
 
         Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
         <br><br>
-        Your
+        Please find the attached
         <t t-if="ctx.get('proforma')">
             pro forma invoice for <t t-out="doc_name or ''">quotation</t> <strong t-out="object.name or ''">S00052</strong>
             <t t-if="object.origin">
-                with reference <strong t-out="object.origin or ''">#YOURREF</strong> )
-            </t> is available.
+                with reference <strong t-out="object.origin or ''">#YOURREF</strong>
+            </t>.
         </t>
         <t t-else="">
             <t t-out="doc_name or ''">quotation</t> <strong t-out="object.name or ''">S00052</strong>
             <t t-if="object.origin">
-                with reference <strong t-out="object.origin or ''">#YOURREF</strong> )
-            </t> is ready for review.
+                with reference <strong t-out="object.origin or ''">#YOURREF</strong>
+            </t>.
         </t>
         <br><br>
         <t t-if="documents and len(documents)>0">

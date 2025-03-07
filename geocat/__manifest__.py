@@ -45,6 +45,7 @@
         'views/webclient_templates.xml',
         'views/calendar_views.xml',
         'data/mail_templates_email_layouts.xml',
+        'data/auth_signup_templates_email.xml',
         'data/sale_order_templates.xml',
         'data/invoice_templates.xml',
     ],

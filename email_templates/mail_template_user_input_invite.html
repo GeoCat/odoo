@@ -1,0 +1,36 @@
+<div>
+    Dear <t t-out="object.partner_id.name or 'participant'">participant</t>,
+    <br><br>
+    <t t-if="object.survey_id.certification">
+        You have been invited to take a new certification.
+    </t>
+    <t t-else="">
+        We are conducting a survey and your response would be greatly appreciated.
+    </t>
+    <div style="margin: 30px 0; text-align: center;">
+        <a t-att-href="(object.get_start_url())"
+            style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+            <t t-if="object.survey_id.certification">
+                Start Certification
+            </t>
+            <t t-else="">
+                Start Survey
+            </t>
+        </a>
+    </div>
+    <t t-if="object.deadline">
+        Please complete the survey before <t t-out="format_date(object.deadline) or ''">05/05/2021</t>.<br><br>
+    </t>
+    <t t-if="object.survey_id.certification">
+        We wish you good luck!
+    </t>
+    <t t-else="">
+        Thank you in advance for your participation.
+    </t>
+    <br><br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

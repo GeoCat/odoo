@@ -1,0 +1,26 @@
+<div>
+    Dear <t t-out="object.partner_name or 'applicant'">applicant</t>,
+    <br><br>
+    We have successfully received your application for the job position of
+    <strong t-out="object.job_id.name or ''">Experienced Developer</strong> at <strong t-out="object.company_id.name or ''">YourCompany</strong>.
+    <br>
+    <t t-if="'website_url' in object.job_id and object.job_id.website_url">
+        <div style="margin: 30px 0; text-align: center;">
+            <a t-att-href="object.job_id.website_url"
+               style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+                Job Description
+            </a>
+        </div>
+    </t>
+    <t t-else="">
+        <br>
+    </t>
+    Please note that it may take some time to review your application. We will get back to you as soon as possible.<br>
+    If you haven't heard from us within 2 weeks, feel free to contact us by replying to this email.
+    <br><br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

@@ -6,10 +6,6 @@
     <t t-set="recurrent" t-value="object.recurrence_id and not ctx.get('calendar_template_ignore_recurrence')"></t>
     <t t-set="mail_tz" t-value="object._get_mail_tz() or ctx.get('mail_tz')"></t>
 
-    <p>
-        Dear <t t-out="object.common_name or 'customer'">Ready Mat</t>,<br><br>
-        An event that you are participating in has been updated.
-    </p>
     <div>
         <table border="0" cellpadding="0" cellspacing="0">
             <tbody><tr>
@@ -46,11 +42,11 @@
                             <li>Description:
                             <t t-out="object.description">Internal meeting for discussion for new pricing for product and services.</t></li>
                         </t>
-                        <t t-if="object.event_id.videocall_location">
+                        <t t-if="object.videocall_location">
                             <li>
-                                <t t-if="object.get_base_url() in object.event_id.videocall_location">Join with Odoo Discuss:</t>
+                                <t t-if="object.get_base_url() in object.videocall_location">Join with Odoo Discuss:</t>
                                 <t t-else="">Join the meeting at:</t><br/>
-                                <a t-att-href="object.event_id.videocall_location" target="_blank" t-out="object.event_id.videocall_location or ''">www.mycompany.com/calendar/join_videocall/xyz</a>
+                                <a t-att-href="object.videocall_location" target="_blank" t-out="object.videocall_location or ''">www.mycompany.com/calendar/join_videocall/xyz</a>
                             </li>
                         </t>
                         <t t-if="object.location">
@@ -75,4 +71,18 @@
         <hr>
         <p placeholder="Enter your message here"><br></p>
     </div>
+    <!-- NOTE: we include the signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <t t-if="object.user_id.signature" data-o-mail-quote-container="1">
+        <p>
+            Best regards,
+            <div>
+                <t t-if="object.user_id.signature" t-out="object.user_id.signature" data-o-mail-quote="1">
+                    <p>John Doe</p>
+                </t>
+                <t t-else="">
+                    <p>The GeoCat Team</p>
+                </t>
+            </div>
+        </p>
+    </t>
 </div>

@@ -1,0 +1,58 @@
+<div>
+    Dear <t t-out="object.partner_name or 'applicant'">applicant</t>,
+    <br><br>
+    <strong>Congratulations! Your resume has been positively reviewed! &#129395;</strong>
+    <br><br>
+    We just reviewed your resume, and it caught our attention.<br>
+    As we think you might be great for the position, your application has
+    been shortlisted for a call or an interview.
+    <br>
+    <div t-if="'website_url' in object.job_id and object.job_id.website_url" style="margin: 30px 0; text-align: center;">
+        <a t-att-href="object.job_id.website_url"
+           style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+            Job Description
+        </a>
+    </div>
+    <br>
+    <strong>What happens next?</strong><br>
+    You will soon be contacted by someone from our team to schedule a job interview.<br>
+    <t t-if="object.job_id.address_id">
+        Depending on the position and your availability, we can meet remotely or (preferably) at our office location:
+        <br><br>
+        <t t-set="location" t-value="''"/>
+        <t t-if="object.job_id.address_id.street">
+            <t t-out="object.job_id.address_id.street or ''">Puerto Madero 9710</t><br>
+            <t t-set="location" t-value="object.job_id.address_id.street"/>
+        </t>
+        <t t-if="object.job_id.address_id.street2">
+            <t t-out="object.job_id.address_id.street2 or ''">Of A15, Santiago (RM)</t><br>
+            <t t-set="location" t-value="'%s, %s' % (location, object.job_id.address_id.street2)"/>
+        </t>
+        <t t-if="object.job_id.address_id.zip">
+            <t t-out="object.job_id.address_id.zip or ''">98450</t>
+            <t t-set="location" t-value="'%s, %s' % (location, object.job_id.address_id.zip)"/>
+        </t>
+        <t t-if="object.job_id.address_id.city">
+            <t t-out="object.job_id.address_id.city or ''">Pudahuel</t><br>
+            <t t-set="location" t-value="'%s %s' % (location, object.job_id.address_id.city)"/>
+        </t>
+        <t t-if="object.job_id.address_id.country_id.name">
+            <t t-out="object.job_id.address_id.country_id.name or ''">Argentina</t>
+            <t t-set="location" t-value="'%s, %s' % (location, object.job_id.address_id.country_id.name)"/>
+        </t>
+    </t>
+    <t t-else="">
+        Depending on the position and your availability, we can meet remotely or (preferably) at our office location.
+    </t>
+    <br><br>
+    If your first interview goes well, you will usually be invited for a second interview.<br>
+    An assessment or a test might be part of the process, depending on the position you are applying for.
+    <br><br>
+    We usually contact you within a couple of days.<br>In the meantime, please feel free to reply to this email if you have any questions or concerns.
+    <br><br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        See you soon,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>
