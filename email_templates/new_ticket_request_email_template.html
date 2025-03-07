@@ -1,7 +1,7 @@
 <div>
     Dear <t t-out="object.sudo().partner_id.name or object.sudo().partner_name or 'customer'">customer</t>,<br><br>
-    Thank you for reaching out to us. We have successfully received your ticket <strong t-out="object.ticket_ref or ''">Fix this thing (#15)</strong>
-    and our <t t-out="object.team_id.name or 'helpdesk'">support</t> team is currently reviewing it. You will hear back from us shortly.
+    Thank you for reaching out to us.<br>We have successfully received your ticket <strong t-out="object.display_name or ''">Fix this thing (#15)</strong>
+    and our <t t-out="object.team_id.name or 'helpdesk'">support</t> team is currently reviewing it.<br>You will hear back from us shortly.
     <br><br>
     If you have any additional information or updates regarding your issue, please feel free to reply to this email.
     <br>
@@ -24,4 +24,10 @@
         </t>
     </div>
     Thank you for your patience and we look forward to assisting you.
+    <br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
 </div>

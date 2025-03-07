@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="reset_password_email" name="User Reset Password" inherit_id="auth_signup.reset_password_email" primary="True">
+        <xpath expr="." position="replace">
+            <!-- Mostly based on the geocat.mail_layout_light template -->
+            <html t-att-lang="lang">
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+                    <!-- Add a <style> tag to enforce Inter (or something similar) as the default email font -->
+                    <style type="text/css">
+                        body {
+                            font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif;
+                            color: #454748;
+                            font-size: 13px;
+                        }
+
+                        table, td, a {
+                            font-family: inherit;
+                            font-size: inherit;
+                            color: inherit;
+                        }
+                    </style>
+                </head>
+                <body style="font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;">
+                    <div style="max-width: 900px; width: 100%;">
+                        <!-- CONTENT -->
+                        <div id="content" style="margin: 12px; font-size: 13px;">
+                            <div>
+                                Dear <t t-out="object.name or ''">Marc Demo</t>,<br/><br/>
+                                A password reset was requested for the GeoCat ERP account linked to this email.
+                                You may change your password by following this link which will remain valid during <t t-out="user.env['ir.config_parameter'].sudo().get_param('auth_signup.reset_password.validity.hours',4)"></t> hours:<br/>
+                                <div style="margin: 32px 0; text-align: center">
+                                    <a t-att-href="object.partner_id._get_signup_url()"
+                                       style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+                                        Change Password
+                                    </a>
+                                </div>
+                                If you do not expect this, you can safely ignore this email.<br/><br/>
+                            </div>
+                            <div class="o_signature">
+                                <!-- Show a generic fixed signature -->
+                                Best regards,
+                                <p>The GeoCat Team</p>
+                            </div>
+                        </div>
+                        <!-- This break makes sure that our margin does not collapse between the divs -->
+                        <br/>
+                        <!-- FOOTER -->
+                        <!--suppress XmlDuplicatedId -->
+                        <div id="footer">
+                            <t t-call="geocat.mail_footer_light"/>
+                        </div>
+                        <div id="footer_sub" style="color: #555555; font-size:10px;">
+                            <t t-call="geocat.mail_footer_sub"/>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        </xpath>
+    </template>
+
+    <template id="alert_login_new_device" name="Alert Login with new Device" inherit_id="auth_signup.alert_login_new_device" primary="True">
+        <xpath expr="." position="replace">
+            <!-- Mostly based on the geocat.mail_layout_light template -->
+            <html t-att-lang="lang">
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html charset=UTF-8" />
+                    <!-- Add a <style> tag to enforce Inter (or something similar) as the default email font -->
+                    <style type="text/css">
+                        body {
+                            font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif;
+                            color: #454748;
+                            font-size: 13px;
+                        }
+
+                        table, td, a {
+                            font-family: inherit;
+                            font-size: inherit;
+                            color: inherit;
+                        }
+                    </style>
+                </head>
+                <body style="font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;">
+                    <div style="max-width: 900px; width: 100%;">
+                        <!-- CONTENT -->
+                        <div id="content" style="margin: 12px; font-size: 13px;">
+                            <div>
+                                Dear <t t-out="object.name or ''">Marc Demo</t>,<br/><br/>
+                                A new device was used to sign in to your account.<br/><br/>
+                                Please review the following connection details:<br/>
+                                <ul>
+                                    <li>
+                                        <span style="font-weight: bold;">Date:</span> <t t-out="format_datetime(login_date, dt_format='long')">day, month dd, yyyy - hh:mm:ss (GMT)</t></li>
+                                    <t t-if="location_address">
+                                        <li><span style="font-weight: bold;">Location:</span> <t t-out="location_address">City, Region, Country</t></li>
+                                    </t>
+                                    <t t-if="useros">
+                                        <li><span style="font-weight: bold;">Platform:</span> <t t-out="useros">OS</t></li>
+                                    </t>
+                                    <t t-if="browser">
+                                        <li><span style="font-weight: bold;">Browser:</span> <t t-out="browser">Browser</t></li>
+                                    </t>
+                                    <li><span style="font-weight: bold;">IP Address:</span> <t t-out="ip_address">111.222.333.444</t></li>
+                                </ul>
+                                If you don't recognize it, you should change your password immediately via this link:
+                                <div style="margin: 32px 0; text-align: center">
+                                    <a t-attf-href="{{ object.get_base_url() }}/web/reset_password"
+                                       style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+                                        Reset Password
+                                    </a>
+                                </div>
+                                Otherwise, you can safely ignore this email.<br/><br/>
+                            </div>
+                            <div class="o_signature">
+                                <!-- Show a generic fixed signature -->
+                                Best regards,
+                                <p>The GeoCat Team</p>
+                            </div>
+                        </div>
+                        <!-- This break makes sure that our margin does not collapse between the divs -->
+                        <br/>
+                        <!-- FOOTER -->
+                        <!--suppress XmlDuplicatedId -->
+                        <div id="footer">
+                            <t t-call="geocat.mail_footer_light"/>
+                        </div>
+                        <div id="footer_sub" style="color: #555555; font-size:10px;">
+                            <t t-call="geocat.mail_footer_sub"/>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,44 @@
+<div>
+    Dear <t t-out="object.partner_id.name or 'customer'">Brandon Freeman</t>,
+    <br><br>
+    Please take a moment to rate our services related to your subscription <strong t-out="object.name or ''">Office Cleaning Service</strong>.<br>
+    We appreciate your feedback.
+    <br><br>
+    <table role="presentation" style="width:100%; border-width: 1px 0; border-color: #e0e0e0; border-style: solid">
+        <tr>
+            <td style="text-align:center; padding: 16px;">
+                <h3>Tell us how you feel about our services</h3>
+                <div style="color: #888888">(click on one of these smileys)</div>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 16px;">
+                <table style="width:100%;text-align:center;">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/rate/{{ access_token }}/5">
+                                <img alt="Satisfied" src="/rating/static/src/img/rating_5.png" title="Satisfied"/>
+                            </a>
+                        </td>
+                        <td>
+                            <a t-attf-href="/rate/{{ access_token }}/3">
+                                <img alt="Okay" src="/rating/static/src/img/rating_3.png" title="Okay"/>
+                            </a>
+                        </td>
+                        <td>
+                            <a t-attf-href="/rate/{{ access_token }}/1">
+                                <img alt="Dissatisfied" src="/rating/static/src/img/rating_1.png" title="Dissatisfied"/>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

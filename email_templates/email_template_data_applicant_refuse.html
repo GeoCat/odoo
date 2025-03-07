@@ -1,0 +1,24 @@
+<div>
+    Dear <t t-out="object.partner_name or 'applicant'">applicant</t>,
+    <br><br>
+    Thank you for your interest in joining the
+    <strong><t t-out="object.company_id.name or ''">YourCompany</t></strong> team.<br>
+    We wanted to let you know that, although your resume is competitive, our hiring team reviewed your application
+    and <strong>did not select it for further consideration</strong>.
+    <br><br>
+    Please note that recruiting is hard, and we can make mistakes.<br>
+    Do not hesitate to reply to this email if you think we made a mistake, or if you require more information about our decision.
+    <br><br>
+    We will, however, keep your resume on record and get in touch with you about future opportunities that may be a
+    better fit for your skills and experience.
+    <br><br>
+    We wish you all the best in your job search and hope we
+    will have the chance to consider you for another role
+    in the future.
+    <br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

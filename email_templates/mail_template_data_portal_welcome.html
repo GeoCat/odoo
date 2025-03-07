@@ -1,10 +1,8 @@
 <div>
     Dear <t t-out="object.user_id.name or 'portal user'">Marc Demo</t>,<br><br>
-    Welcome to the
-    <t t-out="object.user_id.company_id.name">GeoCat</t> Portal!<br><br>
+    Welcome to the GeoCat customer portal!<br><br>
     An account has been created for you with the following login:
-    <strong t-out="object.user_id.login">demo</strong>.
-    <br><br>
+    <strong t-out="object.user_id.login">demo</strong>.<br>
     Please click on the button below to activate your account.
     <div style="margin: 30px 0; text-align: center;">
         <a t-att-href="object.user_id.partner_id._get_signup_url()"
@@ -12,5 +10,8 @@
             Activate Now
         </a>
     </div>
-    <t t-out="object.wizard_id.welcome_message or ''">Welcome to our company's portal.</t>
+    <t t-if="object.wizard_id.welcome_message">
+        <br>
+        <t t-out="object.wizard_id.welcome_message or ''">Welcome to our company portal.</t>
+    </t>
 </div>

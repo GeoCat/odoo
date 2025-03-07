@@ -1,0 +1,35 @@
+<div>
+    Dear <t t-out="object.partner_id.name or 'customer'">Brandon Freeman</t>,
+    <br><br>
+    <t t-if="ctx.get('payment_token')">
+        We were unable to process a payment for your subscription using your payment method
+        <t t-out="ctx.get('payment_token') or ''">TOKEN</t>.
+        <t t-if="ctx.get('error')">
+            <br>
+            Your bank or credit institution gave the following details about the issue:
+            <pre t-out="ctx['error'] or ''"></pre>
+        </t>
+        <br>
+    </t>
+    <t t-else="">
+        Your subscription <t t-out="ctx.get('code') or ''">CODE</t> is due for renewal but we haven’t received your payment yet.<br>
+        To keep your subscription active, please make your payment as soon as possible.
+        <br>
+    </t>
+    <br>
+    Please note that your subscription <t t-out="ctx.get('code') or ''">CODE</t> is still valid but will be <strong>suspended</strong>
+    on <t t-out="format_date(ctx.get('date_close')) or ''">05/05/2021</t>.<br>
+    <div style="margin: 30px 0; text-align: center;">
+        <a t-attf-href="{{ ctx.get('payment_link', object.get_portal_url()) }}"
+           style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
+            Pay Now
+        </a>
+    </div>
+    If you have any questions, do not hesitate to contact us.
+    <br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

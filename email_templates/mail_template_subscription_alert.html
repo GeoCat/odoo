@@ -1,0 +1,12 @@
+<div>
+    Dear <t t-out="object.partner_id.name or 'customer'">Brandon Freeman</t>,
+    <br><br>
+    Your subscription <strong t-out="object.name or ''">Office Cleaning Service</strong> needs your attention.<br>
+    We invite you to renew it soon on our customer portal or by replying to this email.
+    <br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

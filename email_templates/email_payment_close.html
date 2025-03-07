@@ -1,0 +1,28 @@
+<div>
+    Dear <t t-out="object.partner_id.name or 'customer'">Brandon Freeman</t>,
+    <br><br>
+    <t t-if="ctx.get('payment_token')">
+        Our final attempt to process a payment for your subscription using your payment method
+        <t t-out="ctx.get('payment_token') or ''">TOKEN</t> failed.
+        <t t-if="ctx.get('error')">
+            <br>
+            Your bank or credit institution gave the following details about the issue:
+            <pre t-out="ctx['error'] or ''"></pre>
+        </t>
+        <br>
+    </t>
+    <t t-else="">
+        Our final attempt to process a payment for your subscription failed because we have no payment method recorded for you,
+        and we are unaware of any other payment efforts.
+        <br>
+    </t>
+    <br>
+    As your payment should have been made <t t-out="ctx.get('auto_close_limit') or ''">5</t> days ago, <strong>your subscription has been terminated</strong>.<br>
+    If you wish to resolve this issue, or if you have made a payment recently, please contact us to resolve the issue.
+    <br><br>
+    <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
+    <div data-o-mail-quote-container="1">
+        Best regards,
+        <p data-o-mail-quote="1">The GeoCat Team</p>
+    </div>
+</div>

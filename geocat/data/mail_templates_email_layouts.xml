@@ -24,30 +24,38 @@
                 <body style="font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;">
                     <!-- We don't use the subtype, but we keep it in for reference -->
                     <t t-set="subtype_internal" t-value="subtype and subtype.internal"/>
-                    <div style="max-width: 900px; width: 100%;">
-                        <!-- CONTENT -->
-                        <div id="content" style="margin: 24px; font-size: 13px;">
-                            <div t-out="message.body"/>
-                            <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
-                            <t class="o_signature">
-                                <!-- Show a generic fixed signature if the email_add_signature field is set -->
-                                <div t-if="email_add_signature">
-                                    Best regards,
-                                    <p>The GeoCat Team</p>
-                                </div>
-                            </t>
-                        </div>
-                        <!-- This break makes sure that our margin does not collapse between the divs -->
-                        <br/>
-                        <!-- FOOTER -->
-                        <!--suppress XmlDuplicatedId -->
-                        <div id="footer">
-                            <t t-call="geocat.mail_footer"/>
-                        </div>
-                        <div id="footer_sub" style="color: #555555; font-size:10px;">
-                            <t t-call="geocat.mail_footer_sub"/>
-                        </div>
-                    </div>
+                    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td align="center">
+                                    <div style="max-width: 650px !important; text-align: left;">
+                                        <!-- CONTENT -->
+                                        <div id="content" style="margin: 24px; font-size: 13px;">
+                                            <div t-out="message.body"/>
+                                            <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
+                                            <t class="o_signature">
+                                                <!-- Show a generic fixed signature if the email_add_signature field is set -->
+                                                <div t-if="email_add_signature" style="margin-top: 16px">
+                                                    Best regards,
+                                                    <p>The GeoCat Team</p>
+                                                </div>
+                                            </t>
+                                        </div>
+                                        <!-- This break makes sure that our margin does not collapse between the divs -->
+                                        <br/>
+                                        <!-- FOOTER -->
+                                        <!--suppress XmlDuplicatedId -->
+                                        <div id="footer">
+                                            <t t-call="geocat.mail_footer"/>
+                                        </div>
+                                        <div id="footer_sub" style="color: #555555; font-size:10px;">
+                                            <t t-call="geocat.mail_footer_sub"/>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </body>
             </html>
         </template>
@@ -96,7 +104,7 @@
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
                     <!-- Only show a signature if the email_add_signature field is set -->
-                    <div t-if="email_add_signature">
+                    <div t-if="email_add_signature" style="margin-top: 16px">
                         Best regards,
                         <div>
                             <t t-if="'user_id' in record and record.user_id and not record.env.user._is_superuser()
@@ -119,7 +127,7 @@
                     privacy policy
                 </a>
                 <!--suppress XmlDuplicatedId -->
-                <!-- NOTE: The ID here MUST be 'mail_unfollow' for Odoo's JS injection to work! -->
+                <!-- NOTE: The ID here MUST be 'mail_unfollow' for Odoo's JavaScript URL injection to work... -->
                 <span id="mail_unfollow">
                     | <a href="/mail/unfollow" style="text-decoration:none; color: inherit;">unfollow</a>
                 </span>
@@ -216,7 +224,8 @@
                             <!-- Logo -->
                             <t t-if="company.website">
                                 <a t-att-href="company.website" style="text-decoration: none">
-                                    <img src="https://cdn.geocat.net/img/geocat_mail_w200.png" t-att-alt="'%s' % company.name"/>
+                                    <!-- The image is 200px wide, but we make it smaller so it also becomes sharper -->
+                                    <img src="https://cdn.geocat.net/img/geocat_mail_w200.png" t-att-alt="'%s' % company.name" width="150px"/>
                                 </a>
                             </t>
                             <t t-else="">
