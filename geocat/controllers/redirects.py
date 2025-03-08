@@ -37,7 +37,12 @@ class GeoCatRouter(http.Controller):
         """ Redirect /news/<path> to the post in the 'News' blog with ID 1. """
         return self._permanent_redirect('/blog/news-1', path, **kwargs)
 
+    @http.route(['/feed', '/feed/'], type='http', auth='public')
+    def redirect_feed(self, **kwargs):
+        """ Redirect /feed to the main blog feed. The 'News' blog with ID 1 must exist! """
+        return self._permanent_redirect('/blog/news-1/feed', **kwargs)
+
     @http.route(['/wp-content/uploads/<path:path>'], type='http', auth='public')
     def redirect_wp_content(self, path, **kwargs):
-        """ Redirect /wp-content/uploads/<path> to the new media location. """
+        """ Redirect /wp-content/uploads/<path> to the archived media location. """
         return self._permanent_redirect('https://cdn.geocat.net/archive', path, **kwargs)
