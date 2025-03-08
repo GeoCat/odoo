@@ -1,4 +1,3 @@
-import werkzeug
 import logging
 import urllib.parse
 
@@ -15,7 +14,7 @@ class GeoCatRouter(http.Controller):
         url = f'{base_url.rstrip('/')}/{path.lstrip('/')}'
         if kwargs:
             url = f'{url.rstrip('/')}?{urllib.parse.urlencode(kwargs)}'
-        return werkzeug.utils.redirect(url, 301)
+        return http.request.redirect(url, 301)
 
     @http.route(['/docs'], type='http', auth='public')
     def redirect_docs(self, **kwargs):
