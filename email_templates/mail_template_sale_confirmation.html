@@ -1,37 +1,45 @@
 <div>
-    <p>
-        <t t-set="tx_sudo" t-value="object.get_portal_last_transaction()"></t>
-        <t t-set="documents" t-value="object._get_product_documents()"></t>
+    <t t-set="tx_sudo" t-value="object.get_portal_last_transaction()"></t>
+    <t t-set="documents" t-value="object._get_product_documents()"></t>
 
-        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
+    Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,
+    <br><br>
+    Your order <strong t-out="object.name or ''">S00049</strong>
+    <t t-if="object.state == 'sale' or (tx_sudo and tx_sudo.state in ('done', 'authorized'))">
+        has been confirmed.<br>
+        Thank you for your trust!
+    </t>
+    <t t-elif="tx_sudo and tx_sudo.state == 'pending'">
+        is pending. It will be confirmed once the payment has been received.<br>
+        <t t-if="object.reference">
+            Your payment reference is <strong t-out="object.reference or 'unknown'">#YOURREF</strong>.
+        </t>
+    </t>
+    <br><br>
+    <t t-if="documents and len(documents)>0">
+        <t t-if="len(documents)>1">
+            Here are some additional documents that may interest you:
+        </t>
+        <t t-else="">
+            Here is an additional document that may interest you:
+        </t>
+        <ul>
+            <t t-foreach="documents" t-as="document">
+                <li>
+                    <a t-out="document.ir_attachment_id.name" t-att-href="object.get_portal_url('/document/' + str(document.id))" t-att-target="target">doc link</a>
+                </li>
+            </t>
+        </ul>
+    </t>
+    Do not hesitate to contact us if you have any questions.
+    <t t-if="not is_html_empty(object.user_id.signature)">
         <br><br>
-        Your order <strong t-out="object.name or ''">S00049</strong>
-        <t t-if="object.state == 'sale' or (tx_sudo and tx_sudo.state in ('done', 'authorized'))">
-            has been confirmed.<br>
-            Thank you for your trust!
-        </t>
-        <t t-elif="tx_sudo and tx_sudo.state == 'pending'">
-            is pending. It will be confirmed once the payment has been received.<br>
-            <t t-if="object.reference">
-                Your payment reference is <strong t-out="object.reference or 'unknown'">#YOURREF</strong>.
-            </t>
-        </t>
+        Best regards,<br>
+        <t t-out="object.user_id.signature or ''">Mitchell Admin</t>
+    </t>
+    <t t-else="">
         <br><br>
-        <t t-if="documents and len(documents)>0">
-            <t t-if="len(documents)>1">
-                Here are some additional documents that may interest you:
-            </t>
-            <t t-else="">
-                Here is an additional document that may interest you:
-            </t>
-            <ul>
-                <t t-foreach="documents" t-as="document">
-                    <li>
-                        <a t-out="document.ir_attachment_id.name" t-att-href="object.get_portal_url('/document/' + str(document.id))" t-att-target="target">doc link</a>
-                    </li>
-                </t>
-            </ul>
-        </t>
-        Do not hesitate to contact us if you have any questions.
-    </p>
+        Best regards,<br>
+        The GeoCat Team
+    </t>
 </div>

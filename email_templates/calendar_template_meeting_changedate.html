@@ -83,15 +83,16 @@
                     </t>
                     <li>Attendees
                     <ul>
-                        <li t-foreach="object.event_id.attendee_ids" t-as="attendee">
-                            <div t-attf-style="display: inline-block; border-radius: 50%; width: 10px; height: 10px; background: {{ colors.get(attendee.state) or 'white' }};">
-                                <t t-if="attendee.common_name != object.common_name">
-                                    <span style="margin-left:5px" t-out="attendee.common_name or ''">Mitchell Admin</span>
-                                </t>
-                                <t t-else="">
-                                    <span style="margin-left:5px">You</span>
-                                </t>
+                        <li t-foreach="object.event_id.attendee_ids" t-as="attendee" style="list-style-type: none !important;">
+                            <div t-attf-style="display: inline-block; border-radius: 50%; width: 10px; height: 10px; background:{{ colors.get(attendee.state) or 'grey' }}; line-height: 10px;">
+                                <!-- Availability indicator: left blank intentionally -->
                             </div>
+                            <t t-if="attendee.common_name != object.common_name">
+                                <span style="margin-left:5px" t-out="attendee.common_name or ''">Mitchell Admin</span>
+                            </t>
+                            <t t-else="">
+                                <span style="margin-left:5px">You</span>
+                            </t>
                         </li>
                     </ul></li>
                     <t t-if="object.event_id.videocall_location">

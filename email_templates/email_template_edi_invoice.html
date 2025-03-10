@@ -30,5 +30,15 @@
         </t>
         <br><br>
         Do not hesitate to contact us if you have any questions.
+        <t t-if="not is_html_empty(object.invoice_user_id.signature)" data-o-mail-quote-container="1">
+            <br><br>
+            Best regards,<br>
+            <t t-out="object.invoice_user_id.signature or ''" data-o-mail-quote="1">Mitchell Admin</t>
+        </t>
+        <t t-else="">
+            <br><br>
+            Best regards,<br>
+            The GeoCat Team
+        </t>
     </p>
 </div>

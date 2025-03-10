@@ -134,38 +134,41 @@ These ID's are not visible in Odoo itself (record ID's are numeric in the databa
 template files that contain the original `<record>` objects in the `template_fs` field of the `mail_template` model 
 in the database. Each `id` value of a `<record>` in the XML files corresponds to an HTML file name in this folder (i.e. `<id>.html`).
 
-| Odoo name                                 | File name                                          |
-|-------------------------------------------|----------------------------------------------------|
-| Payment: Payment Receipt                  | mail_template_data_payment_receipt.html            |
-| Invoice: Sending                          | email_template_edi_invoice.html                    |
-| Credit Note: Sending                      | email_template_edi_credit_note.html                |
-| Calendar: Date Updated                    | calendar_template_meeting_changedate.html          |
-| Calendar: Event Update                    | calendar_template_meeting_update.html              |
-| Calendar: Meeting Invitation              | calendar_template_meeting_invitation.html          |
-| Calendar: Reminder                        | calendar_template_meeting_reminder.html            |
-| Helpdesk: Ticket Closed                   | solved_ticket_request_email_template.html          |
-| Helpdesk: Ticket Received                 | new_ticket_request_email_template.html             |
-| Portal: User Invite                       | mail_template_data_portal_welcome.html             |
-| Recruitment: Refuse                       | email_template_data_applicant_refuse.html          |
-| Recruitment: Interest                     | email_template_data_applicant_interest.html        |
-| Recruitment: Application Acknowledgement  | email_template_data_applicant_congratulations.html |
-| Recruitment: Not interested anymore       | email_template_data_applicant_not_interested.html  |
-| Survey: Invite                            | mail_template_user_input_invite.html               |
-| Sales: Order Cancellation                 | mail_template_sale_cancellation.html               |
-| Sales: Order Confirmation                 | mail_template_sale_confirmation.html               |
-| Sales: Payment Done                       | mail_template_sale_payment_executed.html           |
-| Sales: Send Quotation                     | email_template_edi_sale.html                       |
-| Settings: New Portal Signup               | set_password_email.html                            |
-| Settings: New User Invite                 | mail_template_user_signup_account_created.html     |
-| Settings: Unregistered User Reminder      | mail_template_data_unregistered_users.html         |
-| Subscription: Payment Failure             | email_payment_close.html                           |
-| Subscription: Payment Reminder            | email_payment_reminder.html                        |
-| Subscription: Rating Request              | mail_template_subscription_rating.html             |
-| Subscription: Default Email Alert         | mail_template_subscription_alert.html              |
-| Timesheets: Approver Reminder             | mail_template_timesheet_reminder.html              |
-| Timesheets: Employee Reminder             | mail_template_timesheet_reminder_user.html         |
+| Odoo name                                | File name                                          |
+|------------------------------------------|----------------------------------------------------|
+| Appointment: Appointment Booked          | appointment_booked_mail_template.html              |
+| Appointment: Appointment Canceled        | appointment_canceled_mail_template.html            |
+| Appointment: Attendee Invitation         | attendee_invitation_mail_template.html             |
+| Payment: Payment Receipt                 | mail_template_data_payment_receipt.html            |
+| Invoice: Sending                         | email_template_edi_invoice.html                    |
+| Credit Note: Sending                     | email_template_edi_credit_note.html                |
+| Calendar: Date Updated                   | calendar_template_meeting_changedate.html          |
+| Calendar: Event Update                   | calendar_template_meeting_update.html              |
+| Calendar: Meeting Invitation             | calendar_template_meeting_invitation.html          |
+| Calendar: Reminder                       | calendar_template_meeting_reminder.html            |
+| Helpdesk: Ticket Closed                  | solved_ticket_request_email_template.html          |
+| Helpdesk: Ticket Received                | new_ticket_request_email_template.html             |
+| Portal: User Invite                      | mail_template_data_portal_welcome.html             |
+| Recruitment: Refuse                      | email_template_data_applicant_refuse.html          |
+| Recruitment: Interest                    | email_template_data_applicant_interest.html        |
+| Recruitment: Application Acknowledgement | email_template_data_applicant_congratulations.html |
+| Recruitment: Not interested anymore      | email_template_data_applicant_not_interested.html  |
+| Survey: Invite                           | mail_template_user_input_invite.html               |
+| Sales: Order Cancellation                | mail_template_sale_cancellation.html               |
+| Sales: Order Confirmation                | mail_template_sale_confirmation.html               |
+| Sales: Payment Done                      | mail_template_sale_payment_executed.html           |
+| Sales: Send Quotation                    | email_template_edi_sale.html                       |
+| Settings: New Portal Signup              | set_password_email.html                            |
+| Settings: New User Invite                | mail_template_user_signup_account_created.html     |
+| Settings: Unregistered User Reminder     | mail_template_data_unregistered_users.html         |
+| Subscription: Payment Failure            | email_payment_close.html                           |
+| Subscription: Payment Reminder           | email_payment_reminder.html                        |
+| Subscription: Rating Request             | mail_template_subscription_rating.html             |
+| Subscription: Default Email Alert        | mail_template_subscription_alert.html              |
+| Timesheets: Approver Reminder            | mail_template_timesheet_reminder.html              |
+| Timesheets: Employee Reminder            | mail_template_timesheet_reminder_user.html         |
 
-NOTE: Some module templates have not been customized yet. 
+NOTE: Some module templates have not been customized yet (e.g. because they are internal only or not used). 
 Among others, this applies to the following modules/templates:
 
 - Gamification

@@ -1,17 +1,24 @@
 <div>
-    <p>
-        <t t-set="doc_name" t-value="object.type_name"></t>
-        Dear <t t-out="object.partner_id.name or 'customer'">Customer Name</t>,
+    <t t-set="doc_name" t-value="object.type_name"></t>
+    Dear <t t-out="object.partner_id.name or 'customer'">Customer Name</t>,
+    <br><br>
+    Please be advised that your
+    <t t-out="doc_name or 'quotation'">quotation</t> <strong t-out="object.name or ''">S00052</strong>
+    <t t-if="object.origin">
+        with reference <strong t-out="object.origin or ''">S00052</strong>
+    </t>
+    has been cancelled. You should not be charged for this order.<br>
+    However, if any refund is required, this will be executed at best convenience.
+    <br><br>
+    Do not hesitate to contact us if you have any questions.
+    <t t-if="not is_html_empty(object.user_id.signature)">
         <br><br>
-        Please be advised that your
-        <t t-out="doc_name or 'quotation'">quotation</t> <strong t-out="object.name or ''">S00052</strong>
-        <t t-if="object.origin">
-            with reference <strong t-out="object.origin or ''">S00052</strong>
-        </t>
-        has been cancelled. You should not be charged for this order.<br>
-        However, if any refund is required, this will be executed at best convenience.
+        Best regards,<br>
+        <t t-out="object.user_id.signature or ''">Mitchell Admin</t>
+    </t>
+    <t t-else="">
         <br><br>
-        Do not hesitate to contact us if you have any questions.
-        <br>
-    </p>
+        Best regards,<br>
+        The GeoCat Team
+    </t>
 </div>
