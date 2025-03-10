@@ -1,0 +1,9 @@
+/// GeoCat CSS tweaks related to the website
+
+// Buttons
+.btn {
+    // Make sure that buttons have a minimum width (looks more consistent)
+    &.rounded-circle {
+        min-width: 190px;
+    }
+}

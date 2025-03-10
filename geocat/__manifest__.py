@@ -22,7 +22,7 @@
         'base',
         'mail',
         'portal',
-        'calendar',
+        'website_blog',
         'product',
         'account',
         'planning',
@@ -43,6 +43,7 @@
         'views/report_templates.xml',
         'views/portal_templates.xml',
         'views/webclient_templates.xml',
+        'views/website_blog_posts_loop.xml',
         'views/calendar_views.xml',
         'data/mail_templates_email_layouts.xml',
         'data/auth_signup_templates_email.xml',
@@ -61,6 +62,9 @@
         'web.assets_frontend': [
             ('replace', 'web_enterprise/static/src/webclient/home_menu/home_menu_background.scss',
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
+            ('after', 'website/static/src/scss/website.scss', 'geocat/static/src/scss/website.scss'),
+            ('after', 'web_editor/static/src/scss/web_editor.frontend.scss',
+             'geocat/static/src/scss/web_editor.frontend.scss'),
         ],
         'web.assets_backend': [
             ('after', 'mail/static/src/core/common/chat_hub.xml', 'geocat/static/src/core/common/chat_hub_patch.xml'),

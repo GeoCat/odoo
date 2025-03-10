@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="posts_loop" name="Posts List" inherit_id="website_blog.posts_loop">
+        <xpath expr="//t[@t-foreach='posts']//article//t[@t-if='not opt_blog_list_view']//div[starts-with(@t-att-class, 'opt_blog_cards_design')]" position="attributes">
+            <!-- Increase margins around grid card text (looks too cramped otherwise) -->
+            <attribute name="t-att-class">opt_blog_cards_design and 'card-body px-4 py-2 mb-2'</attribute>
+        </xpath>
+    </template>
+
+    <template id="post_info" inherit_id="website_blog.post_info">
+        <xpath expr="//div[starts-with(@t-attf-class, 'd-flex flex-wrap align-items-center')]" position="replace">
+            <!-- Make sure that margins are consistent with the card design override above -->
+            <div t-attf-class="d-flex flex-wrap align-items-center justify-content-between mx-n2 #{opt_blog_list_view and 'flex-grow-0 w-auto mw-100' or 'flex-grow-1' }">
+                <t t-set="x_class" t-value="'px-4' if opt_blog_cards_design else 'px-2'"/>
+                <t t-set="margin_classes" t-value="'px-4 pt-1' if opt_blog_cards_design else 'px-2'"/>
+                <time t-field="blog_post.post_date" t-attf-class="text-nowrap fw-bold #{margin_classes}" t-options="{'widget': 'datetime', 'date_only': 'true', 'format': 'medium'}"/>
+                <div t-if="is_view_active('website_blog.opt_posts_loop_show_stats')" t-att-class="x_class">
+                    <b class="text-nowrap" title="Comments"><i class="fa fa-comment text-muted me-1"/><t t-esc="len(blog_post.message_ids)"/></b>
+                    <b class="text-nowrap ps-2" title="Views"><i class="fa fa-binoculars text-muted me-1"/><t t-esc="blog_post.visits"/></b>
+                </div>
+                <b t-if="posts_list_show_parent_blog" t-attf-class="text-nowrap text-truncate #{x_class}">
+                    <i class="fa fa-folder-open text-muted"/>
+                    <a t-attf-href="/blog/#{slug(blog_post.blog_id)}" t-field="blog_post.blog_id"/>
+                </b>
+            </div>
+        </xpath>
+    </template>
+</odoo>

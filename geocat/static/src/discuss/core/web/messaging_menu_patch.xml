@@ -14,12 +14,6 @@
             <attribute name="style">visibility: hidden !important; height: 0 !important;</attribute>
         </xpath>
 
-        <!-- Make sure that we do not show an empty notification list -->
-        <xpath expr="//div[@t-if='store.discuss.searchTerm and !threads.length']" position="attributes">
-            <!--suppress ES6RedundantNestingInTemplateLiteral -->
-            <attribute name="t-if">"store.discuss.searchTerm and (!threads.length or !notificationList.length)"</attribute>
-        </xpath>
-
         <!-- We only want to see group notifications, no Discuss chats or channels -->
         <xpath expr="//t[@t-foreach='threads']//NotificationItem" position="attributes">
             <attribute name="t-if">thread.channel_type === 'group'</attribute>

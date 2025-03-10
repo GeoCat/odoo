@@ -18,7 +18,7 @@ class GeoCatRouter(http.Controller):
 
     @http.route(['/docs'], type='http', auth='public')
     def redirect_docs(self, **kwargs):
-        """ Redirect the /docs to docs.geocat.net (eos). """
+        """ Redirect the /docs to the GeoCat documentation on docs.geocat.net (eos). """
         return self._permanent_redirect('https://docs.geocat.net', **kwargs)
 
     @http.route(['/docs/<path:path>'], type='http', auth='public')
@@ -43,5 +43,5 @@ class GeoCatRouter(http.Controller):
 
     @http.route(['/wp-content/uploads/<path:path>'], type='http', auth='public')
     def redirect_wp_content(self, path, **kwargs):
-        """ Redirect /wp-content/uploads/<path> to the archived media location. """
+        """ Redirect old WordPress /wp-content/uploads/<path> to the archived media location. """
         return self._permanent_redirect('https://cdn.geocat.net/archive', path, **kwargs)
