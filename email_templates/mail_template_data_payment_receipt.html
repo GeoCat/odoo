@@ -5,5 +5,15 @@
         Please find the attached receipt for your order <span style="font-weight:bold;" t-out="(object.name or '').replace('/','-') or ''">BNK1-2021-05-0002</span> from <t t-out="object.company_id.name or ''">GeoCat</t>.
         <br><br>
         Do not hesitate to contact us if you have any questions.
+        <t t-if="not is_html_empty(user.signature)" data-o-mail-quote-container="1">
+            <br><br>
+            Best regards,<br>
+            <t t-out="user.signature or ''" data-o-mail-quote="1">Mitchell Admin</t>
+        </t>
+        <t t-else="">
+            <br><br>
+            Best regards,<br>
+            The GeoCat Team
+        </t>
     </p>
 </div>
