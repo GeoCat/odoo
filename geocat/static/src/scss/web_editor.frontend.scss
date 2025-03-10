@@ -1,0 +1,7 @@
+/// GeoCat CSS tweaks related to the website
+
+.o_grid_item_image.rounded img {
+    // If we have a grid item with rounded corners and an image inside,
+    // we want to make sure that it inherits the border radius of its parent
+    border-radius: inherit !important;
+}

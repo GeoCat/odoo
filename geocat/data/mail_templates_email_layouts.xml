@@ -98,6 +98,7 @@
         </template >
 
         <!-- Variant of the GeoCat master email layout template with a responsible signature -->
+        <!-- NOTE: This template is a bit useless, as the modules that use it often have email_add_signature set to False... -->
         <template id="mail_layout_master_with_responsible_signature"
                   inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email master layout template with responsible signature (user_id of the record)">
