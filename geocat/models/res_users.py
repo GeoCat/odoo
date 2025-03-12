@@ -11,5 +11,5 @@ class Users(models.Model):
 
     @api.depends('name')
     def _compute_signature(self):
-        for user in self.filtered(lambda usr: usr.name and is_html_empty(user.signature)):
+        for user in self.filtered(lambda usr: usr.name and is_html_empty(usr.signature)):
             user.signature = Markup('<p>%s</p>') % user['name']  # Omit the '--<br/>' that Odoo adds by default
