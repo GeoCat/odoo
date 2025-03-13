@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <data>
                     <field name="signature" position="attributes">
-                        <!-- Disable code view for signatures and some other things, so that users cannot mess things up too much -->
-                        <attribute name="options">{'codeview': false, 'disableImage': true, 'disableVideo': true, 'disableFile': true, 'cssReadonly': true}</attribute>
+                        <!-- Disable code view for signatures and some other things, so that users cannot easily mess things up too much -->
+                        <attribute name="options">{'codeview': false, 'disableImage': true, 'disableVideo': true, 'disableFile': true}</attribute>
                     </field>
                 </data>
             </field>
