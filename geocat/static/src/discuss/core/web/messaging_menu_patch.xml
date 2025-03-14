@@ -9,14 +9,15 @@
     </t>
 
     <t t-inherit="mail.MessagingMenu.content" t-inherit-mode="extension">
-        <!-- Hide the channel selectors and new message buttons -->
+        <!-- Hide and collapse the channel selectors and new message buttons -->
         <xpath expr="//div[hasclass('o-mail-MessagingMenu-header')]" position="attributes">
             <attribute name="style">visibility: hidden !important; height: 0 !important;</attribute>
         </xpath>
 
-        <!-- We only want to see group notifications, no Discuss chats or channels -->
+        <!-- Try to only show chat notifications related to specific records/models (so no DM's, channels, etc.) -->
+        <!-- TODO: It would be better to filter the threads in JS so that the counter is also updated correctly? -->
         <xpath expr="//t[@t-foreach='threads']//NotificationItem" position="attributes">
-            <attribute name="t-if">thread.channel_type === 'group'</attribute>
+            <attribute name="t-if">!thread.correspondent and thread.channel_type !== 'channel' and thread.channel_type !== 'group'</attribute>
         </xpath>
     </t>
 </templates>

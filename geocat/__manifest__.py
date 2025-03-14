@@ -22,6 +22,7 @@
         'base',
         'mail',
         'portal',
+        'calendar',
         'website_blog',
         'product',
         'account',
