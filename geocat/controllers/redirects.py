@@ -14,7 +14,8 @@ class GeoCatRouter(http.Controller):
         url = f'{base_url.rstrip('/')}/{path.lstrip('/')}'
         if kwargs:
             url = f'{url.rstrip('/')}?{urllib.parse.urlencode(kwargs)}'
-        return http.request.redirect(url, 301)
+        local = base_url.startswith('/')
+        return http.request.redirect(url, 301, local)
 
     @http.route(['/docs'], type='http', auth='public')
     def redirect_docs(self, **kwargs):
