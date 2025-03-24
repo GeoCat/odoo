@@ -6,6 +6,7 @@ import re
 from datetime import datetime, UTC, timedelta, date
 from hashlib import md5
 import logging
+from pathlib import Path
 
 from odoo import fields
 
@@ -21,6 +22,11 @@ REGEX_LICKEY = re.compile(rf'^{settings.LICENSE_KEY_PREFIX}[0-9a-f]{{32}}$', re.
 REGEX_OLDKEY = re.compile(r'^geocatbridge-[0-9a-f]{32}$', re.IGNORECASE)  # legacy key format
 
 _logger = logging.getLogger(__name__)
+
+
+def module_base_path() -> Path:
+    """ Returns the base path of the GeoCat module. """
+    return Path(__file__).resolve().parent.parent
 
 
 def map_email_layout_template(layout_template, force_default: bool = False) -> str:
