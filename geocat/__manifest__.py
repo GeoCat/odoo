@@ -20,6 +20,7 @@
     """,
     'depends': [
         'base',
+        'web',
         'mail',
         'portal',
         'calendar',
