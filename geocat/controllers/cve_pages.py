@@ -28,9 +28,9 @@ class CveController(http.Controller):
         """ This route will allow us to push a .zip from GitHub to Odoo to 'publish' the CVE articles. """
 
         mime_type = file.content_type or file.mimetype or ''
-        _logger.info(f"Initiating CVE publication from file '{file.name}' with MIME type '{mime_type}'")
-        if not file or ('zip' not in mime_type or 'octet-stream' not in mime_type):
-            return request.make_json_response({'error': _('Missing archive file')}, status=400)
+        _logger.info(f"Initiating CVE publication from uploaded file with MIME type '{mime_type}'")
+        if not file or 'zip' not in mime_type:
+            return request.make_json_response({'error': _('Missing zip file')}, status=400)
         if not checksum:
             return request.make_json_response({'error': _('Missing checksum')}, status=400)
 
