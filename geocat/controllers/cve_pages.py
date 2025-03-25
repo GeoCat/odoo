@@ -24,9 +24,8 @@ class CveController(http.Controller):
     def publish_cve(self, file: werkzeug.datastructures.FileStorage, checksum: str):
         """ This route will allow us to push a .zip from GitHub to Odoo to 'publish' the CVE articles. """
 
-        mime_type = file.content_type or file.mimetype or ''
-        if not file or 'zip' not in mime_type:
-            return request.make_json_response({'error': _('Missing zip file')}, status=400)
+        if not file or ('zip' not in file.content_type or 'octet-stream' not in file.content_type):
+            return request.make_json_response({'error': _('Missing or unexpected file')}, status=400)
         if not checksum:
             return request.make_json_response({'error': _('Missing checksum')}, status=400)
 
