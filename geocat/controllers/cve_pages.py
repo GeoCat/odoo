@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import hashlib
+import logging
 import shutil
 import zipfile
 import werkzeug
@@ -13,6 +14,8 @@ from odoo import http, _
 from odoo.http import request
 from odoo.addons.web.controllers import binary
 
+_logger = logging.getLogger(__name__)
+
 
 class CveController(http.Controller):
     """ This controller allows us to push MkDocs documentation related to CVE's from GitHub to Odoo.
@@ -24,8 +27,10 @@ class CveController(http.Controller):
     def publish_cve(self, file: werkzeug.datastructures.FileStorage, checksum: str):
         """ This route will allow us to push a .zip from GitHub to Odoo to 'publish' the CVE articles. """
 
-        if not file or ('zip' not in file.content_type or 'octet-stream' not in file.content_type):
-            return request.make_json_response({'error': _('Missing or unexpected file')}, status=400)
+        mime_type = file.content_type or file.mimetype or ''
+        _logger.info(f"Initiating CVE publication from file '{file.name}' with MIME type '{mime_type}'")
+        if not file or ('zip' not in mime_type or 'octet-stream' not in mime_type):
+            return request.make_json_response({'error': _('Missing archive file')}, status=400)
         if not checksum:
             return request.make_json_response({'error': _('Missing checksum')}, status=400)
 
