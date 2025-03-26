@@ -25,6 +25,7 @@ class GeoCatRouter(http.Controller):
     @http.route(['/docs/<path:path>'], type='http', auth='public')
     def redirect_docs_path(self, path, **kwargs):
         """ Redirect the /docs/<path> URL to the GeoCat documentation on docs.geocat.net (eos). """
+        path = path.replace('geoserver-enterprise', 'map').replace('geonetwork-enterprise', 'find')
         return self._permanent_redirect('https://docs.geocat.net', path, **kwargs)
 
     @http.route(['/news'], type='http', auth='public')
