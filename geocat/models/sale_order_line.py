@@ -16,12 +16,6 @@ class GeoCatSaleOrderLine(models.Model):
 
     display_name = fields.Char(compute='_compute_display_name', readonly=True)
 
-    # hide_bridge_license_issue_button = fields.Boolean(compute='_compute_hide_license_buttons',
-    #                                                   help='Whether the "Issue License" button should be hidden.')
-    #
-    # hide_bridge_license_show_button = fields.Boolean(compute='_compute_hide_license_buttons',
-    #                                                  help='Whether the "Show Licenses" button should be hidden.')
-
     @api.depends()
     def _compute_display_name(self):
         i = 1

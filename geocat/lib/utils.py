@@ -136,7 +136,7 @@ def encode_license_data(json_data: str) -> bytes:
     """
     Encodes the license data JSON string as base64, and adds a hash to the end.
     The license data is then reversed and a hash of that is added to the end of the reversed string.
-    The final string is then encoded as ASCII bytes and returned.
+    Finally, the resulting string is encoded as ASCII bytes and returned.
 
     This process follows the original WHMCS license encoding algorithm.
     """

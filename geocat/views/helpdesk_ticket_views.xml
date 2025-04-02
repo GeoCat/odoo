@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="helpdesk_tickets_view_search" model="ir.ui.view">
+        <field name="name">geocat.ticket.search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
+        <field name="arch" type="xml">
+            <filter name="urgent_priority" position="attributes">
+                <attribute name="string">Immediate (P1)</attribute>
+            </filter>
+            <filter name="high_priority" position="attributes">
+                <attribute name="string">Urgent (P2)</attribute>
+            </filter>
+            <filter name="medium_priority" position="attributes">
+                <attribute name="string">Normal (P3)</attribute>
+            </filter>
+            <filter name="low_priority" position="attributes">
+                <attribute name="string">Low (S/X)</attribute>
+            </filter>
+            <field name="priority" position="before">
+                <field name="classification"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_search_analysis_closed" model="ir.ui.view">
+        <field name="name">geocat.ticket.search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_search_analysis_closed"/>
+        <field name="arch" type="xml">
+            <field name="user_id" position="after">
+                <field name="priority" invisible="1"/>
+            </field>
+            <filter name="unassigned" position="after">
+                <separator/>
+                <filter string="Priority Tickets" name="priority_tickets" domain="[('priority', 'in', ('1', '2', '3'))]"/>
+                <filter string="Other Tickets" name="other_tickets" domain="[('priority', 'not in', ('1', '2', '3'))]"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="helpdesk_tickets_view_tree_geocat" model="ir.ui.view">
+        <field name="name">geocat.ticket.list</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="priority" position="after">
+                <field name="classification" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_form" model="ir.ui.view">
+        <field name="name">geocat.ticket.form</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <field name="priority" position="before">
+                <field name="classification" readonly="0" required="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_search_analysis" model="ir.ui.view">
+        <field name="name">geocat.ticket.search</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_search_analysis"/>
+        <field name="arch" type="xml">
+            <filter name="unassigned" position="after">
+                <separator/>
+                <filter string="Priority Tickets" name="priority_tickets" domain="[('priority', 'in', ('1', '2', '3'))]"/>
+                <filter string="Other Tickets" name="other_tickets" domain="[('priority', 'not in', ('1', '2', '3'))]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

@@ -9,7 +9,7 @@
     </template>
 
     <!-- Remove Odoo branding, swap order, and add privacy policy link -->
-    <template id="frontend_layout" inherit_id="web.frontend_layout">
+    <template id="frontend_layout" inherit_id="web.frontend_layout" primary="True">
         <xpath expr="//footer//div[hasclass('o_footer_copyright')]//div[hasclass('row')]" position="replace">
             <div class="row small">
                 <div class="col-sm text-center text-sm-start">

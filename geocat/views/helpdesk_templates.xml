@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Page : default team -->
+        <template id="team" name="Helpdesk Team" inherit_id="website_helpdesk.team">
+            <!-- Remove team description card in the right column (it's ugly and not informative) -->
+            <xpath expr="//div[@id='right-column']/t[@t-if='not is_html_empty(team.description)']" position="replace"/>
+        </template>
+
+        <template id="ticket_submit_form" name="GeoCat Helpdesk Form" inherit_id="website_helpdesk.ticket_submit_form">
+            <!-- "Unmute" CSS class, never show team name -->
+            <xpath expr="//h2[hasclass('text-muted')]" position="replace">
+                <h2>Submit a Ticket</h2>
+            </xpath>
+
+            <!-- Add Classification selector before message field -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='name']/../../.." position="before">
+                <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_required" data-type="char" data-name="Field">
+                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                            <span class="s_website_form_label_content">Classification</span>
+                            <span class="s_website_form_mark"> *</span>
+                        </label>
+                        <div class="col-sm">
+                            <!-- Add radio buttons for classification -->
+                            <fieldset id="helpdesk9">
+                            <t t-foreach="classifications" t-as="class_item">
+                                <t t-set="class_id" t-value="class_item[0]"/>
+                                <t t-set="radio_id" t-value="'class_' + class_id"/>
+                                <t t-set="class_name" t-value="class_item[1]"/>
+                                <div>
+                                    <input type="radio" name="classification" t-att-value="class_id" t-att-id="radio_id" t-att-checked="class_id == default_classification"/>
+                                    <label t-att-for="radio_id">
+                                        <t t-esc="class_name"/>
+                                    </label>
+                                </div>
+                            </t>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Make Submit button look normal (instead of huge and ugly) -->
+            <xpath expr="//div[hasclass('s_website_form_submit')]//a[hasclass('s_website_form_send')]" position="replace">
+                <a href="#" role="button" class="btn btn-primary rounded-circle s_website_form_send o_default_snippet_text">
+                    Submit Ticket
+                </a>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>
