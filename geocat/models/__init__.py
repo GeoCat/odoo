@@ -7,11 +7,11 @@ from . import product_template
 from . import sale_subscription_plan
 from . import sale_order
 from . import sale_order_line
+from . import website_helpdesk_team
 from . import helpdesk_ticket
 from . import helpdesk_sla
 from . import helpdesk_sla_report_analysis
 from . import helpdesk_ticket_analysis
-from . import website_helpdesk_team
 from . import license_checkouts
 from . import license_downloads
 from . import license_keys

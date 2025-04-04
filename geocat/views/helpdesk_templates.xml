@@ -13,6 +13,19 @@
                 <h2>Submit a Ticket</h2>
             </xpath>
 
+            <!-- Make partner_name field readonly (derived from logged-in user) -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='partner_name']" position="attributes">
+                <attribute name="readonly">readonly</attribute>
+            </xpath>
+
+            <!-- Make partner_email field readonly (derived from logged-in user) -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='partner_email']" position="attributes">
+                <attribute name="readonly">readonly</attribute>
+            </xpath>
+
+            <!-- Completely remove partner_company_name field (user should be logged-in anyway in our case) -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='partner_company_name']/../../.." position="replace"/>
+
             <!-- Add Classification selector before message field -->
             <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='name']/../../.." position="before">
                 <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_required" data-type="char" data-name="Field">
@@ -23,7 +36,7 @@
                         </label>
                         <div class="col-sm">
                             <!-- Add radio buttons for classification -->
-                            <fieldset id="helpdesk9">
+                            <fieldset id="helpdesk9" class="s_website_form_input">
                             <t t-foreach="classifications" t-as="class_item">
                                 <t t-set="class_id" t-value="class_item[0]"/>
                                 <t t-set="radio_id" t-value="'class_' + class_id"/>

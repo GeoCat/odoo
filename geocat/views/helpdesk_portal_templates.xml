@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="0">
+
+    <template id="portal_helpdesk_ticket" name="My Tickets" inherit_id="helpdesk.portal_helpdesk_ticket">
+        <!-- Fix typo in the message -->
+        <xpath expr="//div[@t-if='not grouped_tickets']" position="replace">
+            <div t-if="not grouped_tickets" class="alert alert-info">
+                There are currently no tickets for your account.
+            </div>
+        </xpath>
+    </template>
+
+    <template id="tickets_followup" name="Helpdesk Tickets" inherit_id="helpdesk.tickets_followup">
+        <!-- Add margin below Close Ticket button -->
+        <xpath expr="//button[@data-bs-target='#helpdesk_ticket_close_modal']" position="attributes">
+            <attribute name="class">btn btn-light pt-1 mb-2</attribute>
+        </xpath>
+
+        <!-- Fix weird language in the message -->
+        <xpath expr="//div[@id='helpdesk_ticket_close_modal']//div[hasclass('modal-body')]" position="replace">
+            <div class="modal-body">
+                <p>We hope your issue was resolved and that you are satisfied with the support provided.
+                    If you no longer need our assistance, please close this ticket.<br/>
+                    Thank you for your collaboration.
+                </p>
+            </div>
+        </xpath>
+
+        <!-- TODO: add blocked Status (e.g. red indicator) to ticket header if that has been set? -->
+    </template>
+
+</data>
+</odoo>

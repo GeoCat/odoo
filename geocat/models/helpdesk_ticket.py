@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from odoo import api, fields, models
 
+UNKNOWN_CLASS = 'X1'
 DEFAULT_CLASS = 'P3'
 TICKET_CLASS = [
     ('P1', 'Immediate (P1)'),
@@ -9,7 +10,7 @@ TICKET_CLASS = [
     ('S1', 'Application Management (S1)'),
     ('S2', 'User Support (S2)'),
     ('S3', 'Change Request (S3)'),
-    ('X1', 'Unclassified (X1)')
+    (UNKNOWN_CLASS, f'Unclassified ({UNKNOWN_CLASS})'),
 ]
 
 # NOTE: We override the labels of the Odoo priority field to match the GeoCat classification.
@@ -29,7 +30,10 @@ class HelpdeskTicket(models.Model):
     _inherit = ['helpdesk.ticket']
 
     priority = fields.Selection(TICKET_PRIORITY, compute='_compute_priority', store=True, default='0', tracking=True)
-    classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, tracking=True)
+    classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS, tracking=True)
+
+    def init(self):
+        self.env['ir.model.fields'].formbuilder_whitelist('helpdesk.ticket', ['classification'])
 
     @staticmethod
     def _class_to_priority(classification):
