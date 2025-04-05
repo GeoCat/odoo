@@ -51,3 +51,10 @@ class HelpdeskTicket(models.Model):
         """ Updates the Odoo priority if the GeoCat classification changes. """
         for ticket in self:
             ticket.priority = self._class_to_priority(ticket.classification)
+
+    @api.model
+    def _sla_reset_trigger(self):
+        # Make sure that a changed classification also triggers an SLA reset
+        field_list = super()._sla_reset_trigger()
+        field_list.append('classification')
+        return field_list
