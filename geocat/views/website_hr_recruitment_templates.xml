@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!-- Job detail: replace ridiculously large buttons -->
+<template id="job_details" name="Job Detail" track="1" inherit_id="website_hr_recruitment.detail" primary="True">
+    <xpath expr="//a[@role='button' and hasclass('btn-lg')]" position="attributes">
+        <attribute name="class" remove="btn-lg" add="rounded-circle" separator=" "/>
+    </xpath>
+    <xpath expr="//section[hasclass('o_job_bottom_bar')]//a[@role='button' and hasclass('btn-lg')]" position="attributes">
+        <attribute name="class" remove="btn-lg" add="rounded-circle" separator=" "/>
+    </xpath>
+</template>
+
+<!-- Apply form: replace ridiculously large buttons -->
+<template id="job_apply" name="Job Application Form" inherit_id="website_hr_recruitment.apply" primary="True">
+    <xpath expr="//section[@id='forms']//a[@role='button' and @id='apply-btn']" position="replace">
+        <!-- We replace the entire button, because we don't want it to say "I'm feeling lucky" -->
+        <a href="#" role="button" class="btn btn-primary rounded-circle s_website_form_send" id="apply-btn">Submit</a>
+    </xpath>
+
+    <xpath expr="//a[@role='button' and hasclass('btn-lg') and hasclass('o_apply_description_link')]" position="attributes">
+        <attribute name="class" remove="btn-lg" add="rounded-circle" separator=" "/>
+    </xpath>
+</template>
+
+</odoo>

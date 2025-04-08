@@ -1,0 +1,16 @@
+/* Make sure that our primary color is used instead of Odoo's hard-coded #35979c */
+
+.o_apply_description_link:hover {
+    background-color: #fff;
+    color: $o-enterprise-action-color !important;
+}
+
+.o_resume_input {
+    border-color: $o-enterprise-action-color !important;
+}
+
+.o_resume_input::file-selector-button {
+    color: $o-enterprise-action-color !important;
+    border-color: $o-enterprise-action-color !important;
+    background-color: #fff;
+}

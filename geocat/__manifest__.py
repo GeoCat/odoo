@@ -28,9 +28,10 @@
         'product',
         'account',
         'project',
+        'sale_subscription',
         'website_blog',
         'website_helpdesk',
-        'sale_subscription',
+        'website_hr_recruitment',
     ],
     'data': [
         'security/licensing_security.xml',
@@ -52,6 +53,7 @@
         'views/helpdesk_templates.xml',
         'views/helpdesk_ticket_views.xml',
         'views/helpdesk_portal_templates.xml',
+        'views/website_hr_recruitment_templates.xml',
         'data/mail_templates_email_layouts.xml',
         'data/auth_signup_templates_email.xml',
         'data/sale_order_templates.xml',
@@ -72,6 +74,8 @@
             ('after', 'website/static/src/scss/website.scss', 'geocat/static/src/scss/website.scss'),
             ('after', 'web_editor/static/src/scss/web_editor.frontend.scss',
              'geocat/static/src/scss/web_editor.frontend.scss'),
+            ('after', 'website_hr_recruitment/static/src/scss/website_hr_recruitment.scss',
+             'geocat/static/src/scss/website_hr_recruitment.scss'),
         ],
         'web.assets_backend': [
             ('after', 'mail/static/src/core/common/chat_hub.xml', 'geocat/static/src/core/common/chat_hub_patch.xml'),
