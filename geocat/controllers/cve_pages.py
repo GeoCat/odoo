@@ -19,8 +19,12 @@ class CveController(http.Controller):
     """
     cve_static_root = str(utils.module_base_path() / 'static' / 'cve')
 
-    @http.route(['/cve', '/cve/<path:path>'], methods=['GET'], type='http', auth='user')
-    def access_cve(self, path=None, **kwargs):
+    @http.route(['/cve'], methods=['GET'], type='http', auth='user')
+    def cve_index(self, **kwargs):
+        return request.redirect('/cve/index.html')
+
+    @http.route(['/cve/<path:path>'], methods=['GET'], type='http', auth='user')
+    def access_cve(self, path, **kwargs):
         """ This route will make sure that CVE articles (and static files) can be accessed by logged-in users only. """
         file_path = Path(werkzeug.security.safe_join(self.cve_static_root, path.strip('/')) if path else self.cve_static_root)
         if file_path.is_dir():
