@@ -19,14 +19,11 @@ class CveController(http.Controller):
     """
     cve_static_root = str(utils.module_base_path() / 'static' / 'cve')
 
-    @http.route(['/cve'], methods=['GET'], type='http', auth='user')
-    def cve_index(self, **kwargs):
-        return self.access_cve('', **kwargs)
-
-    @http.route(['/cve/<path:path>'], methods=['GET'], type='http', auth='user')
-    def access_cve(self, path, **kwargs):
+    @http.route(['/cve', '/cve/<path:path>'], methods=['GET'], type='http', auth='user')
+    def access_cve(self, path=None, **kwargs):
         """ This route will make sure that CVE articles (and static files) can be accessed by logged-in users only. """
-        file_path = Path(werkzeug.security.safe_join(self.cve_static_root, path.strip('/')) if path else self.cve_static_root)
+        safe_path = werkzeug.security.safe_join(self.cve_static_root, path.strip('/')) if path else None
+        file_path = Path(safe_path if safe_path else self.cve_static_root)
         if file_path.is_dir():
             # If the user requests a directory, try to serve the index.html file inside it
             file_path /= 'index.html'
@@ -40,19 +37,32 @@ class CveController(http.Controller):
 
         # Serve the file content
         if 'html' in mime_type:
-            # Non-cached HTML response
+            # Read HTML content into memory
+            html_content = file_path.read_text()
+
+            # Inject <base> tag to make sure relative links work properly
+            requested_path = Path(request.httprequest.path)
+            if requested_path.suffix.startswith('.htm'):
+                # If an actual HTML file path was requested, use its directory path
+                requested_path = requested_path.parent
+            base_tag = f'<base href="{requested_path}/" />'
+            html_content = html_content.replace('<head>', f'<head>\n{base_tag}\n')
+
+            # Return HTML as non-cachable response
             return request.make_response(
-                file_path.read_text(),
+                html_content,
                 headers=[
                     ('Content-Type', mime_type),
                     ('Cache-Control', 'no-cache, no-store, must-revalidate'),
                 ]
             )
 
-        # Binary file (e.g. images, CSS, etc.)
+        # We are dealing with a binary file (e.g. images, CSS, etc.)
         referer = request.httprequest.headers.get('Referer')
         if not referer and 'assets' in (p.name for p in file_path.parents):
             # File was not requested by the HTML and we're trying to access a static MkDocs asset:
             # disallow direct access like this
             raise werkzeug.exceptions.Forbidden()
+
+        # Serve the file using the binary controller
         return binary.send_file(file_path, request.httprequest.environ, mimetype=mime_type)
