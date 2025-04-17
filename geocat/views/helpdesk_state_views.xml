@@ -1,0 +1,42 @@
+<odoo>
+    <record id="view_helpdesk_state_list" model="ir.ui.view">
+        <field name="name">geocat.helpdesk.state.list</field>
+        <field name="model">geocat.helpdesk.state</field>
+        <field name="arch" type="xml">
+            <list string="Ticket Statuses">
+                <field name="id" readonly="1"/>
+                <field name="name"/>
+                <field name="text_color" widget="color"/>
+                <field name="color" widget="color"/>
+                <field name="stage_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_helpdesk_state_form" model="ir.ui.view">
+        <field name="name">geocat.helpdesk.state.form</field>
+        <field name="model">geocat.helpdesk.state</field>
+        <field name="arch" type="xml">
+            <form string="Ticket Status">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="text_color" widget="color"/>
+                        <field name="color" widget="color"/>
+                        <field name="stage_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_helpdesk_state" model="ir.actions.act_window">
+        <field name="name">Ticket Statuses</field>
+        <field name="res_model">geocat.helpdesk.state</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_helpdesk_state" name="Ticket Statuses"
+              parent="helpdesk.helpdesk_menu_config"
+              action="action_helpdesk_state"/>
+</odoo>

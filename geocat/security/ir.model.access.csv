@@ -5,3 +5,5 @@ access_license_checkouts_manage,Manage License Checkouts,model_geocat_license_ch
 access_license_checkouts_internal_user,See License Checkouts,model_geocat_license_checkouts,geocat.group_license_user,1,0,0,0
 access_license_downloads_manage,Manage License Downloads,model_geocat_license_downloads,geocat.group_license_manager,1,1,0,0
 access_license_downloads_internal_user,See License Downloads,model_geocat_license_downloads,geocat.group_license_user,1,0,0,0
+access_helpdesk_ticket_states_manage,Manage Ticket States,model_geocat_helpdesk_state,helpdesk.group_helpdesk_manager,1,1,1,1
+access_helpdesk_ticket_states_internal_user,View Ticket States,model_geocat_helpdesk_state,helpdesk.group_helpdesk_user,1,0,0,0

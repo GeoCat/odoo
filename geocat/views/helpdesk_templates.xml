@@ -7,10 +7,50 @@
             <xpath expr="//div[@id='right-column']/t[@t-if='not is_html_empty(team.description)']" position="replace"/>
         </template>
 
+        <template id="ticket_submitted" name="Ticket Received">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty h-100">
+                    <div class="container d-flex flex-column justify-content-center h-100">
+                        <div class="oe_structure" id="oe_structure_website_helpdesk_thanks_you"/>
+                        <div class="d-flex flex-column align-items-center mb16 p-4 text-center">
+                            <t t-if="request.session.get('form_builder_model_model', '') == 'helpdesk.ticket'">
+                                <t t-set="ticket" t-value="request.website._website_form_last_record()"/>
+                            </t>
+                            <i class="fa fa-paper-plane fa-2x mb-3 rounded-circle text-bg-success" role="presentation"/>
+                            <h1 class="fw-bolder">Thank you!</h1>
+                            <t t-if="ticket">
+                                <p class="lead mb-0">Your ticket has been sent.</p>
+                                <p class="lead">Our team will get right on it.</p>
+                                <a t-if="request.session.uid" class="my-3 border rounded px-4 py-3 bg-100 fs-5 fw-bold shadow-sm text-decoration-none" t-attf-href="/my/ticket/#{ticket.id}" t-att-title="'Ticket #' + ticket.sudo().ticket_ref">
+                                    Ticket #<span t-field="ticket.sudo().ticket_ref"/>
+                                </a>
+                                <span t-if="not request.session.get('uid')" class="my-3 border rounded px-4 py-3 fs-5 fw-bold shadow-sm">
+                                    Ticket #<span t-field="ticket.sudo().ticket_ref"/>
+                                </span>
+                            </t>
+                            <a href="/my/tickets">View Tickets</a>
+                        </div>
+                        <div class="oe_structure" id="oe_structure_website_helpdesk_thanks_you_bottom"/>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <record id="aboutus_page" model="website.page" forcecreate="1">
+            <field name="is_published">True</field>
+            <field name="url">/my/ticket/submitted</field>
+            <field name="website_indexed" eval="False"/>
+            <field name="view_id" ref="ticket_submitted" />
+        </record>
+
         <template id="ticket_submit_form" name="GeoCat Helpdesk Form" inherit_id="website_helpdesk.ticket_submit_form">
             <!-- "Unmute" CSS class, never show team name -->
             <xpath expr="//h2[hasclass('text-muted')]" position="replace">
-                <h2>Submit a Ticket</h2>
+                <h3>Submit a Ticket</h3>
+            </xpath>
+
+            <xpath expr="//form[@id='helpdesk_ticket_form']" position="attributes">
+                <attribute name="data-success-page">/my/ticket/submitted</attribute>
             </xpath>
 
             <!-- Make partner_name field readonly (derived from logged-in user) -->

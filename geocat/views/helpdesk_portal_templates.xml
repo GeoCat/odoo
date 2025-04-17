@@ -1,34 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<data noupdate="0">
+    <data noupdate="0">
 
-    <template id="portal_helpdesk_ticket" name="My Tickets" inherit_id="helpdesk.portal_helpdesk_ticket">
-        <!-- Fix typo in the message -->
-        <xpath expr="//div[@t-if='not grouped_tickets']" position="replace">
-            <div t-if="not grouped_tickets" class="alert alert-info">
-                There are currently no tickets for your account.
-            </div>
-        </xpath>
-    </template>
+        <!-- "My Account" portal home (ticket button) -->
+        <template id="portal_my_home_helpdesk_ticket" inherit_id="helpdesk.portal_my_home_helpdesk_ticket">
+            <xpath expr="//t[@t-set='url' and contains(@t-value, '/my/tickets')]/../t[@t-set='text']"
+                   position="replace">
+                <t t-set="text">Manage your helpdesk tickets</t>
+            </xpath>
+        </template>
 
-    <template id="tickets_followup" name="Helpdesk Tickets" inherit_id="helpdesk.tickets_followup">
-        <!-- Add margin below Close Ticket button -->
-        <xpath expr="//button[@data-bs-target='#helpdesk_ticket_close_modal']" position="attributes">
-            <attribute name="class">btn btn-light pt-1 mb-2</attribute>
-        </xpath>
+        <!-- Ticket List override (master) -->
+        <template id="portal_helpdesk_ticket" name="My Tickets" inherit_id="helpdesk.portal_helpdesk_ticket">
+            <xpath expr="//t[@t-call='portal.portal_searchbar']//t[@t-set='title']" position="after">
+                <a href="/my/ticket/new" role="button" class="btn btn-primary ms-3" id="btn-new-ticket">New Ticket</a>
+            </xpath>
 
-        <!-- Fix weird language in the message -->
-        <xpath expr="//div[@id='helpdesk_ticket_close_modal']//div[hasclass('modal-body')]" position="replace">
-            <div class="modal-body">
-                <p>We hope your issue was resolved and that you are satisfied with the support provided.
-                    If you no longer need our assistance, please close this ticket.<br/>
-                    Thank you for your collaboration.
-                </p>
-            </div>
-        </xpath>
+            <!-- Change message when there are no ticket (also suitable for search result) -->
+            <xpath expr="//div[@t-if='not grouped_tickets']" position="replace">
+                <div t-if="not grouped_tickets" class="alert alert-info">
+                    No tickets found.
+                </div>
+            </xpath>
 
-        <!-- TODO: add blocked Status (e.g. red indicator) to ticket header if that has been set? -->
-    </template>
+            <!-- Remove right alignment of "Reported on" column header -->
+            <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th[contains(@t-if, 'create_date')]" position="attributes">
+                <attribute name="class" remove="text-end" add="ps-4" separator=" "/>
+            </xpath>
 
-</data>
+            <!-- Improve left padding of "Assigned to" column header -->
+            <xpath expr="//th[@id='ticket_user_header']" position="attributes">
+                <attribute name="class" remove="ps-5" add="ps-2" separator=" "/>
+            </xpath>
+
+            <!-- Put classification and consolidated status in the header -->
+            <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th[contains(@t-if, 'stage_id')]"
+                   position="replace">
+                <th t-if="groupby != 'classification'" colspan="3">Classification</th>
+                <th t-if="groupby != 'consolidated_status'" colspan="2" class="text-end">Status</th>
+            </xpath>
+
+            <!-- Replace stage for consolidated status grouping -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'stage_id')]" position="replace">
+                <th t-if="groupby == 'consolidated_status'" colspan="5">
+                    <span t-field="tickets[0].consolidated_status"/>
+                </th>
+            </xpath>
+
+            <!-- Fix colspan for user_id grouping -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'user_id')]" position="attributes">
+                <attribute name="colspan">6</attribute>
+            </xpath>
+
+            <!-- Replace team grouping (we have one team) with classification -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'team_id')]" position="replace">
+                <th t-if="groupby == 'classification'" colspan="6">
+                    <span t-field="tickets[0].classification"/>
+                </th>
+            </xpath>
+
+            <!-- Remove kanban_state grouping (we don't use it) -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'kanban_state')]" position="replace"/>
+
+            <!-- Fix colspan for partner_id grouping -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'partner_id')]" position="attributes">
+                <attribute name="colspan">7</attribute>
+            </xpath>
+
+            <!-- Harmonize ticket link -->
+            <xpath expr="//t[@t-as='ticket']//td//t[@t-out='ticket.ticket_ref']/.." position="attributes">
+                <attribute name="t-attf-href">/my/ticket/#{ticket.id}</attribute>
+            </xpath>
+
+            <!-- Remove right alignment of "Reported on" column -->
+            <xpath expr="//t[@t-as='ticket']//td[contains(@t-if, 'create_date')]" position="attributes">
+                <attribute name="class" remove="text-end" add="ps-4" separator=" "/>
+            </xpath>
+
+            <!-- Improve left padding of "Assigned to" column -->
+            <xpath expr="//td[@id='ticket_user_body']" position="attributes">
+                <attribute name="class" remove="ps-5" add="ps-2" separator=" "/>
+            </xpath>
+
+            <!-- Add Classification column -->
+            <xpath expr="//t[@t-as='ticket']//td[contains(@t-if, 'stage_id')]" position="replace">
+                <td t-if="groupby != 'classification'" colspan="3">
+                    <span t-field="ticket.classification"/>
+                </td>
+                <td t-if="groupby != 'consolidated_status'" class="text-end">
+                    <span t-field="ticket.consolidated_status" class="badge rounded-pill fw-normal"
+                          t-attf-style="color: #{ticket.consolidated_color} !important; background-color: #{ticket.consolidated_bgcolor} !important;"
+                          title="Current status of this ticket"/>
+                </td>
+            </xpath>
+
+        </template>
+
+        <!-- Single Ticket view -->
+        <template id="tickets_followup" name="Helpdesk Tickets" inherit_id="helpdesk.tickets_followup">
+
+            <!-- Add margin below Close Ticket button -->
+            <xpath expr="//button[@data-bs-target='#helpdesk_ticket_close_modal']" position="attributes">
+                <attribute name="class">btn btn-primary pt-1 mb-2</attribute>
+            </xpath>
+
+            <!-- Fix weird language in the message -->
+            <xpath expr="//div[@id='helpdesk_ticket_close_modal']//div[hasclass('modal-body')]" position="replace">
+                <div class="modal-body">
+                    <p>We hope your issue was resolved and that you are satisfied with the support provided.
+                       Before you close this ticket, please note that you can only reopen a ticket upon request.
+                    </p>
+                </div>
+            </xpath>
+
+            <!-- Replace the fairly useless "ticket navigation" for "New Ticket" button for convenience -->
+            <xpath expr="//div[@id='ticket-nav']" position="replace">
+                <div class="d-grid flex-sm-nowrap">
+                    <a href="/my/ticket/new" class="btn btn-light pt-1 mb-3" role="button">
+                        New Ticket
+                    </a>
+                </div>
+            </xpath>
+
+            <!-- Insert some extra ticket metadata in the sidebar -->
+            <xpath expr="//div[@id='ticket-links']" position="after">
+                <div class="mt-4">
+                    <div t-attf-class="col-12 col-md-12">
+                        <h6>
+                            <small class="text-muted">Reported on</small>
+                        </h6>
+                        <span t-field="ticket.create_date" t-options='{"widget": "datetime", "hide_seconds": True}'/>
+                    </div>
+                    <div t-attf-class="col-12 col-md-12 mt-2">
+                        <h6>
+                            <small class="text-muted">Classification</small>
+                        </h6>
+                        <span t-field="ticket.classification"/>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Rename "Customer" to "Reporter" -->
+            <xpath expr="//div[@t-if='ticket.partner_id']/h6/small" position="replace">
+                <small class="text-muted">Reporter</small>
+            </xpath>
+
+            <!-- Decrease title size -->
+            <xpath expr="//span[@t-field='ticket.name' and hasclass('h3')]" position="attributes">
+                <attribute name="class">h4</attribute>
+            </xpath>
+
+            <!-- Change "Stage" to "Status" -->
+            <xpath expr="//div[@id='card_header']/div[hasclass('row')]//div[hasclass('col-auto')]" position="replace">
+                <div class="col col-auto">
+                    <span t-field="ticket.consolidated_status" class="badge rounded-pill"
+                          t-attf-style="color: #{ticket.consolidated_color} !important; background-color: #{ticket.consolidated_bgcolor} !important;"
+                          title="Current status of this ticket"/>
+                </div>
+            </xpath>
+
+            <!-- Remove "Reported on" line (we put it in the sidebar) -->
+            <xpath expr="//div[@id='card_body']/div[hasclass('row')]/span[@t-field='ticket.create_date']/.."
+                   position="replace"/>
+
+            <!-- Decrease "Communication history" font size -->
+            <xpath expr="//div[@id='ticket_chat']/h3" position="replace">
+                <h5 class="text-muted"><i class="fa fa-history"></i>&#160; Communication history</h5>
+            </xpath>
+
+        </template>
+
+    </data>
 </odoo>

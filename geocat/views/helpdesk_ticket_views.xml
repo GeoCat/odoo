@@ -21,6 +21,9 @@
             <field name="priority" position="before">
                 <field name="classification"/>
             </field>
+            <xpath expr="//group/filter[@name='state']" position="replace">
+                <filter string="Blocked State" name="state" context="{'group_by': 'blocked_state'}"/>
+            </xpath>
         </field>
     </record>
 
@@ -48,6 +51,28 @@
             <field name="priority" position="after">
                 <field name="classification" optional="show"/>
             </field>
+            <field name="activity_ids" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </field>
+            <field name="rating_avg_text" position="replace"/>
+            <field name="kanban_state" position="replace"/>
+            <field name="stage_id" position="after">
+                <field name="all_blocked_states_json" column_invisible="True"/>
+                <field name="blocked_state" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}" groups="base.group_user"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_view_kanban" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.kanban</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_kanban"/>
+        <field name="arch" type="xml">
+            <progressbar field="kanban_state" position="replace"/> <!-- TODO: Create custom progress bar that can deal with the many2one field? -->
+            <xpath expr="//t[@t-name='card']//footer//field[@name='kanban_state']" position="replace">
+                <field name="all_blocked_states_json" invisible="True"/>
+                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" class="ms-1" groups="base.group_user"/>
+            </xpath>
         </field>
     </record>
 
@@ -58,6 +83,13 @@
         <field name="arch" type="xml">
             <field name="priority" position="before">
                 <field name="classification" readonly="0" required="1"/>
+            </field>
+            <field name="kanban_state" position="replace">
+                <field name="all_blocked_states_json" invisible="True"/>
+                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" readonly="1" groups="base.group_user"/>
+            </field>
+            <field name="email_cc" position="after">
+                <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
             </field>
         </field>
     </record>

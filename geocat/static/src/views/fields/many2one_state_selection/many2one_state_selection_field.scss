@@ -1,0 +1,15 @@
+.o_form_sheet > .o_field_many2one_state_selection {
+    float: right;
+
+    .o_status {
+        height: $h2-font-size;
+        width: $h2-font-size;
+    }
+}
+
+.o_kanban_record .o_field_many2one_state_selection {
+    .dropdown-toggle .o_status {
+        height: $h4-font-size;
+        width: $h4-font-size;
+    }
+}

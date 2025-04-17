@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+<!--        &lt;!&ndash; Groups &ndash;&gt;-->
+<!--        <record id="group_license_user" model="res.groups">-->
+<!--            <field name="name">User</field>-->
+<!--            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>-->
+<!--            <field name="category_id" ref="geocat.module_category_license_management"/>-->
+<!--        </record>-->
+
+
+        <record id="helpdesk_state_manager_rule" model="ir.rule">
+            <field name="name">Helpdesk State Manager Rule</field>
+            <field name="model_id" ref="model_geocat_helpdesk_state"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('helpdesk.group_helpdesk_manager'))]"/>
+        </record>
+
+<!--        <record id="helpdesk_state_user_rule" model="ir.rule">-->
+<!--            <field name="name">Helpdesk State User Rule</field>-->
+<!--            <field name="model_id" ref="model_geocat_helpdesk_state"/>-->
+<!--            <field name="domain_force">[(1, '=', 1)]</field>-->
+<!--            <field name="groups" eval="[(4, ref('helpdesk.group_helpdesk_user'))]"/>-->
+<!--        </record>-->
+    </data>
+</odoo>

@@ -35,6 +35,7 @@
     ],
     'data': [
         'security/licensing_security.xml',
+        'security/helpdesk_security.xml',
         'security/ir.model.access.csv',
         'views/licensing_checkout_views.xml',
         'views/licensing_download_views.xml',
@@ -50,9 +51,11 @@
         'views/webclient_templates.xml',
         'views/website_blog_posts_loop.xml',
         'views/calendar_views.xml',
+        'views/helpdesk_stage_views.xml',
         'views/helpdesk_templates.xml',
         'views/helpdesk_ticket_views.xml',
         'views/helpdesk_portal_templates.xml',
+        'views/helpdesk_state_views.xml',
         'views/website_hr_recruitment_templates.xml',
         'data/mail_templates_email_layouts.xml',
         'data/auth_signup_templates_email.xml',
@@ -88,6 +91,7 @@
              'geocat/static/src/webclient/home_menu/home_menu_background.scss'),
             ('after', 'web_editor/static/src/scss/web_editor.common.scss',
              'geocat/static/src/scss/web_editor.common.scss'),
+            'geocat/static/src/views/fields/many2one_state_selection/**',
         ],
         'web.dark_mode_variables': [
             # Dark mode override for web._assets_primary_variables
