@@ -17,18 +17,17 @@ class GeoCatHelpdeskState(models.Model):
     def write(self, vals):
         """ Whenever a record is updated, we need to call helpdesk_ticket.load_blocked_states(). """
         res = super(GeoCatHelpdeskState, self).write(vals)
-        if res:
-            self.env['helpdesk.ticket'].load_blocked_states()
+        self.env['helpdesk.ticket'].load_blocked_states()
         return res
 
     def create(self, vals):
         """ Whenever a record is created, we need to call helpdesk_ticket.load_blocked_states(). """
         res = super(GeoCatHelpdeskState, self).create(vals)
-        if res:
-            self.env['helpdesk.ticket'].load_blocked_states()
+        self.env['helpdesk.ticket'].load_blocked_states()
         return res
 
     def unlink(self):
         """ Whenever a record is deleted, we need to call helpdesk_ticket.load_blocked_states(). """
-        super(GeoCatHelpdeskState, self).unlink()
+        res = super(GeoCatHelpdeskState, self).unlink()
         self.env['helpdesk.ticket'].load_blocked_states()
+        return res
