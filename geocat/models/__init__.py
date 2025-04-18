@@ -11,10 +11,10 @@ from . import website_helpdesk_team
 from . import helpdesk_stage
 from . import helpdesk_state
 from . import helpdesk_team
-from . import helpdesk_ticket
 from . import helpdesk_sla
 from . import helpdesk_sla_report_analysis
 from . import helpdesk_ticket_analysis
+from . import helpdesk_ticket
 from . import license_checkouts
 from . import license_downloads
 from . import license_keys
