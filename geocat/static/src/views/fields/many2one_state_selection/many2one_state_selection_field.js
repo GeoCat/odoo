@@ -66,7 +66,6 @@ export class Many2oneStateSelectionField extends Component {
 export const many2OneStateSelectionField = {
     component: Many2oneStateSelectionField,
     displayName: _t("Many2one State Selection"),
-    description: _t("Many2one field with a selection dropdown for the available values."),
     supportedOptions: [
         {
             label: _t("Autosave"),
