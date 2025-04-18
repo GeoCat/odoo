@@ -113,13 +113,18 @@
                 </div>
             </xpath>
 
-            <!-- Replace the fairly useless "ticket navigation" for "New Ticket" button for convenience -->
-            <xpath expr="//div[@id='ticket-nav']" position="replace">
+            <!-- Add "New Ticket" button for convenience -->
+            <xpath expr="//div[@id='ticket-nav']" position="before">
                 <div class="d-grid flex-sm-nowrap">
                     <a href="/my/ticket/new" class="btn btn-light pt-1 mb-3" role="button">
                         New Ticket
                     </a>
                 </div>
+            </xpath>
+
+            <!-- Hide (collapse) the fairly useless "ticket navigation" (we cannot remove it, because its overridden) -->
+            <xpath expr="//div[@id='ticket-nav']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
 
             <!-- Insert some extra ticket metadata in the sidebar -->
