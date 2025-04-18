@@ -152,7 +152,7 @@
 
             <!-- Decrease title size -->
             <xpath expr="//span[@t-field='ticket.name' and hasclass('h3')]" position="attributes">
-                <attribute name="class">h4</attribute>
+                <attribute name="style">font-size: 1.4rem</attribute>
             </xpath>
 
             <!-- Change "Stage" to "Status" -->
