@@ -24,6 +24,8 @@
                 <body style="font-family: Inter, 'Open Sans', Helvetica, Arial, sans-serif; color: #454748; font-size: 13px;">
                     <!-- We don't use the subtype, but we keep it in for reference -->
                     <t t-set="subtype_internal" t-value="subtype and subtype.internal"/>
+                    <t t-set="show_footer" t-value="email_notification_force_footer or
+                        (email_notification_allow_footer and show_header and author_user and author_user._is_internal())"/>
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
                         <tbody>
                             <tr>
@@ -35,22 +37,27 @@
                                             <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
                                             <t class="o_signature">
                                                 <!-- Show a generic fixed signature if the email_add_signature field is set -->
-                                                <div t-if="email_add_signature" style="margin-top: 16px">
-                                                    Best regards,
-                                                    <p>The GeoCat Team</p>
+                                                <div t-if="email_add_signature" style="margin-top: 16px; font-size: 13px !important;">
+                                                    <t t-if="not is_html_empty(signature)" t-out="signature"/>
+                                                    <t t-else="">
+                                                        Best regards,
+                                                        <p>The GeoCat Team</p>
+                                                    </t>
                                                 </div>
                                             </t>
                                         </div>
                                         <!-- This break makes sure that our margin does not collapse between the divs -->
                                         <br/>
                                         <!-- FOOTER -->
-                                        <!--suppress XmlDuplicatedId -->
-                                        <div id="footer">
-                                            <t t-call="geocat.mail_footer"/>
-                                        </div>
-                                        <div id="footer_sub" style="color: #555555; font-size:10px;">
-                                            <t t-call="geocat.mail_footer_sub"/>
-                                        </div>
+                                        <t t-if="show_footer">
+                                            <!--suppress XmlDuplicatedId -->
+                                            <div id="footer">
+                                                <t t-call="geocat.mail_footer"/>
+                                            </div>
+                                            <div id="footer_sub" style="color: #555555; font-size:10px;">
+                                                <t t-call="geocat.mail_footer_sub"/>
+                                            </div>
+                                        </t>
                                     </div>
                                 </td>
                             </tr>
@@ -98,24 +105,13 @@
         </template >
 
         <!-- Variant of the GeoCat master email layout template with a responsible signature -->
-        <!-- NOTE: This template is a bit useless, as the modules that use it often have email_add_signature set to False... -->
         <template id="mail_layout_master_with_responsible_signature"
                   inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email master layout template with responsible signature (user_id of the record)">
             <xpath expr="//t[hasclass('o_signature')]" position="replace">
                 <t class="o_signature">
-                    <!-- Only show a signature if the email_add_signature field is set -->
-                    <div t-if="email_add_signature" style="margin-top: 16px">
-                        Best regards,
-                        <div>
-                            <t t-if="'user_id' in record and record.user_id and not record.env.user._is_superuser()
-                               and not is_html_empty(record.user_id.sudo().signature)" t-out="record.user_id.sudo().signature"/>
-                            <t t-else="">
-                                <!-- Use generic signature if there is none, or it's a system mail -->
-                                <p>The GeoCat Team</p>
-                            </t>
-                        </div>
-                    </div>
+                    <div t-if="email_add_signature and 'user_id' in record and record.user_id and not record.env.user._is_superuser() and not is_html_empty(record.user_id.sudo().signature)"
+                         t-out="record.user_id.sudo().signature" style="margin-top: 16px; font-size: 13px !important;"/>
                 </t>
             </xpath>
         </template>
