@@ -72,6 +72,10 @@ class HelpdeskTicket(models.Model):
         # Make sure that the classification field is always available in the form builder
         self.env['ir.model.fields'].formbuilder_whitelist('helpdesk.ticket', ['classification'])
 
+        # Ensure that the helpdesk form view is available and up-to-date (for all teams, but we only have one)
+        teams = self.env['helpdesk.team'].search([('use_website_helpdesk_form', '=', True)])
+        teams._ensure_submit_form_view()
+
     @api.model
     def load_blocked_states(self):
         """ (Re)load all blocked states. There should only be a few, so no real performance or memory hit. """

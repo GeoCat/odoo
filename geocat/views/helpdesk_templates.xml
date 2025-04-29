@@ -70,7 +70,8 @@
             <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='name']/../../.." position="before">
                 <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_required" data-type="char" data-name="Field">
                     <div class="row s_col_no_resize s_col_no_bgcolor">
-                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px">
+                        <label class="col-form-label col-sm-auto s_website_form_label" style="width: 200px"
+                               t-attf-title="Regular support requests (part of the SLA) should be classified as 'P'.&#10;Use 'S' classification only if you have purchased GeoCat consultancy hours.&#10;If you don't know what applies to you, you should set this to 'Unclassified'.">
                             <span class="s_website_form_label_content">Classification</span>
                             <span class="s_website_form_mark"> *</span>
                         </label>

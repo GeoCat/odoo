@@ -7,6 +7,8 @@
             <xpath expr="//t[@t-set='url' and contains(@t-value, '/my/tickets')]/../t[@t-set='text']"
                    position="replace">
                 <t t-set="text">Manage your helpdesk tickets</t>
+                <!-- Make sure that the card is always shown, even if there are no tickets! -->
+                <t t-set="config_card" t-value="True"/>
             </xpath>
         </template>
 
@@ -19,7 +21,7 @@
             <!-- Change message when there are no ticket (also suitable for search result) -->
             <xpath expr="//div[@t-if='not grouped_tickets']" position="replace">
                 <div t-if="not grouped_tickets" class="alert alert-info">
-                    No tickets found.
+                    No tickets found. You may <a href="/my/ticket/new">create a new ticket</a>.
                 </div>
             </xpath>
 

@@ -13,7 +13,7 @@ class HelpdeskTeam(models.Model):
         base_tree = etree.fromstring(base_arch)
         diff_tree = etree.fromstring(diff_arch)
         arch_node = self.env['ir.ui.view'].apply_inheritance_specs(base_tree, diff_tree)
-        if not arch_node:
+        if arch_node is None:
             return
         return etree.tostring(arch_node, pretty_print=True, encoding='unicode')
 
