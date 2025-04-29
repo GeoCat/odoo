@@ -76,6 +76,12 @@ class HelpdeskTicket(models.Model):
         teams = self.env['helpdesk.team'].search([('use_website_helpdesk_form', '=', True)])
         teams._ensure_submit_form_view()
 
+        # Load all blocked states from the geocat.helpdesk.state model (should have been initialized first)
+        self.load_blocked_states()
+
+        # Make sure that all statuses are up-to-date
+        self.reset_consolidated_statuses()
+
     @api.model
     def load_blocked_states(self):
         """ (Re)load all blocked states. There should only be a few, so no real performance or memory hit. """

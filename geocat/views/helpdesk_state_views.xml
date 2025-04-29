@@ -33,10 +33,19 @@
     <record id="action_helpdesk_state" model="ir.actions.act_window">
         <field name="name">Ticket Statuses</field>
         <field name="res_model">geocat.helpdesk.state</field>
+        <field name="path">helpdesk-statuses</field>
         <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No statuses found. Let's create one!
+          </p><p>
+            Statuses typically provide more info about the progress within a specific stage.
+          </p>
+        </field>
     </record>
 
     <menuitem id="menu_helpdesk_state" name="Ticket Statuses"
               parent="helpdesk.helpdesk_menu_config"
-              action="action_helpdesk_state"/>
+              action="action_helpdesk_state"
+              groups="base.group_no_one" />
 </odoo>

@@ -12,17 +12,12 @@ class GeoCatHelpdeskState(models.Model):
 
     def _update_ticket_model(self, reset_consolidated_statuses=False):
         ticket_model = self.env['helpdesk.ticket']
-        if ticket_model:
+        if ticket_model is not None:
             # Make sure that all blocked states are loaded at start
             ticket_model.load_blocked_states()
             if reset_consolidated_statuses:
                 # Make sure that the consolidates statuses of all tickets match the current states and stages
                 ticket_model.reset_consolidated_statuses()
-
-    def init(self):
-        """ Called once when the model is initialized. """
-        # Note: as this model is initialized AFTER the helpdesk.stage model, we can safely call this with the reset flag
-        self._update_ticket_model(reset_consolidated_statuses=True)
 
     def write(self, vals):
         """ Whenever a record is updated, we need to call helpdesk_ticket.load_blocked_states(). """
