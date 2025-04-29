@@ -91,6 +91,12 @@ class HelpdeskTicket(models.Model):
                 'stage_id': state.stage_id.id,
             })
 
+    @api.model
+    def reset_consolidated_statuses(self):
+        """ Reset the consolidated status for all tickets. As this is a potentially heavy operation,
+        only call this at startup or when states or stages are modified by an administrator. """
+        self.search([])._compute_consolidated_status()
+
     @staticmethod
     def _class_to_priority(classification):
         """ Maps GeoCat classification to Odoo priority (0-3).

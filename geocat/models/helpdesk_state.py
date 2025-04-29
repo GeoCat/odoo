@@ -10,24 +10,37 @@ class GeoCatHelpdeskState(models.Model):
     text_color = fields.Char(string='Text Color', default='#00000', required=True)
     stage_id = fields.Many2one('helpdesk.stage', string='Stage', required=True)
 
+    def _update_ticket_model(self, reset_consolidated_statuses=False):
+        ticket_model = self.env['helpdesk.ticket']
+        if ticket_model:
+            # Make sure that all blocked states are loaded at start
+            ticket_model.load_blocked_states()
+            if reset_consolidated_statuses:
+                # Make sure that the consolidates statuses of all tickets match the current states and stages
+                ticket_model.reset_consolidated_statuses()
+
     def init(self):
-        # Make sure that all blocked states are loaded at start
-        self.env['helpdesk.ticket'].load_blocked_states()
+        """ Called once when the model is initialized. """
+        # Note: as this model is initialized AFTER the helpdesk.stage model, we can safely call this with the reset flag
+        self._update_ticket_model(reset_consolidated_statuses=True)
 
     def write(self, vals):
         """ Whenever a record is updated, we need to call helpdesk_ticket.load_blocked_states(). """
         res = super(GeoCatHelpdeskState, self).write(vals)
-        self.env['helpdesk.ticket'].load_blocked_states()
+        # Update available states for ticket model and reset the consolidated statuses of all tickets
+        self._update_ticket_model(reset_consolidated_statuses=True)
         return res
 
     def create(self, vals):
         """ Whenever a record is created, we need to call helpdesk_ticket.load_blocked_states(). """
         res = super(GeoCatHelpdeskState, self).create(vals)
-        self.env['helpdesk.ticket'].load_blocked_states()
+        # For new records, we need to load the blocked states but do not have to reset the consolidated statuses
+        self._update_ticket_model()
         return res
 
     def unlink(self):
         """ Whenever a record is deleted, we need to call helpdesk_ticket.load_blocked_states(). """
         res = super(GeoCatHelpdeskState, self).unlink()
-        self.env['helpdesk.ticket'].load_blocked_states()
+        # Update available states for ticket model and reset the consolidated statuses of all tickets
+        self._update_ticket_model(reset_consolidated_statuses=True)
         return res
