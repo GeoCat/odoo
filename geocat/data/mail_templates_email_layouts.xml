@@ -35,16 +35,8 @@
                                         <div id="content" style="margin: 24px; font-size: 13px;">
                                             <div t-out="message.body"/>
                                             <!-- Note: in contrast to the Odoo templates, we don't do tracking values here -->
-                                            <t class="o_signature">
-                                                <!-- Show a generic fixed signature if the email_add_signature field is set -->
-                                                <div t-if="email_add_signature" style="margin-top: 16px; font-size: 13px !important;">
-                                                    <t t-if="not is_html_empty(signature)" t-out="signature"/>
-                                                    <t t-else="">
-                                                        Best regards,
-                                                        <p>The GeoCat Team</p>
-                                                    </t>
-                                                </div>
-                                            </t>
+                                            <!-- Placeholder for signature (not used here to avoid double signatures) -->
+                                            <t class="o_signature"/>
                                         </div>
                                         <!-- This break makes sure that our margin does not collapse between the divs -->
                                         <br/>

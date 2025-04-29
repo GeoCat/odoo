@@ -50,15 +50,12 @@ def map_email_layout_template(layout_template, force_default: bool = False) -> s
             # No mapping found and we don't want to force a default: return the input value
             return layout_template
 
-        # The layout template was set to False, or no mapping was found (forced_template = None)
-        forced_template = 'geocat.mail_layout_light' if layout_template is False else 'geocat.mail_layout_master'
+        # The layout template was set to False, or no mapping was found (forced_template = None): prefer light template
+        forced_template = 'geocat.mail_layout_light'
 
         if isinstance(layout_template, str):
-            # Special cases where the mapping is not exact
-            if 'mail_notification_light' in layout_template:
-                # The template appears to be some override of the light layout
-                forced_template = 'geocat.mail_layout_light'
-            elif 'with_responsible_signature' in layout_template:
+            # Special case where the mapping is not exact
+            if 'with_responsible_signature' in layout_template:
                 # The template appears to be some override of the master layout with responsible signature
                 forced_template = 'geocat.mail_layout_master_with_responsible_signature'
 
