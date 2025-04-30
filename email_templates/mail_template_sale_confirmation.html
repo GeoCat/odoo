@@ -32,14 +32,18 @@
         </ul>
     </t>
     Do not hesitate to contact us if you have any questions.
-    <t t-if="not is_html_empty(object.user_id.signature)">
-        <br><br>
-        Best regards,<br>
-        <t t-out="object.user_id.signature or ''">Mitchell Admin</t>
+    <br><br>
+    <t t-if="not is_html_empty(object.user_id.signature)" data-o-mail-quote-container="1">
+        <div style="font-size: inherit !important;">
+            <t t-out="object.user_id.signature" data-o-mail-quote="1">
+                <p>John Doe</p>
+            </t>
+        </div>
     </t>
-    <t t-else="">
-        <br><br>
-        Best regards,<br>
-        The GeoCat Team
+    <t t-else="" data-o-mail-quote-container="1">
+        <p data-o-mail-quote="1">
+            Best regards,<br>
+            The GeoCat Team
+        </p>
     </t>
 </div>

@@ -1,10 +1,12 @@
 <div>
-    Dear <t t-out="object.user_id.name or 'portal user'">Marc Demo</t>,<br><br>
-    Welcome to the GeoCat customer portal!<br><br>
+    Dear <t t-out="object.user_id.name or 'portal user'">Marc Demo</t>,
+    <br><br>
+    Welcome to the GeoCat customer portal!
+    <br><br>
     An account has been created for you with the following login:
     <strong t-out="object.user_id.login">demo</strong>.<br>
-    Please click on the button below to activate your account.
-    <div style="margin: 30px 0; text-align: center;">
+    Please click on the button below to activate your account and to get access to our helpdesk.
+    <div style="margin: 30px 0;">
         <a t-att-href="object.user_id.partner_id._get_signup_url()"
            style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
             Activate Now
@@ -12,6 +14,13 @@
     </div>
     <t t-if="object.wizard_id.welcome_message">
         <br>
-        <t t-out="object.wizard_id.welcome_message or ''">Welcome to our company portal.</t>
+        <t t-out="object.wizard_id.welcome_message or ''">Custom message goes here (if set).</t>
+        <br><br>
     </t>
+    <div data-o-mail-quote-container="1">
+        <p data-o-mail-quote="1">
+            Best regards,<br>
+            The GeoCat Team
+        </p>
+    </div>
 </div>

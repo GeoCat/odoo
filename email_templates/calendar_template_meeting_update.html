@@ -72,17 +72,17 @@
         <p placeholder="Enter your message here"><br></p>
     </div>
     <!-- NOTE: we include the signature here, because the light layout is used for this one (which does not include a signature)! -->
-    <t t-if="object.user_id.signature" data-o-mail-quote-container="1">
-        <p>
-            Best regards,
-            <div>
-                <t t-if="object.user_id.signature" t-out="object.user_id.signature" data-o-mail-quote="1">
-                    <p>John Doe</p>
-                </t>
-                <t t-else="">
-                    <p>The GeoCat Team</p>
-                </t>
-            </div>
+    <t t-if="not is_html_empty(object.user_id.signature)" data-o-mail-quote-container="1">
+        <div style="font-size: inherit !important;">
+            <t t-out="object.user_id.signature" data-o-mail-quote="1">
+                <p>John Doe</p>
+            </t>
+        </div>
+    </t>
+    <t t-else="" data-o-mail-quote-container="1">
+        <p data-o-mail-quote="1">
+            Best regards,<br>
+            The GeoCat Team
         </p>
     </t>
 </div>

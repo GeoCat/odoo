@@ -19,12 +19,6 @@
     <br>
     Please note that your subscription <t t-out="ctx.get('code') or ''">CODE</t> is still valid but will be <strong>suspended</strong>
     on <t t-out="format_date(ctx.get('date_close')) or ''">05/05/2021</t>.<br>
-    <div style="margin: 30px 0; text-align: center;">
-        <a t-attf-href="{{ ctx.get('payment_link', object.get_portal_url()) }}"
-           style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
-            Pay Now
-        </a>
-    </div>
     If you have any questions, do not hesitate to contact us.
     <br><br>
     <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->

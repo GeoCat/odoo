@@ -6,21 +6,10 @@
     If you have any additional information or updates regarding your issue, please feel free to reply to this email.
     <br>
     You may also use the buttons below to update your ticket through our customer portal.
-    <div style="text-align: center; margin: 30px 0;">
-        <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.use_website_helpdesk_form">
-            <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="'%s%s' % (object.team_id.website_id.domain or '', object.get_portal_url())" target="_blank">View Ticket</a>
-        </t>
-        <t t-else="">
-            <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
-        </t>
-        <t t-if="hasattr(object.team_id, 'website_id') and object.team_id.allow_portal_ticket_closing">
-            <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="'%s/my/ticket/close/%s/%s' % (object.team_id.website_id.domain or '', object.id, object.access_token)" target="_blank">Close Ticket</a>
-        </t>
-        <t t-elif="object.team_id.allow_portal_ticket_closing">
+    <div style="margin: 30px 0;">
+        <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="object.get_portal_url()" target="_blank">View Ticket</a>
+        <t t-if="object.team_id.allow_portal_ticket_closing">
             <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="'/my/ticket/close/%s/%s' % (object.id, object.access_token)" target="_blank">Close Ticket</a>
-        </t>
-        <t t-if="object.team_id.use_website_helpdesk_forum or object.team_id.use_website_helpdesk_knowledge or object.team_id.use_website_helpdesk_slides">
-            <a style="margin: 16px 5px; padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;" t-att-href="object.team_id.feature_form_url" target="_blank">Visit Help Center</a>
         </t>
     </div>
     Thank you for your patience and we look forward to assisting you.

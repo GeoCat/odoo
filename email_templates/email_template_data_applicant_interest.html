@@ -7,7 +7,7 @@
     As we think you might be great for the position, your application has
     been shortlisted for a call or an interview.
     <br>
-    <div t-if="'website_url' in object.job_id and object.job_id.website_url" style="margin: 30px 0; text-align: center;">
+    <div t-if="'website_url' in object.job_id and object.job_id.website_url" style="margin: 30px 0;">
         <a t-att-href="object.job_id.website_url"
            style="padding: 8px 40px; color: #FFFFFF; text-decoration: none; background-color: #0092FF; border-radius: 50px; font-size: 14px; font-weight: 500;">
             Job Description
@@ -49,7 +49,7 @@
     An assessment or a test might be part of the process, depending on the position you are applying for.
     <br><br>
     We usually contact you within a couple of days.<br>In the meantime, please feel free to reply to this email if you have any questions or concerns.
-    <br><br><br>
+    <br><br>
     <!-- NOTE: we include a generic signature here, because the light layout is used for this one (which does not include a signature)! -->
     <div data-o-mail-quote-container="1">
         See you soon,

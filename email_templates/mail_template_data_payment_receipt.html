@@ -1,19 +1,21 @@
 <div>
-    <p>
-        Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,<br><br>
-        Thank you for your payment.<br>
-        Please find the attached receipt for your order <span style="font-weight:bold;" t-out="(object.name or '').replace('/','-') or ''">BNK1-2021-05-0002</span> from <t t-out="object.company_id.name or ''">GeoCat</t>.
-        <br><br>
-        Do not hesitate to contact us if you have any questions.
-        <t t-if="not is_html_empty(user.signature)" data-o-mail-quote-container="1">
-            <br><br>
-            Best regards,<br>
-            <t t-out="user.signature or ''" data-o-mail-quote="1">Mitchell Admin</t>
-        </t>
-        <t t-else="">
-            <br><br>
+    Dear <t t-out="object.partner_id.name or 'customer'">Azure Interior</t>,<br><br>
+    Thank you for your payment.<br>
+    Please find the attached receipt for your order <span style="font-weight:bold;" t-out="(object.name or '').replace('/','-') or ''">BNK1-2021-05-0002</span> from <t t-out="object.company_id.name or ''">GeoCat</t>.
+    <br><br>
+    Do not hesitate to contact us if you have any questions.
+    <br><br>
+    <t t-if="not is_html_empty(user.signature)" data-o-mail-quote-container="1">
+        <div style="font-size: inherit !important;">
+            <t t-out="user.signature" data-o-mail-quote="1">
+                <p>John Doe</p>
+            </t>
+        </div>
+    </t>
+    <t t-else="" data-o-mail-quote-container="1">
+        <p data-o-mail-quote="1">
             Best regards,<br>
             The GeoCat Team
-        </t>
-    </p>
+        </p>
+    </t>
 </div>
