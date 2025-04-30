@@ -6,7 +6,9 @@ This folder contains HTML email templates used by various Odoo modules.
 
 They will not be deployed automatically,
 but they need to be *manually* set in the Odoo Settings (search for `Email Templates`).  
-The following sections explain how Odoo email templates work.
+
+The following sections explain how Odoo email templates work.  
+Be prepared to be confused, as Odoo's email template system is a flaming hot mess. 😰
 
 ## Different kinds of email templates
 
@@ -109,7 +111,7 @@ If you are in developer mode, you can select any text and then click the `</>` b
 
 Now you can edit the HTML anyway you like. 
 
-:warning: **Possible pitfalls**:
+⚠️ **POSSIBLE PITFALLS**:
 
 - Note that Odoo's mail preview might not always render correctly. 
   Always make sure that your HTML is okay by pressing the `Preview` button in the top left corner.
@@ -125,10 +127,17 @@ Now you can edit the HTML anyway you like.
 - Be careful when using `<p>` tags, as the Odoo sanitization adds CSS styling to it, so that the spacing above and below is removed. 
   If you need an empty line between paragraphs, use `<br><br>` instead.
 - It is advised to keep the HTML editor open and iterate over all records (using the `<` and `>` buttons in the top right corner), saving each one after editing.
+- Be warned that the templates are **multilingual** (😱), so you will have to edit each language separately.  
+  You can see all language versions using the "button" in the top right corner of the editor (e.g. if you hover over the editor, it should say `EN` in the corner). 
+  This will open a popup with all the template language versions in it.  
+  ![language_editor.png](img/language_editor.png)
+  ️🚨 **WARNING**  
+  - For the time-being, we've set all languages to the **same default language** (US English), so you should copy that version into the other languages.  
+  - Every time you install/activate a new language in Odoo, you will have to update the templates for that language!
 
 If you mess up, you can always revert to the original template by clicking the `Reset Template` button at the top and repeat the process.
 
-**Note**:  
+### HTML template files
 The HTML files in this folder are named according to the record `id`'s in the Odoo XML template files. 
 These ID's are not visible in Odoo itself (record ID's are numeric in the database), but you can find the names of the XML 
 template files that contain the original `<record>` objects in the `template_fs` field of the `mail_template` model 
@@ -168,7 +177,7 @@ in the database. Each `id` value of a `<record>` in the XML files corresponds to
 | Timesheets: Approver Reminder            | mail_template_timesheet_reminder.html              |
 | Timesheets: Employee Reminder            | mail_template_timesheet_reminder_user.html         |
 
-NOTE: Some module templates have not been customized yet (e.g. because they are internal only or not used). 
+**NOTE:** Some module templates have not been customized yet (e.g. because they are internal only or not used). 
 Among others, this applies to the following modules/templates:
 
 - Gamification
@@ -177,3 +186,6 @@ Among others, this applies to the following modules/templates:
 - Loyalty Coupon / Gift Card
 - Planning
 - Project
+
+To make this mess even worse, note that **not** all email templates are editable (or even visible) in the Odoo settings.
+Some have been "hard-coded" into the modules that call them and can only be edited/changed using a module override.
