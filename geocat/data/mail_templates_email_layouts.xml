@@ -25,7 +25,7 @@
                     <!-- We don't use the subtype, but we keep it in for reference -->
                     <t t-set="subtype_internal" t-value="subtype and subtype.internal"/>
                     <t t-set="show_footer" t-value="email_notification_force_footer or
-                        (email_notification_allow_footer and show_header and author_user and author_user._is_internal())"/>
+                        (email_notification_allow_footer and author_user and author_user._is_internal())"/>
                     <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
                         <tbody>
                             <tr>
@@ -62,6 +62,11 @@
         <!-- Light version of the GeoCat email layout template -->
         <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email layout template for simple notifications">
+            <!-- Make sure the footer is always shown for this template -->
+            <xpath expr="//t[@t-set='show_footer']" position="attributes">
+                <attribute name="t-value">True</attribute>
+            </xpath>
+
             <!-- Decrease margin to reflect padding of light footer -->
             <xpath expr="//div[@id='content']" position="attributes">
                 <attribute name="style">margin: 12px; font-size: 13px;</attribute>
@@ -70,7 +75,7 @@
             <!-- Never show a signature in this template -->
             <xpath expr="//t[hasclass('o_signature')]" position="replace"/>
 
-            <!-- Apply the light footer instead, but increase the top margin, so we still have 48px space -->
+            <!-- Apply the light footer instead -->
             <xpath expr="//div[@id='footer']" position="replace">
                 <!--suppress XmlDuplicatedId -->
                 <div id="footer">
