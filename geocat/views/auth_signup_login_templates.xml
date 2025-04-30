@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="geocat_signup_fields" inherit_id="auth_signup.fields" name="Auth signup form fields with editable name">
+        <!-- Odoo's name field for new portal users is readonly, but we would like users to be able to change
+             their username, as it's often the same as the email address -->
+        <xpath expr="//input[@name='name']" position="attributes">
+            <attribute name="t-att-readonly">None</attribute>
+        </xpath>
+    </template>
+</odoo>

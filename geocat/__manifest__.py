@@ -20,6 +20,8 @@
     """,
     'depends': [
         'base',
+        'auth_oauth',
+        'auth_signup',
         'web',
         'mail',
         'portal',
@@ -37,6 +39,8 @@
         'security/licensing_security.xml',
         'security/helpdesk_security.xml',
         'security/ir.model.access.csv',
+        'views/auth_signup_login_templates.xml',
+        'views/auth_oauth_templates.xml',
         'views/licensing_checkout_views.xml',
         'views/licensing_download_views.xml',
         'views/licensing_views.xml',

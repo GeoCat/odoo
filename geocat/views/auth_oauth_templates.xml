@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="providers" inherit_id="auth_oauth.providers" name="OAuth Providers" primary="True">
+        <!-- Make clear that the Google login is only for GeoCat employees -->
+        <xpath expr="//div[hasclass('o_auth_oauth_providers')]//t[contains(@t-esc, 'body')]" position="replace">
+            <t t-if="'Google' in p['name']">Login as GeoCat Employee"></t>
+            <t t-else="" t-esc="p['body']"/>
+        </xpath>
+    </template>
+</odoo>
