@@ -20,6 +20,7 @@
     """,
     'depends': [
         'base',
+        'auth_oauth',
         'auth_signup',
         'web',
         'mail',
