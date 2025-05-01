@@ -2,6 +2,14 @@
 <odoo>
     <data noupdate="0">
 
+        <!-- Breadcrumb menu -->
+        <template id="portal_my_home_menu_helpdesk" inherit_id="helpdesk.portal_my_home_menu_helpdesk">
+            <!-- Show imported ticket reference (if set) -->
+            <xpath expr="//span[@t-field='ticket.ticket_ref']" position="attributes">
+                <attribute name="t-field">ticket.import_ref or ticket.ticket_ref</attribute>
+            </xpath>
+        </template>
+
         <!-- "My Account" portal home (ticket button) -->
         <template id="portal_my_home_helpdesk_ticket" inherit_id="helpdesk.portal_my_home_helpdesk_ticket">
             <xpath expr="//t[@t-set='url' and contains(@t-value, '/my/tickets')]/../t[@t-set='text']"
@@ -69,9 +77,9 @@
                 <attribute name="colspan">7</attribute>
             </xpath>
 
-            <!-- Harmonize ticket link -->
-            <xpath expr="//t[@t-as='ticket']//td//t[@t-out='ticket.ticket_ref']/.." position="attributes">
-                <attribute name="t-attf-href">/my/ticket/#{ticket.id}</attribute>
+            <!-- Harmonize ticket link and show imported ticket reference (if set) -->
+            <xpath expr="//t[@t-as='ticket']//td//t[@t-out='ticket.ticket_ref']/.." position="replace">
+                <a t-attf-href="/my/ticket/#{ticket.id}"><small>#</small><t t-out="ticket.import_ref or ticket.ticket_ref"/><span class="ms-2" t-att-title="ticket.name" t-field="ticket.name"/></a>
             </xpath>
 
             <!-- Remove right alignment of "Reported on" column -->
@@ -155,6 +163,11 @@
             <!-- Decrease title size -->
             <xpath expr="//span[@t-field='ticket.name' and hasclass('h3')]" position="attributes">
                 <attribute name="style">font-size: 1.4rem</attribute>
+            </xpath>
+
+            <!-- Show imported ticket reference (if present) -->
+            <xpath expr="//div[@id='card_header']//span[@t-field='ticket.ticket_ref']" position="attributes">
+                <attribute name="t-field">ticket.import_ref or ticket.ticket_ref</attribute>
             </xpath>
 
             <!-- Change "Stage" to "Status" -->

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
+from re import compile
+
 from odoo import api, fields, models
+from odoo.addons.helpdesk.models.helpdesk_ticket import HelpdeskTicket as BaseHelpdeskTicket
 
 UNKNOWN_CLASS = 'X1'
 DEFAULT_CLASS = 'P3'
@@ -21,6 +24,9 @@ TICKET_PRIORITY = [
     ('2', 'Urgent'),
     ('3', 'Immediate'),
 ]
+
+# Regex for WHMCS-style ticket references in email subjects
+IMPORTED_TICKET_REF_RE = compile(r'\[Ticket ID: (\d{6})]')
 
 # Global variable to store all blocked states:
 # these are populated from the geocat.helpdesk.state model (see load_blocked_states())
@@ -49,6 +55,27 @@ class HelpdeskTicket(models.Model):
         compute='_compute_all_blocked_states',
         copy=False, store=False
     )
+
+    # The following field stores the original WHMCS ticket reference if it was imported: this is used in the display name when present
+    import_ref = fields.Char(string='Imported Ticket Reference', readonly=True)
+
+    @api.depends('ticket_ref', 'import_ref', 'partner_name')
+    @api.depends_context('with_partner')
+    def _compute_display_name(self):
+        display_partner_name = self._context.get('with_partner', False)
+        ticket_with_name = self.filtered('name')
+        for ticket in ticket_with_name:
+            name = ticket.name
+            if ticket.import_ref:
+                name += f' (#{ticket.import_ref})'
+            elif ticket.ticket_ref:
+                name += f' (#{ticket.ticket_ref})'
+            if display_partner_name and ticket.partner_name:
+                name += f' - {ticket.partner_name}'
+            ticket.display_name = name
+        # We want to skip the display name computation of the inherited ticket class completely,
+        # so we call super() on the base class (BaseModel) instead of the inherited class.
+        return super(BaseHelpdeskTicket, self - ticket_with_name)._compute_display_name()
 
     def _set_blocked_states_for_stage(self):
         for ticket in self:
@@ -150,3 +177,28 @@ class HelpdeskTicket(models.Model):
             ticket.consolidated_status = ticket.stage_id.name
             if ticket.blocked_state:
                 ticket.consolidated_status = ticket.blocked_state.name
+
+    @api.model
+    def message_new(self, msg, custom_values=None):
+        """ Override of the regular message_new method to make sure that mail replies to old imported tickets
+        to which the customer never replied before after the import do not trigger the creation of a new ticket,
+        but instead will update the imported one. The reason that this could happen is that those replies
+        will be missing the Odoo ticket reference headers in the email, so mail_thread cannot match the thread_id.
+        Once we start replying to the customer, the headers should appear and this problem will be resolved automatically.
+        """
+
+        msg_subject = msg.get('subject', '')
+        # Check if the subject starts with an old WHMCS ticket reference
+        match = IMPORTED_TICKET_REF_RE.match(msg_subject)
+        if match:
+            # Extract the old ticket reference from the subject
+            import_ref = match.group(1)
+            # Find the ticket with the same reference
+            ticket = self.search([('import_ref', '=', import_ref)], limit=1)
+            if ticket:
+                # Process as message_update instead to avoid creating a new ticket
+                ticket.message_update(msg)
+                return ticket
+
+        # Process as an actual new ticket
+        return super(HelpdeskTicket, self).message_new(msg, custom_values=custom_values)
