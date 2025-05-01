@@ -56,8 +56,9 @@ class HelpdeskTicket(models.Model):
         copy=False, store=False
     )
 
-    # The following field stores the original WHMCS ticket reference if it was imported: this is used in the display name when present
-    import_ref = fields.Char(string='Imported Ticket Reference', readonly=True)
+    # The following field stores the original WHMCS ticket reference if it was imported:
+    # this is used in the display name when present, and also looked up in the message_new() method (if user emails)
+    import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null')
 
     @api.depends('ticket_ref', 'import_ref', 'partner_name')
     @api.depends_context('with_partner')
@@ -188,17 +189,18 @@ class HelpdeskTicket(models.Model):
         """
 
         msg_subject = msg.get('subject', '')
-        # Check if the subject starts with an old WHMCS ticket reference
+        # Check if the subject contains an old WHMCS ticket reference (e.g. "[Ticket ID: 123456]")
         match = IMPORTED_TICKET_REF_RE.match(msg_subject)
         if match:
-            # Extract the old ticket reference from the subject
+            # Extract the old ticket reference number from the subject
             import_ref = match.group(1)
             # Find the ticket with the same reference
             ticket = self.search([('import_ref', '=', import_ref)], limit=1)
             if ticket:
-                # Process as message_update instead to avoid creating a new ticket
+                # Now call message_update() instead to avoid creating a new ticket
                 ticket.message_update(msg)
+                # Make sure to return the ticket object, as this is what the caller expects
                 return ticket
 
-        # Process as an actual new ticket
+        # No old ticket ref (or never imported): process as an actual new ticket
         return super(HelpdeskTicket, self).message_new(msg, custom_values=custom_values)

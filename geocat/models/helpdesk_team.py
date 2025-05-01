@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
-from odoo import models
+from odoo import models, fields
 
 
 class HelpdeskTeam(models.Model):
     _inherit = ['helpdesk.team']
+
+    # This field is looked up when a first reply is sent by internal users:
+    # If not set, the stage is not changed. Otherwise, the stage is set to this value.
+    # TODO?
+    # goto_stage_on_first_reply = fields.Many2one('helpdesk.stage', string='Stage on First Reply',
+    #                                             help='When a first response has been sent, you can automatically set '
+    #                                                  'the ticket to a stage. Leave this empty to keep the stage as-is.',
+    #                                             domain="[('id', 'in', stage_ids)]", ondelete='set null')
 
     def _get_closing_stage(self):
         """ Override: try to find a stage with 'closed' in its name. """

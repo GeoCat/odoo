@@ -9,7 +9,6 @@ import werkzeug.utils
 from odoo.http import request
 from odoo.addons.auth_oauth.controllers.main import OAuthLogin
 
-
 _logger = logging.getLogger(__name__)
 
 
@@ -25,7 +24,7 @@ class GeoCatOAuthLogin(OAuthLogin):
         """ Get the base URL from the Odoo configuration (or use fallback). """
         base_url = request.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if not base_url or not base_url.startswith('https://'):
-            _logger.error("Invalid or non-secure base URL: %s", base_url)
+            _logger.error("Invalid or insecure base URL: %s", base_url)
             base_url = request.httprequest.url_root  # Fallback to actual requested URL
         return base_url
 
