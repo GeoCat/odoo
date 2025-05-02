@@ -6,7 +6,7 @@
         <template id="portal_my_home_menu_helpdesk" inherit_id="helpdesk.portal_my_home_menu_helpdesk">
             <!-- Show imported ticket reference (if set) -->
             <xpath expr="//span[@t-field='ticket.ticket_ref']" position="attributes">
-                <attribute name="t-field">ticket.import_ref or ticket.ticket_ref</attribute>
+                <attribute name="t-field">ticket.display_ref</attribute>
             </xpath>
         </template>
 
@@ -79,7 +79,7 @@
 
             <!-- Harmonize ticket link and show imported ticket reference (if set) -->
             <xpath expr="//t[@t-as='ticket']//td//t[@t-out='ticket.ticket_ref']/.." position="replace">
-                <a t-attf-href="/my/ticket/#{ticket.id}"><small>#</small><t t-out="ticket.import_ref or ticket.ticket_ref"/><span class="ms-2" t-att-title="ticket.name" t-field="ticket.name"/></a>
+                <a t-attf-href="/my/ticket/#{ticket.id}"><small>#</small><t t-out="ticket.display_ref"/><span class="ms-2" t-att-title="ticket.name" t-field="ticket.name"/></a>
             </xpath>
 
             <!-- Remove right alignment of "Reported on" column -->
@@ -167,7 +167,7 @@
 
             <!-- Show imported ticket reference (if present) -->
             <xpath expr="//div[@id='card_header']//span[@t-field='ticket.ticket_ref']" position="attributes">
-                <attribute name="t-field">ticket.import_ref or ticket.ticket_ref</attribute>
+                <attribute name="t-field">ticket.display_ref</attribute>
             </xpath>
 
             <!-- Change "Stage" to "Status" -->

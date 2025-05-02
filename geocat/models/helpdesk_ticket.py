@@ -56,18 +56,22 @@ class HelpdeskTicket(models.Model):
     # Note that we do not allow to set this field anywhere, except when the field is explicitly imported during create().
     import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null',
                              help='Legacy ticket reference (from WHMCS import)')
+    # The display_ref field is used to show the ticket reference in the UI (based on the import_ref or ticket_ref).
+    display_ref = fields.Char(string='ID', compute='_compute_display_ref', store=False, readonly=True)
 
-    @api.depends('ticket_ref', 'import_ref', 'partner_name')
+    @api.depends('import_ref', 'ticket_ref')
+    def _compute_display_ref(self):
+        """ Compute the display reference based on the ticket_ref and import_ref fields. """
+        for ticket in self:
+            ticket.display_ref = ticket.import_ref or ticket.ticket_ref or False
+
+    @api.depends('display_ref', 'partner_name')
     @api.depends_context('with_partner')
     def _compute_display_name(self):
         display_partner_name = self._context.get('with_partner', False)
         ticket_with_name = self.filtered('name')
         for ticket in ticket_with_name:
-            name = ticket.name
-            if ticket.import_ref:
-                name += f' (#{ticket.import_ref})'
-            elif ticket.ticket_ref:
-                name += f' (#{ticket.ticket_ref})'
+            name = f'{ticket.name} (#{ticket.display_ref})'
             if display_partner_name and ticket.partner_name:
                 name += f' - {ticket.partner_name}'
             ticket.display_name = name

@@ -7,8 +7,7 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_activity"/>
         <field name="arch" type="xml">
             <field name="ticket_ref" position="replace">
-                <field name="ticket_ref" invisible="import_ref not in ('', None, False)"/>
-                <field name="import_ref" invisible="not import_ref"/>
+                <field name="display_ref" />
             </field>
         </field>
     </record>
@@ -64,8 +63,7 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
         <field name="arch" type="xml">
             <field name="ticket_ref" position="replace">
-                <field name="ticket_ref" string="ID" readonly="1" column_invisible="import_ref not in ('', None, False)" optional="show"/>
-                <field name="import_ref" string="ID" readonly="1" column_invisible="not import_ref" optional="show"/>
+                <field name="display_ref" string="ID" readonly="1" optional="show"/>
             </field>
             <field name="priority" position="after">
                 <field name="classification" optional="show"/>
@@ -90,7 +88,7 @@
             <progressbar field="kanban_state" position="replace"/> <!-- TODO: Create custom progress bar that can deal with the many2one field? -->
             <xpath expr="//t[@t-name='card']//field[@name='ticket_ref']/.." position="replace">
                 <div class="fw-bold fs-5">
-                    <field name="name"/> (#<field name="ticket_ref" invisible="import_ref not in ('', None, False)"/><field name="import_ref" invisible="not import_ref"/>)
+                    <field name="name"/> (#<field name="display_ref"/>)
                 </div>
             </xpath>
             <xpath expr="//t[@t-name='card']//footer//field[@name='kanban_state']" position="replace">
