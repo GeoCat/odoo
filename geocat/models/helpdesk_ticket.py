@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from re import compile
-import logging
-
 from odoo import api, fields, models
 from odoo.addons.helpdesk.models.helpdesk_ticket import HelpdeskTicket as BaseHelpdeskTicket
 
@@ -26,14 +23,9 @@ TICKET_PRIORITY = [
     ('3', 'Immediate'),
 ]
 
-# Regex for WHMCS-style ticket references in email subjects
-IMPORTED_TICKET_REF_RE = compile(r'\[Ticket ID: (\d{6})]')
-
 # Global variable to store all blocked states:
 # these are populated from the geocat.helpdesk.state model (see load_blocked_states())
 _all_blocked_states = {}
-
-_logger = logging.getLogger(__name__)
 
 
 class HelpdeskTicket(models.Model):
@@ -183,35 +175,3 @@ class HelpdeskTicket(models.Model):
             ticket.consolidated_status = ticket.stage_id.name
             if ticket.blocked_state:
                 ticket.consolidated_status = ticket.blocked_state.name
-
-    @api.model
-    def message_new(self, msg, custom_values=None):
-        """ Override of the regular message_new method to make sure that mail replies to old imported tickets
-        to which the customer never replied before after the import do not trigger the creation of a new ticket,
-        but instead will update the imported one. The reason that this could happen is that those replies
-        will be missing the Odoo ticket reference headers in the email, so mail_thread cannot match the thread_id.
-        Once we start replying to the customer, the headers should appear and this problem will be resolved automatically.
-        """
-        msg_subject = msg.get('subject', '').strip()
-        # Check if the subject contains an old WHMCS ticket reference (e.g. "[Ticket ID: 123456]")
-        match = IMPORTED_TICKET_REF_RE.search(msg_subject)
-        if match:
-            # Extract the old ticket reference number from the subject
-            import_ref = match.group(1)
-            _logger.info(f"Received message with old ticket reference: '{import_ref}'")
-            # Find the ticket with the same reference
-            ticket = self.search([('import_ref', '=', import_ref)], limit=1)
-            if ticket:
-                _logger.info(f"Adding message to matched ticket record: {ticket.id}")
-                # Now call message_update() instead to avoid creating a new ticket
-                self.message_update(msg)
-                # Make sure to return the ticket object, as this is what the caller expects
-                return ticket
-
-            _logger.warning(f"Ticket with old reference '{import_ref}' not found: creating new ticket")
-            if custom_values is None:
-                custom_values = {}
-            custom_values['import_ref'] = import_ref
-
-        # No old ticket ref (or never imported): process as an actual new ticket
-        return super(HelpdeskTicket, self).message_new(msg, custom_values=custom_values)
