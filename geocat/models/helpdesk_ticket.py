@@ -57,7 +57,7 @@ class HelpdeskTicket(models.Model):
     import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null',
                              help='Legacy ticket reference (from WHMCS import)')
     # The display_ref field is used to show the ticket reference in the UI (based on the import_ref or ticket_ref).
-    display_ref = fields.Char(string='ID', compute='_compute_display_ref', store=False, readonly=True)
+    display_ref = fields.Char(string='Ticket ID', compute='_compute_display_ref', store=False, readonly=True)
 
     @api.depends('import_ref', 'ticket_ref')
     def _compute_display_ref(self):
