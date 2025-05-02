@@ -1,11 +1,26 @@
 <?xml version="1.0"?>
 <odoo>
 
+    <record id="helpdesk_ticket_view_activity" model="ir.ui.view">
+        <field name="name">geocat.ticket.activity</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_activity"/>
+        <field name="arch" type="xml">
+            <field name="ticket_ref" position="replace">
+                <field name="ticket_ref" invisible="import_ref"/>
+                <field name="import_ref" invisible="not import_ref"/>
+            </field>
+        </field>
+    </record>
+
     <record id="helpdesk_tickets_view_search" model="ir.ui.view">
         <field name="name">geocat.ticket.search</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
         <field name="arch" type="xml">
+            <field name="name" position="attributes">
+                <attribute name="filter_domain">['|', ('name', 'ilike', self), ('ticket_ref', 'ilike', self), ('import_ref', 'ilike', self)]</attribute>
+            </field>
             <filter name="urgent_priority" position="attributes">
                 <attribute name="string">Immediate (P1)</attribute>
             </filter>
@@ -48,6 +63,10 @@
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
         <field name="arch" type="xml">
+            <field name="ticket_ref" position="replace">
+                <field name="ticket_ref" string="ID" readonly="1" column_invisible="import_ref" optional="show"/>
+                <field name="import_ref" string="ID" readonly="1" column_invisible="not import_ref" optional="show"/>
+            </field>
             <field name="priority" position="after">
                 <field name="classification" optional="show"/>
             </field>
@@ -69,6 +88,11 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_kanban"/>
         <field name="arch" type="xml">
             <progressbar field="kanban_state" position="replace"/> <!-- TODO: Create custom progress bar that can deal with the many2one field? -->
+            <xpath expr="//t[@t-name='card']//field[@name='ticket_ref']/.." position="replace">
+                <div class="fw-bold fs-5">
+                    <field name="name"/> (#<field name="ticket_ref" invisible="import_ref"/><field name="import_ref" invisible="not import_ref"/>)
+                </div>
+            </xpath>
             <xpath expr="//t[@t-name='card']//footer//field[@name='kanban_state']" position="replace">
                 <field name="all_blocked_states_json" invisible="True"/>
                 <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" class="ms-1" groups="base.group_user"/>
@@ -90,6 +114,7 @@
             </field>
             <field name="email_cc" position="after">
                 <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
+                <field name="import_ref" string="Legacy #" readonly="1" invisible="not import_ref"/>
             </field>
         </field>
     </record>

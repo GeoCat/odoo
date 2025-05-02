@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from re import compile
+import logging
 
 from odoo import api, fields, models
 from odoo.addons.helpdesk.models.helpdesk_ticket import HelpdeskTicket as BaseHelpdeskTicket
@@ -32,6 +33,8 @@ IMPORTED_TICKET_REF_RE = compile(r'\[Ticket ID: (\d{6})]')
 # these are populated from the geocat.helpdesk.state model (see load_blocked_states())
 _all_blocked_states = {}
 
+_logger = logging.getLogger(__name__)
+
 
 class HelpdeskTicket(models.Model):
     """ Override that permanently adds our GeoCat ticket classifications along with some BL. """
@@ -56,9 +59,11 @@ class HelpdeskTicket(models.Model):
         copy=False, store=False
     )
 
-    # The following field stores the original WHMCS ticket reference if it was imported:
-    # this is used in the display name when present, and also looked up in the message_new() method (if user emails)
-    import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null')
+    # The following field stores the original WHMCS 6-digit ticket reference if it was imported:
+    # this is used in the display name (if present), and is also looked up in the message_new() method (if email was received).
+    # Note that we do not allow to set this field anywhere, except when the field is explicitly imported during create().
+    import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null',
+                             help='Legacy ticket reference (from WHMCS import)')
 
     @api.depends('ticket_ref', 'import_ref', 'partner_name')
     @api.depends_context('with_partner')
@@ -187,20 +192,29 @@ class HelpdeskTicket(models.Model):
         will be missing the Odoo ticket reference headers in the email, so mail_thread cannot match the thread_id.
         Once we start replying to the customer, the headers should appear and this problem will be resolved automatically.
         """
-
-        msg_subject = msg.get('subject', '')
+        msg_subject = msg.get('subject', '').strip()
+        _logger.info(f"Processing new message with subject: {msg_subject}")
         # Check if the subject contains an old WHMCS ticket reference (e.g. "[Ticket ID: 123456]")
         match = IMPORTED_TICKET_REF_RE.match(msg_subject)
         if match:
             # Extract the old ticket reference number from the subject
             import_ref = match.group(1)
+            _logger.info(f"Found old ticket reference: '{import_ref}'")
             # Find the ticket with the same reference
             ticket = self.search([('import_ref', '=', import_ref)], limit=1)
             if ticket:
+                _logger.info(f"Updating matched ticket record: {ticket.id}")
                 # Now call message_update() instead to avoid creating a new ticket
-                ticket.message_update(msg)
+                self.message_update(msg)
                 # Make sure to return the ticket object, as this is what the caller expects
                 return ticket
+
+            _logger.warning(f"Ticket with old reference {import_ref} not found: creating new ticket")
+            if custom_values is None:
+                custom_values = {}
+            custom_values['import_ref'] = import_ref
+        else:
+            _logger.info(f"No old ticket reference found in subject")
 
         # No old ticket ref (or never imported): process as an actual new ticket
         return super(HelpdeskTicket, self).message_new(msg, custom_values=custom_values)
