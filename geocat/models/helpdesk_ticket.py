@@ -193,28 +193,25 @@ class HelpdeskTicket(models.Model):
         Once we start replying to the customer, the headers should appear and this problem will be resolved automatically.
         """
         msg_subject = msg.get('subject', '').strip()
-        _logger.info(f"Processing new message with subject: {msg_subject}")
         # Check if the subject contains an old WHMCS ticket reference (e.g. "[Ticket ID: 123456]")
-        match = IMPORTED_TICKET_REF_RE.match(msg_subject)
+        match = IMPORTED_TICKET_REF_RE.search(msg_subject)
         if match:
             # Extract the old ticket reference number from the subject
             import_ref = match.group(1)
-            _logger.info(f"Found old ticket reference: '{import_ref}'")
+            _logger.info(f"Received message with old ticket reference: '{import_ref}'")
             # Find the ticket with the same reference
             ticket = self.search([('import_ref', '=', import_ref)], limit=1)
             if ticket:
-                _logger.info(f"Updating matched ticket record: {ticket.id}")
+                _logger.info(f"Adding message to matched ticket record: {ticket.id}")
                 # Now call message_update() instead to avoid creating a new ticket
                 self.message_update(msg)
                 # Make sure to return the ticket object, as this is what the caller expects
                 return ticket
 
-            _logger.warning(f"Ticket with old reference {import_ref} not found: creating new ticket")
+            _logger.warning(f"Ticket with old reference '{import_ref}' not found: creating new ticket")
             if custom_values is None:
                 custom_values = {}
             custom_values['import_ref'] = import_ref
-        else:
-            _logger.info(f"No old ticket reference found in subject")
 
         # No old ticket ref (or never imported): process as an actual new ticket
         return super(HelpdeskTicket, self).message_new(msg, custom_values=custom_values)
