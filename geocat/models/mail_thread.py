@@ -58,8 +58,10 @@ class GeoCatMailThread(models.AbstractModel):
             _logger.info(f"Received message with legacy ticket reference '{import_ref}': trying to resolve matching ticket")
             # Find the ticket with the same reference
             model_object = self.env[model_name]
-            if not model_object or not hasattr(model_object, 'search') or 'import_ref' not in model_object._fields:
+            if not hasattr(model_object, 'search') or 'import_ref' not in model_object._fields:
                 # This should not happen, but we want to make sure that Odoo handles it normally
+                _logger.warning(
+                    f"Model '{model_name}' does not have a search method or import_ref field")
                 processed_routes.append((model_name, thread_id, custom_values, user_id, alias))
                 continue
 
