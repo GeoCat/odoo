@@ -9,7 +9,7 @@ class WebsiteHrRecruitment(BaseWebsiteHrRecruitment):
 
     @http.route('''/jobs/<model("hr.job"):job>''', type='http', auth="public", website=True, sitemap=True)
     def job(self, job, **kwargs):
-        return request.render("geocat.job_details", {
+        return request.render("geocat.job_detail", {
             'job': job,
             'main_object': job,
         })
