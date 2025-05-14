@@ -8,6 +8,7 @@ from . import sale_subscription_plan
 from . import sale_order
 from . import sale_order_line
 from . import website_helpdesk_team
+from . import hr_applicant
 from . import helpdesk_stage
 from . import helpdesk_state
 from . import helpdesk_team

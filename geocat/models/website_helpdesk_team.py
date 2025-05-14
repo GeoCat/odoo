@@ -14,7 +14,7 @@ class HelpdeskTeam(models.Model):
         diff_tree = etree.fromstring(diff_arch)
         arch_node = self.env['ir.ui.view'].apply_inheritance_specs(base_tree, diff_tree)
         if arch_node is None:
-            return
+            return None
         return etree.tostring(arch_node, pretty_print=True, encoding='unicode')
 
     # noinspection DuplicatedCode
@@ -24,9 +24,15 @@ class HelpdeskTeam(models.Model):
             return
 
         # Make sure that the derived helpdesk team form is updated according to the GeoCat default form
+        geocat_form = self.env.ref('geocat.ticket_submit_form', raise_if_not_found=False)
+        if not geocat_form:
+            # This could happen when the module is initialized: in this case, we will load the default form
+            super()._ensure_submit_form_view()
+            return
+
         odoo_arch = self.env.ref('website_helpdesk.ticket_submit_form').sudo().arch
-        geocat_diff = self.env.ref('geocat.ticket_submit_form').sudo().arch
-        geocat_arch = self._combine_arch(odoo_arch, geocat_diff) or odoo_arch
+        geocat_arch = geocat_form.sudo().arch
+        combined_arch = self._combine_arch(odoo_arch, geocat_arch) or odoo_arch
         for team in teams:
             xmlid = 'website_helpdesk.team_form_' + str(team.id)
             team_form = team.website_form_view_id
@@ -35,7 +41,7 @@ class HelpdeskTeam(models.Model):
                 # Create a new form view
                 form_template = self.env['ir.ui.view'].sudo().create({
                     'type': 'qweb',
-                    'arch': geocat_arch,
+                    'arch': combined_arch,
                     'name': xmlid,
                     'key': xmlid
                 })
@@ -49,9 +55,9 @@ class HelpdeskTeam(models.Model):
                 })
                 team.website_form_view_id = form_template.id
 
-            elif team_form.xml_id == xmlid and team_form.arch != geocat_arch:
+            elif team_form.xml_id == xmlid and team_form.arch != combined_arch:
                 # Force our own GeoCat form view on the existing form (if different)
                 form_template = self.env['ir.ui.view'].sudo().search([('id', '=', team_form.id)], limit=1)
                 if form_template:
                     # Update the arch of the existing form
-                    form_template.write({'arch': geocat_arch})
+                    form_template.write({'arch': combined_arch})

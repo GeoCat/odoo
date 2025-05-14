@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- You have been assigned email -->
+    <!-- Override of the "You have been assigned" email with access link -->
     <template id="project_message_user_assigned" inherit_id="project.project_message_user_assigned" priority="15" primary="True">
         <div>
             Dear <t t-esc="assignee_name"/>,

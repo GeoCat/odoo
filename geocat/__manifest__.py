@@ -66,6 +66,7 @@
         'data/project_mail_templates.xml',
         'data/sale_order_templates.xml',
         'data/invoice_templates.xml',
+        'data/hr_mail_templates.xml'
     ],
     'assets': {
         'web._assets_primary_variables': [

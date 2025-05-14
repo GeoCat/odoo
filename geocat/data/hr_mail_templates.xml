@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add a template for the "You have been assigned" email to applicant interviewers with access link -->
+    <template id="hr_applicant_interviewer_assigned" priority="15">
+        <div>
+            Dear interviewer,
+            <br/><br/>
+            <span style="margin-top: 8px;">You have been assigned to the applicant <a t-att-href="access_link"><t t-esc="applicant_name"/></a>
+                for the <t t-esc="job_position"/> job position.</span>
+            <br/>
+            Please review the application and schedule an interview if necessary.
+        </div>
+    </template>
+</odoo>
