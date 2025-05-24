@@ -1,11 +1,15 @@
+from operator import itemgetter
+
 from markupsafe import Markup
 from werkzeug.exceptions import NotFound
 
 from odoo import http, _
 from odoo.addons.base.models.ir_qweb_fields import nl2br, nl2br_enclose
 from odoo.addons.helpdesk.controllers.portal import CustomerPortal
+from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website_helpdesk.controllers.main import WebsiteHelpdesk, WebsiteForm
 from odoo.osv import expression
+from odoo.tools import groupby as groupbyelem
 from odoo.tools import html2plaintext
 from ..models.helpdesk_ticket import TICKET_CLASS, DEFAULT_CLASS
 
@@ -21,7 +25,7 @@ class GeoCatCustomerPortal(CustomerPortal):
                 right=Markup('</span>'),
             ), 'sequence': 10},
             'user_id': {'input': 'user_id', 'label': _('Search in Assigned to'), 'sequence': 20},
-            'partner_id': {'input': 'partner_id', 'label': _('Search in Reporter'), 'sequence': 30},
+            'reporter_id': {'input': 'reporter_id', 'label': _('Search in Reported by'), 'sequence': 30},
             'consolidated_status': {'input': 'consolidated_status', 'label': _('Search in Status'), 'sequence': 40},
             'classification': {'input': 'classification', 'label': _('Search in Classification'), 'sequence': 50},
         }
@@ -33,25 +37,87 @@ class GeoCatCustomerPortal(CustomerPortal):
             'user_id': {'label': _('Assigned to'), 'sequence': 20},
             'consolidated_status': {'label': _('Status'), 'sequence': 30},
             'classification': {'label': _('Classification'), 'sequence': 40},
-            'partner_id': {'label': _('Reporter'), 'sequence': 50},
+            'reporter_id': {'label': _('Reported by'), 'sequence': 50},
         }
 
+    # noinspection DuplicatedCode
     def _prepare_my_tickets_values(self, page=1, date_begin=None, date_end=None, sortby=None, filterby='all',
                                    search=None, groupby='none', search_in='name'):
         """ Override that removes 'stage_id' sort field and changes 'date_last_stage_update' to 'write_date'
         for the 'searchbar_sortings' option of the original method.
+        Also makes sure that 'create_date' is replaced by 'ticket_date' wherever applicable.
         """
+        values = self._prepare_portal_layout_values()
+        domain = self._prepare_helpdesk_tickets_domain()
 
-        values = super()._prepare_my_tickets_values(page=page, date_begin=date_begin, date_end=date_end,
-                                                    sortby=sortby, filterby=filterby, search=search, groupby=groupby,
-                                                    search_in=search_in)
-        values['searchbar_sortings'] = {
-            'create_date desc': {'label': _('Newest')},
-            'id desc': {'label': _('Reference')},
+        searchbar_sortings = {
+            'ticket_date desc': {'label': _('Newest')},
+            'display_ref desc': {'label': _('Reference')},
             'name': {'label': _('Subject')},
             'user_id': {'label': _('Assigned to')},
             'write_date desc': {'label': _('Last Update')},
         }
+        searchbar_filters = {
+            'all': {'label': _('All'), 'domain': []},
+            'assigned': {'label': _('Assigned'), 'domain': [('user_id', '!=', False)]},
+            'unassigned': {'label': _('Unassigned'), 'domain': [('user_id', '=', False)]},
+            'open': {'label': _('Open'), 'domain': [('close_date', '=', False)]},
+            'closed': {'label': _('Closed'), 'domain': [('close_date', '!=', False)]},
+        }
+        searchbar_inputs = dict(sorted(self._ticket_get_searchbar_inputs().items(), key=lambda item: item[1]['sequence']))
+        searchbar_groupby = dict(sorted(self._ticket_get_searchbar_groupby().items(), key=lambda item: item[1]['sequence']))
+
+        # default sort by value
+        if not sortby:
+            sortby = 'ticket_date desc'
+
+        domain = expression.AND([domain, searchbar_filters[filterby]['domain']])
+
+        if date_begin and date_end:
+            domain = expression.AND([domain, [('ticket_date', '>', date_begin), ('ticket_date', '<=', date_end)]])
+
+        # search
+        if search and search_in:
+            domain = expression.AND([domain, self._ticket_get_search_domain(search_in, search)])
+
+        # pager
+        tickets_count = http.request.env['helpdesk.ticket'].search_count(domain)
+        pager = portal_pager(
+            url="/my/tickets",
+            url_args={'date_begin': date_begin, 'date_end': date_end, 'sortby': sortby, 'search_in': search_in, 'search': search, 'groupby': groupby, 'filterby': filterby},
+            total=tickets_count,
+            page=page,
+            step=self._items_per_page
+        )
+
+        order = f'{groupby}, {sortby}' if groupby != 'none' else sortby
+        tickets = http.request.env['helpdesk.ticket'].search(domain, order=order, limit=self._items_per_page, offset=pager['offset'])
+        http.request.session['my_tickets_history'] = tickets.ids[:100]
+
+        if not tickets:
+            grouped_tickets = []
+        elif groupby != 'none':
+            # noinspection PyTypeChecker
+            grouped_tickets = [http.request.env['helpdesk.ticket'].concat(*g) for k, g in groupbyelem(tickets, itemgetter(groupby))]
+        else:
+            grouped_tickets = [tickets]
+
+        values.update({
+            'date': date_begin,
+            'grouped_tickets': grouped_tickets,
+            'page_name': 'ticket',
+            'default_url': '/my/tickets',
+            'pager': pager,
+            'searchbar_sortings': searchbar_sortings,
+            'searchbar_filters': searchbar_filters,
+            'searchbar_inputs': searchbar_inputs,
+            'searchbar_groupby': searchbar_groupby,
+            'sortby': sortby,
+            'groupby': groupby,
+            'search_in': search_in,
+            'search': search,
+            'filterby': filterby,
+        })
         return values
 
     # Route overrides to make sure the user is always authenticated

@@ -34,7 +34,7 @@ class HelpdeskTicket(models.Model):
     _description = 'GeoCat Helpdesk Ticket'
     _inherit = ['helpdesk.ticket']
 
-    applies_to = fields.Char(string='Applies To', tracking=True, help='Specifies the software and/or version that a ticket applies to.')
+    applies_to = fields.Char(string='Applies to', tracking=True, help='Specifies the software and/or version that a ticket applies to.')
     priority = fields.Selection(TICKET_PRIORITY, compute='_compute_priority', store=True, default='0', tracking=True)
     classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS, tracking=True,
                                       help='Classification of the ticket, used to determine the priority and SLA.')
@@ -59,7 +59,15 @@ class HelpdeskTicket(models.Model):
     import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null',
                              help='Legacy ticket reference (from WHMCS import)')
     # The display_ref field is used to show the ticket reference in the UI (based on the import_ref or ticket_ref).
-    display_ref = fields.Char(string='Ticket ID', compute='_compute_display_ref', store=False, readonly=True)
+    display_ref = fields.Char(string='Ticket ID', compute='_compute_display_ref', store=True, copy=False, readonly=True, index=True)
+
+    # This field can be used to store the date when the ticket was originally created (e.g. in WHMCS).
+    # The value may be explicitly set during create(). If omitted, the create_date will be used.
+    ticket_date = fields.Datetime(string='Ticket Date', readonly=True, help='Date when the ticket was originally created.')
+
+    # This field can be used to store the user that originally reported the ticket (e.g. in WHMCS).
+    # The value may be explicitly set during create(). If omitted, the create_uid will be used.
+    reporter_id = fields.Many2one('res.users', string='Reported by', readonly=True)
 
     @api.depends('import_ref', 'ticket_ref')
     def _compute_display_ref(self):
@@ -102,6 +110,13 @@ class HelpdeskTicket(models.Model):
     def init(self):
         # Make sure that the classification field is always available in the form builder
         self.env['ir.model.fields'].formbuilder_whitelist('helpdesk.ticket', ['classification'])
+
+        # Make sure that the ticket_date and reported_id fields are set on all existing tickets
+        self.env.cr.execute("""
+                            UPDATE helpdesk_ticket
+                            SET reporter_id = create_uid, ticket_date = create_date
+                            WHERE reporter_id IS NULL AND ticket_date IS NULL
+                            """)
 
         # Ensure that the helpdesk form view is available and up-to-date (for all teams, but we only have one)
         teams = self.env['helpdesk.team'].search([('use_website_helpdesk_form', '=', True)])
@@ -181,3 +196,13 @@ class HelpdeskTicket(models.Model):
             ticket.consolidated_status = ticket.stage_id.name
             if ticket.blocked_state:
                 ticket.consolidated_status = ticket.blocked_state.name
+
+    @api.model_create_multi
+    def create(self, list_value):
+        """ Override that sets the ticket date to the current date if not set. """
+        tickets = super().create(list_value)
+        for ticket in tickets:
+            # Set the ticket_date and reporter_id to the create_date and create_uid respectively if not set
+            ticket.ticket_date = ticket.ticket_date or ticket.create_date
+            ticket.reporter_id = ticket.reporter_id or ticket.create_uid
+        return tickets
