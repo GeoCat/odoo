@@ -33,9 +33,9 @@
                 </div>
             </xpath>
 
-            <!-- Remove right alignment of "Reported on" column header -->
-            <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th[contains(@t-if, 'create_date')]" position="attributes">
-                <attribute name="class" remove="text-end" add="ps-4" separator=" "/>
+            <!-- Remove right alignment of "Reported on" column header, change group by column -->
+            <xpath expr="//t[@t-call='portal.portal_table']/thead/tr/th[contains(@t-if, 'create_date')]" position="replace">
+                <th class="ps-4" t-if="groupby != 'ticket_date'">Reported on</th>
             </xpath>
 
             <!-- Improve left padding of "Assigned to" column header -->
@@ -69,12 +69,22 @@
                 </th>
             </xpath>
 
+            <!-- Replace create_date grouping with ticket_date -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'create_date')]" position="replace">
+                <th t-if="groupby == 'ticket_date'" colspan="5">
+                    <span t-field="tickets[0].ticket_date"/>
+                </th>
+            </xpath>
+
             <!-- Remove kanban_state grouping (we don't use it) -->
             <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'kanban_state')]" position="replace"/>
 
-            <!-- Fix colspan for partner_id grouping -->
-            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'partner_id')]" position="attributes">
-                <attribute name="colspan">7</attribute>
+            <!-- Fix colspan for partner_id grouping and set it to reported_id -->
+            <xpath expr="//t[@t-as='tickets']//th[contains(@t-if, 'partner_id')]" position="replace">
+                <th t-if="groupby == 'reporter_id'" colspan="7">
+                    <span t-if="tickets[0].reporter_id" t-field="tickets[0].reporter_id.name"/>
+                    <span t-else="">Unknown</span>
+                </th>
             </xpath>
 
             <!-- Harmonize ticket link and show imported ticket reference (if set) -->
@@ -82,9 +92,11 @@
                 <a t-attf-href="/my/ticket/#{ticket.id}"><small>#</small><t t-out="ticket.display_ref"/><span class="ms-2" t-att-title="ticket.name" t-field="ticket.name"/></a>
             </xpath>
 
-            <!-- Remove right alignment of "Reported on" column -->
-            <xpath expr="//t[@t-as='ticket']//td[contains(@t-if, 'create_date')]" position="attributes">
-                <attribute name="class" remove="text-end" add="ps-4" separator=" "/>
+            <!-- Remove right alignment of "Reported on" column, set to ticket_date -->
+            <xpath expr="//t[@t-as='ticket']//td[contains(@t-if, 'create_date')]" position="replace">
+                <td class="ps-4" t-if="groupby != 'ticket_date'">
+                    <span t-field="ticket.ticket_date" t-options='{"widget": "datetime", "hide_seconds": True}'/>
+                </td>
             </xpath>
 
             <!-- Improve left padding of "Assigned to" column -->
@@ -155,9 +167,19 @@
                 </div>
             </xpath>
 
-            <!-- Rename "Customer" to "Reporter" -->
-            <xpath expr="//div[@t-if='ticket.partner_id']/h6/small" position="replace">
-                <small class="text-muted">Reporter</small>
+            <!-- Rename "Customer" to "Reported by" and use reported_id field instead of partner_id -->
+            <xpath expr="//div[@t-if='ticket.partner_id']" position="replace">
+                <div t-attf-class="col-12 col-md-12 {{ 'mt-3' if ticket.user_id.name else '' }}" t-if="ticket.reporter_id">
+                     <h6>
+                        <small class="text-muted">Reported by</small>
+                    </h6>
+                    <t t-call="portal.portal_my_contact">
+                        <t t-set="_contactAvatar" t-value="image_data_uri(ticket.reporter_id.avatar_128)"/>
+                        <t t-set="_contactName" t-value="ticket.reporter_id.display_name"/>
+                        <a t-attf-href="mailto:{{ticket.reporter_id.email}}" t-if="ticket.reporter_id.email"><div t-field="ticket.reporter_id" t-options='{"widget": "contact", "fields": ["email"]}'/></a>
+                        <a t-attf-href="tel:{{ticket.reporter_id.phone}}" t-if="ticket.reporter_id.phone"><div t-field="ticket.reporter_id" t-options='{"widget": "contact", "fields": ["phone"]}'/></a>
+                    </t>
+                </div>
             </xpath>
 
             <!-- Decrease title size -->

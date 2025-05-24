@@ -116,10 +116,16 @@
                 <field name="all_blocked_states_json" invisible="True"/>
                 <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" readonly="1" groups="base.group_user"/>
             </field>
-            <field name="email_cc" position="after">
-                <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
-                <field name="import_ref" string="Legacy #" readonly="1" invisible="not import_ref"/>
-            </field>
+            <!-- Replace the entire group with one that includes the reporter_id (instead of phone) and blocked_state and import_ref fields -->
+            <xpath expr="//group//field[@name='partner_id']/.." position="replace">
+                <group>
+                    <field name="partner_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" widget="res_partner_many2one"/>
+                    <field name="reporter_id" widget="res_partner_many2one"/>
+                    <field name="email_cc" groups="base.group_no_one"/>
+                    <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
+                    <field name="import_ref" string="Legacy #" readonly="1" invisible="not import_ref"/>
+                </group>
+            </xpath>
         </field>
     </record>
 
