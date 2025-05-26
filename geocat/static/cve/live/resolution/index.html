@@ -10,9 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://www.geocat.net/cve/map/CVE-2024-36401/">
+        <link rel="canonical" href="https://www.geocat.net/cve/live/resolution/">
       
       
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="../../map/">
       
       
       <link rel="icon" href="../../assets/geocat-logo-notext.png">
@@ -20,7 +24,7 @@
     
     
       
-        <title>CVE-2024-36401 Remote Code Execution (RCE) vulnerability in evaluating property name expressions - GeoCat Security Advisories</title>
+        <title>GeoCat Live Resolution Table - GeoCat Security Advisories</title>
       
     
     
@@ -72,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cve-2024-36401-remote-code-execution-rce-vulnerability-in-evaluating-property-name-expressions" class="md-skip">
+        <a href="#geocat-live-resolution-table" class="md-skip">
           Skip to content
         </a>
       
@@ -105,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              CVE-2024-36401 Remote Code Execution (RCE) vulnerability in evaluating property name expressions
+              GeoCat Live Resolution Table
             
           </span>
         </div>
@@ -243,11 +247,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../live/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
   
@@ -269,7 +275,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../" class="md-tabs__link">
+        <a href="../../map/" class="md-tabs__link">
           
   
   
@@ -431,6 +437,8 @@
       
   
   
+    
+  
   
   
     
@@ -446,22 +454,24 @@
     
     
       
+        
+        
+      
       
     
     
       
-        
-        
-      
     
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
-  
-  
-  
-    <a href="../../live/" class="md-nav__link">
-      
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
   
   
   <span class="md-ellipsis">
@@ -470,12 +480,59 @@
   </span>
   
 
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            GeoCat Live
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
       
-        <span class="md-nav__icon md-icon"></span>
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
-    </a>
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    GeoCat Live Resolution Table
+    
+  </span>
   
 
+      </a>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -514,7 +571,7 @@
   
   
   
-    <a href="../" class="md-nav__link">
+    <a href="../../map/" class="md-nav__link">
       
   
   
@@ -611,67 +668,60 @@
                 
                   
 
-  <nav class="md-tags" >
-    
-      
-      
-      
-        <span class="md-tag">Placeholder</span>
-      
-    
-  </nav>
 
 
-
-<h1 id="cve-2024-36401-remote-code-execution-rce-vulnerability-in-evaluating-property-name-expressions">CVE-2024-36401 Remote Code Execution (RCE) vulnerability in evaluating property name expressions</h1>
-<p><code>Critical</code> <code>2024-06-19</code></p>
+<h1 id="geocat-live-resolution-table">GeoCat Live Resolution Table</h1>
 <p><small>
-Vulnerability subject to the <a href="../policy/">GeoCat Map coordinated vulnerability disclosure policy</a>. This policy applies to you our customers, please do not share this sensitive content.
+Listed vulnerabilities subject to the <a href="../policy/">GeoCat Live coordinated vulnerability disclosure policy</a>. Do not share this sensitive content.
 </small></p>
-<hr />
-<p><strong>2024-05-21: Remote Code Execution (RCE) vulnerability in evaluating property name expressions</strong></p>
-<p>Multiple OGC request parameters allow Remote Code Execution (RCE) by unauthenticated users through specially crafted input against a default GeoServer installation due to unsafely evaluating property names as XPath expressions.  </p>
-<p><strong>Evaluation:</strong>  </p>
-<p>The ease and nature of this vulnerability results in a CRITICAL severity evaluation.<br />
- This issue should be immediately addressed with the mitigation steps described below. </p>
-<p>Within two days of public disclosure on 2024-07-01 the vulnerability was under active exploit.   </p>
-<p><strong>Mitigation:</strong>  </p>
-<p><em>GeoServer Enterprise 2024.0 is produced with the following mitigation applied.</em>  </p>
-<p>The use of XPath expressions is used by the following modules:</p>
-<ul>
-<li>Application Schema, Catalog Services for the Web, MongoDB Data Store  </li>
-<li>Features-Templating, OGC API Modules, Smart Data Loader, SOLR Data Store</li>
-</ul>
-<p>If you do not use an affected module you can safely disable XPath property name expressions without loss of functionality:</p>
-<ol>
-<li>Stop application server  </li>
-<li>Unzip <strong>geoserver.war</strong>  </li>
-<li>Remove <strong>WEB-INF/lib/gt-complex-x.y.jar</strong>  </li>
-<li>Zip <strong>geoserver.war</strong>  </li>
-<li>Restart application server</li>
-</ol>
-<p><strong>Resolution:</strong>  </p>
-<p>This issue is resolved on the following releases:</p>
-<ul>
-<li>GeoServer Enterprise 2024.1 / GeoServer 2.25.2  </li>
-<li>GeoServer Enterprise 2024.0 / GeoServer 2.25.1 with mitigation pre-applied  </li>
-<li>GeoServer Enterprise 2023.3 / GeoServer 2.24.4  </li>
-<li>GeoServer Enterprise 2023.2.1 / GeoServer 2.23.6</li>
-</ul>
-<p><strong>Reference:</strong></p>
-<ul>
-<li><a href="https://github.com/geoserver/geoserver/security/advisories/GHSA-6jj6-gm7p-fcvv">CVE-2024-36401</a>  </li>
-<li><a href="https://cwe.mitre.org/data/definitions/95.html">CWE-95</a> / <a href="https://cwe.mitre.org/data/definitions/94.html">CWE-94</a></li>
-</ul>
+<p><small>Click on table columns below to sort by vulnerability or release.</small></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">GeoCat Live</th>
+<th style="text-align: left;">Vulnerability</th>
+<th style="text-align: center;">Severity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">2024.2</td>
+<td style="text-align: left;"><a href="../CVE-2024-6387/">CVE-2024-6387</a> regreSSHion: Remote Unauthenticated Code Execution Vulnerability in OpenSSH server</td>
+<td style="text-align: center;">High 8.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">2024.1</td>
+<td style="text-align: left;"><a href="../CVE-2024-3094/">CVE-2024-3094</a> xz-utils results in a backdoor in sshd</td>
+<td style="text-align: center;">Unaffected</td>
+</tr>
+<tr>
+<td style="text-align: left;">2022.5</td>
+<td style="text-align: left;"><a href="../CVE-2022-1552/">CVE-2022-1552</a> Autovacuum, REINDEX, and others omit "security restricted operation"</td>
+<td style="text-align: center;">High 8.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">2022.3</td>
+<td style="text-align: left;"><a href="../CVE-2022-22965/">CVE-2022-22965</a> SpringShell</td>
+<td style="text-align: center;">Critical 9.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">2022.2</td>
+<td style="text-align: left;"><a href="../CVE-2022-24818/">CVE-2022-24818</a>  Unchecked JNDI lookups in GeoTools</td>
+<td style="text-align: center;">Critical 9.8</td>
+</tr>
+<tr>
+<td style="text-align: left;">2021.12</td>
+<td style="text-align: left;"><a href="../CVE-2021-44228/">CVE-2021-44228</a> Log4j2 Remote Code Execution CVE-2021-44228 vulnerability patch for GeoNetwork Enterprise</td>
+<td style="text-align: center;">Critical 10.0</td>
+</tr>
+</tbody>
+</table>
 
 
 
 
 
 
-
-  
-  
 
 
 
@@ -698,6 +748,44 @@ Vulnerability subject to the <a href="../policy/">GeoCat Map coordinated vulnera
       
         <footer class="md-footer">
   
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: GeoCat Live CVE Records">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                GeoCat Live CVE Records
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../map/" class="md-footer__link md-footer__link--next" aria-label="Next: GeoCat Map CVE Records">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                GeoCat Map CVE Records
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
     
   
   <div class="md-footer-meta md-typeset">
