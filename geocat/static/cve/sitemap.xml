@@ -2,94 +2,230 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://www.geocat.net/cve/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/postgis/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/spring/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2021-23337/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2021-44228/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2021-45046/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2022-42889/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2024-32037/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2024-36404/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/CVE-2024-38816/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/find/CVE-2025-30220/</loc>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/find/policy/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2021-44228/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2022-1552/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2022-22965/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2022-24818/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2024-3094/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/CVE-2024-6387/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/live/CVE-2025-30220/</loc>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/live/policy/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/map/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/24/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/26/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/31/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/49/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/8/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2016-1000027/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2022-22965/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2022-24816/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2022-2484/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-25157/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-41339/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-41877/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-43795/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-51444/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2023-51445/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23634/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23640/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23642/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23643/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23818/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23819/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-23821/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-24749/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-34696/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-34711/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-35230/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-35233/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-36401/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-38524/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-40625/</loc>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/CVE-2024-45748/</loc>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/map/CVE-2025-30220/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
     </url>
     <url>
          <loc>https://www.geocat.net/cve/map/policy/</loc>
-         <lastmod>2025-04-24</lastmod>
+         <lastmod>2025-05-26</lastmod>
+    </url>
+    <url>
+         <loc>https://www.geocat.net/cve/map/resolution/</loc>
+         <lastmod>2025-05-26</lastmod>
     </url>
 </urlset>

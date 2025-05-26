@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../assets/geocat-logo-notext.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -492,6 +492,8 @@
           
         
       
+        
+      
     
     
     
@@ -610,9 +612,9 @@
 
 
 <h1 id="geocat-map-coordinated-vulnerability-disclosure-policy">GeoCat Map coordinated vulnerability disclosure policy</h1>
-<p><em>The GeoCat CVE records documents known security vulnerabilities subject to coordinated vulnerability disclosure policy. This policy applies to you our customers, please do not share this sensitive content.</em></p>
+<p><em>The GeoCat CVE records document known security vulnerabilities subject to coordinated vulnerability disclosure policy. This policy applies to you our customers, please do not share this sensitive content.</em></p>
 <hr />
-<p>As a member of the open source community we take care to follow the disclosure policies of the open source technologies used by GeoCat Live.</p>
+<p>As a member of the GeoServer community GeoCat respects the <a href="https://github.com/geoserver/geoserver/blob/main/SECURITY.md">coordinated disclosure policy</a>, working on your behalf to address security vulnerabilities and concerns.</p>
 <p>GeoCat Live customers are asked to report any security concerns via the <a href="https://www.geocat.net/helpdesk">GeoCat Help Desk</a> and we will work with you to assess issue severity, establish any mitigation measures, and long term resolution.</p>
 <p>By working with GeoCat you are actively contributing to open source sustainability and we thank you for your patronage. </p>
 <p>For more information:</p>
@@ -620,6 +622,13 @@
 <li><a href="http://github.com/geoserver/geoserver/security/policy">GeoServer Security Policy</a></li>
 <li><a href="http://github.com/geotools/geotools/security/policy">GeoTools Security Policy</a></li>
 </ul>
+<p>Please keep in mind:</p>
+<ul>
+<li>GeoServer is a popular open source project and is subject to many security audits each year, only a small portion of which are reported in an actionable manner.  </li>
+<li>GeoCat provides <a href="https://docs.geocat.net/geoserver-enterprise/2024/setup/index.html">setup guidance</a> for production, with recommendations and topics addressing common security considerations. Please review this guidance and contact support if you require assistance.   </li>
+<li>Tip: The majority of audit software is designed to test the web interface provided for geoserver administration. In a production environment you may consider turning off this user interface using <code>GEOSERVER_CONSOLE_DISABLED=true</code> application property (see <a href="https://docs.geocat.net/geoserver-enterprise/2024/production/config.html">production considerations</a>)</li>
+</ul>
+<p>By working with GeoCat you are actively contributing to GeoServer sustainability and we thank you for your patronage.</p>
 
 
 
@@ -813,10 +822,18 @@
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["content.action.view", "content.action.edit", "content.code.copy", "content.tabs.link", "navigation.tabs", "navigation.tracking", "navigation.prune", "navigation.indexes", "toc.follow", "navigation.top", "navigation.footer", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["content.action.view", "content.action.edit", "content.code.copy", "content.tabs.link", "navigation.tabs", "navigation.tracking", "navigation.prune", "navigation.indexes", "toc.follow", "navigation.top", "navigation.footer", "announce.dismiss"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+        <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.min.js"></script>
+      
+        <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.number.js"></script>
+      
+        <script src="https://unpkg.com/tablesort@5.3.0/dist/tablesort.dotsep.js"></script>
+      
+        <script src="../../javascripts/tablesort.js"></script>
       
     
   </body>
