@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from . import proxy_fix
 from . import controllers
 from . import models
 
@@ -34,3 +34,7 @@ def _uninstall_hook(env):
     env.cr.execute("""
         DROP TABLE IF EXISTS "geocat_license_downloads"
     """)
+
+    # Remove our ProxyFix
+    if isinstance(proxy_fix.odoo_http.root, proxy_fix.ProxyFixApplication):
+        proxy_fix.odoo_http.root = proxy_fix.odoo_http.root.app
