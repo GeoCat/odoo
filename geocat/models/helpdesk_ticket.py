@@ -108,15 +108,19 @@ class HelpdeskTicket(models.Model):
         self.blocked_state = False
 
     def init(self):
-        # Make sure that the classification field is always available in the form builder
-        self.env['ir.model.fields'].formbuilder_whitelist('helpdesk.ticket', ['classification'])
+        """ Initialize the helpdesk ticket model with the required fields and data."""
 
-        # Make sure that the ticket_date and reported_id fields are set on all existing tickets
-        self.env.cr.execute("""
-                            UPDATE helpdesk_ticket
-                            SET reporter_id = create_uid, ticket_date = create_date
-                            WHERE reporter_id IS NULL AND ticket_date IS NULL
-                            """)
+        # Use savepoint to prevent concurrent modifications from causing issues
+        with self.env.cr.savepoint():
+            # Make sure that the classification field is always available in the form builder
+            self.env['ir.model.fields'].formbuilder_whitelist('helpdesk.ticket', ['classification'])
+
+            # Make sure that the ticket_date and reported_id fields are set on all existing tickets
+            self.env.cr.execute("""
+                                UPDATE helpdesk_ticket
+                                SET reporter_id = create_uid, ticket_date = create_date
+                                WHERE reporter_id IS NULL AND ticket_date IS NULL
+                                """)
 
         # Ensure that the helpdesk form view is available and up-to-date (for all teams, but we only have one)
         teams = self.env['helpdesk.team'].search([('use_website_helpdesk_form', '=', True)])
