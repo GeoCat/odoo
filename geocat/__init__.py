@@ -35,6 +35,6 @@ def _uninstall_hook(env):
         DROP TABLE IF EXISTS "geocat_license_downloads"
     """)
 
-    # Remove our ProxyFix
-    if isinstance(proxy_fix.odoo_http.root, proxy_fix.ProxyFixApplication):
-        proxy_fix.odoo_http.root = proxy_fix.odoo_http.root.app
+    # Remove our ProxyFix (see geocat/geocat/proxy_fix.py)
+    # if isinstance(proxy_fix.odoo_http.root, proxy_fix.ProxyFixApplication):
+    #     proxy_fix.odoo_http.root = proxy_fix.odoo_http.root.app
