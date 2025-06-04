@@ -34,9 +34,11 @@ class HelpdeskTicket(models.Model):
     _description = 'GeoCat Helpdesk Ticket'
     _inherit = ['helpdesk.ticket']
 
-    applies_to = fields.Char(string='Applies to', tracking=True, help='Specifies the software and/or version that a ticket applies to.')
+    applies_to = fields.Char(string='Applies to', tracking=True,
+                             help='Specifies the software and/or version that a ticket applies to.')
     priority = fields.Selection(TICKET_PRIORITY, compute='_compute_priority', store=True, default='0', tracking=True)
-    classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS, tracking=True,
+    classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS,
+                                      tracking=True,
                                       help='Classification of the ticket, used to determine the priority and SLA.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
@@ -45,9 +47,12 @@ class HelpdeskTicket(models.Model):
         tracking=True, ondelete='set null',
         groups='helpdesk.group_helpdesk_user'
     )
-    consolidated_color = fields.Char(string='Text Color', compute='_compute_consolidated_color', store=False, readonly=True)
-    consolidated_bgcolor = fields.Char(string='Background Color', compute='_compute_consolidated_bgcolor', store=False, readonly=True)
-    consolidated_status = fields.Char(string='Ticket Status', compute='_compute_consolidated_status', store=True, readonly=True)
+    consolidated_color = fields.Char(string='Text Color', compute='_compute_consolidated_color', store=False,
+                                     readonly=True)
+    consolidated_bgcolor = fields.Char(string='Background Color', compute='_compute_consolidated_bgcolor', store=False,
+                                       readonly=True)
+    consolidated_status = fields.Char(string='Ticket Status', compute='_compute_consolidated_status', store=True,
+                                      readonly=True)
     all_blocked_states_json = fields.Json(
         compute='_compute_all_blocked_states',
         copy=False, store=False
@@ -59,11 +64,13 @@ class HelpdeskTicket(models.Model):
     import_ref = fields.Char(string='Imported Ticket Reference', readonly=True, index='btree_not_null',
                              help='Legacy ticket reference (from WHMCS import)')
     # The display_ref field is used to show the ticket reference in the UI (based on the import_ref or ticket_ref).
-    display_ref = fields.Char(string='Ticket ID', compute='_compute_display_ref', store=True, copy=False, readonly=True, index=True)
+    display_ref = fields.Char(string='Ticket ID', compute='_compute_display_ref', store=True, copy=False, readonly=True,
+                              index=True)
 
     # This field can be used to store the date when the ticket was originally created (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_date will be used.
-    ticket_date = fields.Datetime(string='Ticket Date', readonly=True, help='Date when the ticket was originally created.')
+    ticket_date = fields.Datetime(string='Ticket Date', readonly=True,
+                                  help='Date when the ticket was originally created.')
 
     # This field can be used to store the user that originally reported the ticket (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_uid will be used.
@@ -71,17 +78,13 @@ class HelpdeskTicket(models.Model):
 
     # The following fields are used to link the ticket to a project and task.
     # This is taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
-    project_id = fields.Many2one(
-        string='Project', comodel_name='project.project', tracking=True, readonly=False,
-        help='Project to which this ticket is linked (e.g. for time tracking). Defaults to team project for new tickets.',
-        ondelete='restrict', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
-    )
-    task_id = fields.Many2one(
-        string='Task', comodel_name='project.task', compute='_compute_task_id', store=True, tracking=True,
-        help='Project task for time tracking. Defaults to team task for new tickets.',
-        domain="[('project_id', '=', project_id)]",
-        ondelete='restrict', readonly=False
-    )
+    project_id = fields.Many2one('project.project', string='Project', tracking=True, index=True,
+                                 help='Project to which this ticket is linked (e.g. for time tracking). Defaults to team project for new tickets.',
+                                 domain="[('partner_id', '=', commercial_partner_id.id)]")
+    task_id = fields.Many2one('project.task', string='Task', compute='_compute_task_id', store=True,
+                              help='Project task for time tracking. Defaults to team task for new tickets.', index=True,
+                              tracking=True, readonly=False)
+    default_project_id = fields.Many2one(related='team_id.default_project_id')
 
     @api.depends('project_id', 'team_id.default_project_id')
     def _compute_task_id(self):
@@ -97,33 +100,65 @@ class HelpdeskTicket(models.Model):
             else:
                 record.task_id = False
 
-    def _set_project_for_partner(self):
-        """ Sets the project for the ticket based on the partner_id. """
-        self.ensure_one()
-        if not self.commercial_partner_id:
-            # If no partner is set, we cannot determine a project: set it to the default project (or False if not set)
-            self.project_id = self.team_id.default_project_id or False
-            return
+    # @api.onchange('partner_id', 'commercial_partner_id')
+    # def _onchange_partner_id(self):
+    #     """ Update project_id domain and reset project_id when partner changes. """
+    #     if not self.partner_id:
+    #         # If partner is not set, allow all values for project_id
+    #         return {'domain': {'project_id': []}}
+    #     # Filter project_id values based on the selected partner
+    #     return {'domain': {'project_id': [('partner_id', '=', self.commercial_partner_id.id)]}}
+    #
+    # @api.onchange('project_id')
+    # def _onchange_project_id(self):
+    #     """ Update partner_id when project_id changes. """
+    #     if self.project_id and self.project_id.partner_id:
+    #         self.partner_id = self.project_id.partner_id
+    #
+    # @api.depends('partner_id', 'commercial_partner_id')
+    # def _compute_project_id(self):
+    #     """ Ensure project_id is updated when partner_id changes in the database. """
+    #     for record in self:
+    #         record._set_project_for_partner()
+    #
+    # def _set_partner_for_project(self):
+    #     """ Sets the partner for the selected project. """
+    #     _logger.info("Setting partner for project %s - current partner_id is %s", self.project_id.name if self.project_id else 'None', self.commercial_partner_id.id if self.commercial_partner_id else 'None')
+    #     self.ensure_one()
+    #     if not self.project_id or not self.project_id.partner_id:
+    #         # No project is set, or it does not have a partner: do nothing
+    #         return
+    #
+    #     # Set the partner to reflect the commercial partner of the ticket
+    #     self.partner_id = self.project_id.partner_id
 
-        # Find the first most recent project that belongs to the customer (if any) and company
-        res_project = self.env['project.project'].search([
-            ('partner_id', '=', self.commercial_partner_id.id),
-            ('active', '=', True),
-            '|',
-            ('company_id', '=', self.company_id.id),
-            ('company_id', '=', False),
-        ], limit=1, order='create_date desc')
-        if res_project:
-            # If a project is found, set it as the ticket's project (user should still select task)
-            self.project_id = res_project.id
-        else:
-            # If no project is found, set the default project of the team (or False if not set)
-            self.project_id = self.team_id.default_project_id or False
+    # def _set_project_for_partner(self):
+    #     """ Sets the project for the ticket based on the partner_id. """
+    #     _logger.info("Setting project for partner %s - current project_id is %s", self.commercial_partner_id.name if self.commercial_partner_id else 'None', self.project_id.id if self.project_id else 'None')
+    #     self.ensure_one()
+    #     if not self.commercial_partner_id:
+    #         # If no partner is set, we cannot determine a project: set it to the default project (or False if not set)
+    #         self.project_id = self.team_id.default_project_id or False
+    #         return
+    #
+    #     # Find the first most recent project that belongs to the customer (if any) and company
+    #     res_project = self.env['project.project'].search([
+    #         ('partner_id', '=', self.commercial_partner_id.id),
+    #         ('active', '=', True)
+    #     ], limit=1, order='create_date desc')
+    #     _logger.info("Project %s for partner %s", res_project.name if res_project else 'None', self.commercial_partner_id.name if self.commercial_partner_id else 'None')
+    #     if res_project:
+    #         # If a project is found, set it as the ticket's project (user should still select task)
+    #         self.project_id = res_project
+    #     else:
+    #         # If no project is found, set the default project of the team (or False if not set)
+    #         self.project_id = self.team_id.default_project_id or False
 
-    @api.onchange('partner_id')
-    def _onchange_partner_id(self):
-        """ Sets a (default) project for the ticket when the user changes the customer. """
-        self._set_project_for_partner()
+    # @api.depends('partner_id', 'commercial_partner_id', 'company_id')
+    # def _compute_project_id(self):
+    #     """ Sets a (default) project for the ticket when the customer changes. """
+    #     for ticket in self:
+    #         ticket._set_project_for_partner()
 
     @api.depends('import_ref', 'ticket_ref')
     def _compute_display_ref(self):
@@ -263,7 +298,7 @@ class HelpdeskTicket(models.Model):
         tickets = super().create(list_value)
         for ticket in tickets:
             # Set default project based on the partner_id (if set)
-            ticket._set_project_for_partner()
+            # ticket._set_project_for_partner()
             # Set the ticket_date and reporter_id to the create_date and create_uid respectively if not set
             ticket.ticket_date = ticket.ticket_date or ticket.create_date
             ticket.reporter_id = ticket.reporter_id or ticket.create_uid

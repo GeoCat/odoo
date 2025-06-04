@@ -16,7 +16,7 @@
                 <setting id="project_task"
                          help="Fallback project and task for (temporarily) unbillable helpdesk tickets.">
                     <field name="default_project_id" groups="project.group_project_user" required="True" />
-                    <field name="default_task_id" groups="project.group_project_user" required="True" />
+                    <field name="default_task_id" domain="[('project_id', '=', default_project_id)]" groups="project.group_project_user" required="True" />
                 </setting>
             </xpath>
         </field>

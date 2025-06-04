@@ -19,13 +19,12 @@ class HelpdeskTeam(models.Model):
         string="Default Project",
         help="Fallback project for tickets that aren't associated with a customer project (yet).",
         readonly=False,
-        ondelete='restrict'
+        ondelete='restrict',
     )
     default_task_id = fields.Many2one(
         string="Default Task",
         help="Fallback task for tickets that aren't associated with a customer task (yet).",
         comodel_name="project.task",
-        domain="[('project_id', '=', default_project_id)]",
         compute="_compute_task_id",
         readonly=False,
         ondelete='restrict',
