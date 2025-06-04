@@ -20,6 +20,10 @@
             <field name="name" position="attributes">
                 <attribute name="filter_domain">['|', ('name', 'ilike', self), ('ticket_ref', 'ilike', self), ('import_ref', 'ilike', self)]</attribute>
             </field>
+            <field name="user_id" position="after">
+                <field name="project_id" groups="project.group_project_user" />
+                <field name="task_id" groups="project.group_project_user" />
+            </field>
             <field name="tag_ids" position="after">
                 <field name="applies_to"/>
             </field>
@@ -60,6 +64,7 @@
         </field>
     </record>
 
+    <!-- NOTE: It is important that the ID of this record keeps this EXACT name! -->
     <record id="helpdesk_tickets_view_tree_geocat" model="ir.ui.view">
         <field name="name">geocat.ticket.list</field>
         <field name="model">helpdesk.ticket</field>
@@ -67,6 +72,10 @@
         <field name="arch" type="xml">
             <field name="ticket_ref" position="replace">
                 <field name="display_ref" string="ID" readonly="1" optional="show"/>
+            </field>
+            <field name="user_id" position="after">
+                <field name="commercial_partner_id" invisible="1"/>
+                <field name="project_id" groups="project.group_project_user" />
             </field>
             <field name="priority" position="after">
                 <field name="classification" optional="show"/>
@@ -109,6 +118,11 @@
             <field name="priority" position="before">
                 <field name="classification" readonly="0" required="1"/>
             </field>
+            <field name="user_id" position="replace"/>
+            <field name="domain_user_ids" position="replace"/>
+            <field name="tag_ids" position="before">
+                <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
+            </field>
             <field name="tag_ids" position="after">
                 <field name="applies_to"/>
             </field>
@@ -116,16 +130,22 @@
                 <field name="all_blocked_states_json" invisible="True"/>
                 <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" readonly="1" groups="base.group_user"/>
             </field>
-            <!-- Replace the entire group with one that includes the reporter_id (instead of phone) and blocked_state and import_ref fields -->
+            <!-- Replace the entire group with one that includes the reporter_id (instead of phone), project, and import_ref fields -->
             <xpath expr="//group//field[@name='partner_id']/.." position="replace">
                 <group>
                     <field name="partner_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" widget="res_partner_many2one"/>
                     <field name="reporter_id" widget="res_partner_many2one"/>
                     <field name="email_cc" groups="base.group_no_one"/>
-                    <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
+                    <field name="user_id" class="field_user_id" domain="['&amp;', ('id', 'in', domain_user_ids), ('share', '=', False)]" widget="many2one_avatar_user"/>
+                    <field name="domain_user_ids" invisible="1"/>
+                    <field name="project_id" invisible="1" />
+                    <field name="project_id" groups="project.group_project_user" options="{'no_create': True}" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" />
+                    <field name="task_id" invisible="1" />
+                    <field name="task_id" domain="[('project_id', '=', project_id)]" invisible="not project_id" options="{'no_create': True}" context="{'default_project_id': project_id}" groups="project.group_project_user"/>
                     <field name="import_ref" string="Legacy #" readonly="1" invisible="not import_ref"/>
                 </group>
             </xpath>
+            <!-- TODO: add tab so we can log timesheets directly here? -->
         </field>
     </record>
 

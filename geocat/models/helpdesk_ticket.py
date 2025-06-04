@@ -69,6 +69,62 @@ class HelpdeskTicket(models.Model):
     # The value may be explicitly set during create(). If omitted, the create_uid will be used.
     reporter_id = fields.Many2one('res.users', string='Reported by', readonly=True)
 
+    # The following fields are used to link the ticket to a project and task.
+    # This is taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
+    project_id = fields.Many2one(
+        string='Project', comodel_name='project.project', tracking=True, readonly=False,
+        help='Project to which this ticket is linked (e.g. for time tracking). Defaults to team project for new tickets.',
+        ondelete='restrict', domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"
+    )
+    task_id = fields.Many2one(
+        string='Task', comodel_name='project.task', compute='_compute_task_id', store=True, tracking=True,
+        help='Project task for time tracking. Defaults to team task for new tickets.',
+        domain="[('project_id', '=', project_id)]",
+        ondelete='restrict', readonly=False
+    )
+
+    @api.depends('project_id', 'team_id.default_project_id')
+    def _compute_task_id(self):
+        # Inspired by https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
+        for record in self:
+            if record.task_id.project_id == record.project_id:
+                # If the task is already linked to the correct project, do nothing
+                continue
+
+            if record.project_id and record.project_id == record.team_id.default_project_id:
+                # If the project is the default project of the team, set the task to the default task
+                record.task_id = record.team_id.default_task_id or False
+            else:
+                record.task_id = False
+
+    def _set_project_for_partner(self):
+        """ Sets the project for the ticket based on the partner_id. """
+        self.ensure_one()
+        if not self.commercial_partner_id:
+            # If no partner is set, we cannot determine a project: set it to the default project (or False if not set)
+            self.project_id = self.team_id.default_project_id or False
+            return
+
+        # Find the first most recent project that belongs to the customer (if any) and company
+        res_project = self.env['project.project'].search([
+            ('partner_id', '=', self.commercial_partner_id.id),
+            ('active', '=', True),
+            '|',
+            ('company_id', '=', self.company_id.id),
+            ('company_id', '=', False),
+        ], limit=1, order='create_date desc')
+        if res_project:
+            # If a project is found, set it as the ticket's project (user should still select task)
+            self.project_id = res_project.id
+        else:
+            # If no project is found, set the default project of the team (or False if not set)
+            self.project_id = self.team_id.default_project_id or False
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        """ Sets a (default) project for the ticket when the user changes the customer. """
+        self._set_project_for_partner()
+
     @api.depends('import_ref', 'ticket_ref')
     def _compute_display_ref(self):
         """ Compute the display reference based on the ticket_ref and import_ref fields. """
@@ -206,6 +262,8 @@ class HelpdeskTicket(models.Model):
         """ Override that sets the ticket date to the current date if not set. """
         tickets = super().create(list_value)
         for ticket in tickets:
+            # Set default project based on the partner_id (if set)
+            ticket._set_project_for_partner()
             # Set the ticket_date and reporter_id to the create_date and create_uid respectively if not set
             ticket.ticket_date = ticket.ticket_date or ticket.create_date
             ticket.reporter_id = ticket.reporter_id or ticket.create_uid

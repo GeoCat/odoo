@@ -57,6 +57,7 @@
         'views/calendar_views.xml',
         'views/helpdesk_stage_views.xml',
         'views/helpdesk_templates.xml',
+        'views/helpdesk_team_views.xml',
         'views/helpdesk_ticket_views.xml',
         'views/helpdesk_portal_templates.xml',
         'views/helpdesk_state_views.xml',

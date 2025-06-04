@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class HelpdeskTeam(models.Model):
@@ -12,6 +12,32 @@ class HelpdeskTeam(models.Model):
     #                                             help='When a first response has been sent, you can automatically set '
     #                                                  'the ticket to a stage. Leave this empty to keep the stage as-is.',
     #                                             domain="[('id', 'in', stage_ids)]", ondelete='set null')
+
+    # Taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
+    default_project_id = fields.Many2one(
+        comodel_name="project.project",
+        string="Default Project",
+        help="Fallback project for tickets that aren't associated with a customer project (yet).",
+        readonly=False,
+        ondelete='restrict'
+    )
+    default_task_id = fields.Many2one(
+        string="Default Task",
+        help="Fallback task for tickets that aren't associated with a customer task (yet).",
+        comodel_name="project.task",
+        domain="[('project_id', '=', default_project_id)]",
+        compute="_compute_task_id",
+        readonly=False,
+        ondelete='restrict',
+        store=True,
+    )
+
+    @api.depends("default_project_id")
+    def _compute_task_id(self):
+        # Taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
+        for record in self:
+            if record.default_task_id.project_id != record.default_project_id:
+                record.default_task_id = False
 
     def _get_closing_stage(self):
         """ Override: try to find a stage with 'closed' in its name. """
