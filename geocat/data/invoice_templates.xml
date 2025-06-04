@@ -59,9 +59,9 @@
             </div>
         </xpath>
 
-        <!-- Remove the 'units' word and make sure we display integers for quantities -->
+        <!-- Remove the 'units' label -->
         <xpath expr="//span[@t-field='line.quantity']" position="replace">
-            <span t-field="line.quantity" t-options="{'widget': 'integer', 'format_decimalized_number': True}">3</span>
+            <span t-field="line.quantity">3</span>
         </xpath>
         <xpath expr="//span[@t-field='line.product_uom_id']" position="replace"/>
 
