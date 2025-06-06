@@ -21,7 +21,14 @@ class GeoCatMailThread(models.AbstractModel):
                                 resend_existing=False, force_send=True, send_after_commit=True,  # email send
                                 **kwargs):
         """ Override to set the default email layout XML ID to a GeoCat one. """
+        _logger.info("----------- GeoCatMailThread._notify_thread_by_email called -----------")
+        _logger.info("recipients_data = %s", recipients_data)
+        _logger.info("msg_vals = %s", msg_vals)
+        _logger.info("kwargs = %s", kwargs)
+        _logger.info("----------- force_email_layout_xmlid_kwarg called -----------")
         msg_vals = force_email_layout_xmlid_kwarg(msg_vals)
+        _logger.info("msg_vals = %s", msg_vals)
+        _logger.info("----------- calling super() -----------")
         return super()._notify_thread_by_email(message, recipients_data,
                                                msg_vals=msg_vals, mail_auto_delete=mail_auto_delete,
                                                model_description=model_description,
