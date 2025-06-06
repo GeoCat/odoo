@@ -60,13 +60,8 @@
         </template>
 
         <!-- Light version of the GeoCat email layout template -->
-        <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
+                <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email layout template for simple notifications">
-            <!-- Make sure the footer is always shown for this template -->
-            <xpath expr="//t[@t-set='show_footer']" position="attributes">
-                <attribute name="t-value">True</attribute>
-            </xpath>
-
             <!-- Decrease margin to reflect padding of light footer -->
             <xpath expr="//div[@id='content']" position="attributes">
                 <attribute name="style">margin: 12px; font-size: 13px;</attribute>
@@ -81,6 +76,15 @@
                 <div id="footer">
                     <t t-call="geocat.mail_footer_light"/>
                 </div>
+            </xpath>
+        </template>
+
+        <!-- Light version of the GeoCat email layout template with forced footer -->
+        <template id="mail_layout_light_forced_footer" inherit_id="geocat.mail_layout_light" primary="True"
+                  name="Mail: GeoCat email layout template for simple notifications (with forced footer)">
+            <!-- Make sure the footer is always shown for this template -->
+            <xpath expr="//t[@t-set='show_footer']" position="attributes">
+                <attribute name="t-value">True</attribute>
             </xpath>
         </template>
 

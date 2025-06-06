@@ -39,7 +39,7 @@ def map_email_layout_template(layout_template, force_default: bool = False) -> s
 
     # NOTE: The mapping below works for Odoo 18 but may have to be adjusted for future versions!   TODO: add tests!!
     forced_template = {
-        'mail.mail_notification_light': 'geocat.mail_layout_light',
+        'mail.mail_notification_light': 'geocat.mail_layout_light_forced_footer',
         'mail.mail_notification_layout': 'geocat.mail_layout_master',
         'mail.mail_notification_invite': 'geocat.mail_layout_invite',
         'mail.mail_notification_layout_with_responsible_signature': 'geocat.mail_layout_master_with_responsible_signature'
@@ -79,14 +79,8 @@ def set_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
         # There's nothing to evaluate also, so we just return whatever arg_dict is.
         return arg_dict
 
-    message_type = arg_dict.get('message_type')
-    email_layout = arg_dict.get('email_layout_xmlid')
-    if message_type == 'email' and not email_layout:
-        # If the message type is 'email' and no email layout is set, we won't add it:
-        # otherwise we will keep adding more GeoCat footers to the thread.
-        return arg_dict
-
     # Set the email layout XML ID if not already set
+    email_layout = arg_dict.get('email_layout_xmlid')
     arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout, True)
     return arg_dict
 
