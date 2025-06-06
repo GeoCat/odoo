@@ -69,12 +69,11 @@ class HelpdeskTicket(models.Model):
 
     # This field can be used to store the date when the ticket was originally created (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_date will be used.
-    ticket_date = fields.Datetime(string='Ticket Date', readonly=True,
-                                  help='Date when the ticket was originally created.')
+    ticket_date = fields.Datetime(string='Ticket Date', help='Date when the ticket was originally created.')
 
     # This field can be used to store the user that originally reported the ticket (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_uid will be used.
-    reporter_id = fields.Many2one('res.users', string='Reported by', readonly=True)
+    reporter_id = fields.Many2one('res.users', string='Reported by')
 
     # The following fields are used to link the ticket to a project and task.
     # This is taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
