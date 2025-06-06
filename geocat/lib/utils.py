@@ -65,15 +65,28 @@ def map_email_layout_template(layout_template, force_default: bool = False) -> s
     return forced_template
 
 
-def force_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
+def set_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
     """ Adds the email_layout_xmlid keyword argument (if missing) and
     sets it to an appropriate GeoCat email layout template.
+
+    Note that the email_layout_xmlid is not enforced if the message type is 'email' and no layout was specified,
+    to avoid adding GeoCat footers to every email (response) in the thread.
+
     The argument dictionary is manipulated in-place but also returned.
     """
     if not arg_dict:
-        # Some arguments may have been set to 'False', so then the getter would fail
-        arg_dict = {}
+        # Some arguments may have been set to 'False', so then the getter would fail.
+        # There's nothing to evaluate also, so we just return whatever arg_dict is.
+        return arg_dict
+
+    message_type = arg_dict.get('message_type')
     email_layout = arg_dict.get('email_layout_xmlid')
+    if message_type == 'email' and 'email_layout_xmlid' is None:
+        # If the message type is 'email' and no email layout is set, we won't add it:
+        # otherwise we will keep adding more GeoCat footers to the thread.
+        return arg_dict
+
+    # Set the email layout XML ID if not already set
     arg_dict['email_layout_xmlid'] = map_email_layout_template(email_layout, True)
     return arg_dict
 
