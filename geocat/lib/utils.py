@@ -81,7 +81,7 @@ def set_email_layout_xmlid_kwarg(arg_dict: dict) -> dict:
 
     message_type = arg_dict.get('message_type')
     email_layout = arg_dict.get('email_layout_xmlid')
-    if message_type == 'email' and 'email_layout_xmlid' is None:
+    if message_type == 'email' and not email_layout:
         # If the message type is 'email' and no email layout is set, we won't add it:
         # otherwise we will keep adding more GeoCat footers to the thread.
         return arg_dict
