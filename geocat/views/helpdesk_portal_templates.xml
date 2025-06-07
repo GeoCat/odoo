@@ -10,16 +10,6 @@
             </xpath>
         </template>
 
-        <!-- "My Account" portal home (ticket button) -->
-        <template id="portal_my_home_helpdesk_ticket" inherit_id="helpdesk.portal_my_home_helpdesk_ticket">
-            <xpath expr="//t[@t-set='url' and contains(@t-value, '/my/tickets')]/../t[@t-set='text']"
-                   position="replace">
-                <t t-set="text">Manage your helpdesk tickets</t>
-                <!-- Make sure that the card is always shown, even if there are no tickets! -->
-                <t t-set="config_card" t-value="True"/>
-            </xpath>
-        </template>
-
         <!-- Ticket List override (master) -->
         <template id="portal_helpdesk_ticket" name="My Tickets" inherit_id="helpdesk.portal_helpdesk_ticket">
             <xpath expr="//t[@t-call='portal.portal_searchbar']//t[@t-set='title']" position="after">

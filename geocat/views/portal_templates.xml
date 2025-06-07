@@ -6,4 +6,33 @@
         <xpath expr="//div[hasclass('d-none', 'd-lg-block', 'mt-5', 'small', 'text-center', 'text-muted')]" position="replace"/>
     </template>
 
+    <!-- Hide the cards section from /my/home page because they are ugly:
+         we'll design something ourselves using Odoo's Website Editor -->
+    <!-- NOTE: we cannot *remove* the cards, as that would break the portal home page! -->
+    <template id="portal_my_home_no_cards" name="GeoCat Customer Portal Home" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="attributes">
+            <attribute name="class" separator=" " add="collapse"/>
+        </xpath>
+    </template>
+
+    <!-- Adjust the portal user menu in the top right corner -->
+    <template id="my_security_link" name="Link to portal user security settings" inherit_id="portal.my_account_link">
+        <!-- Let the "My Account" link point to the actual account settings instead of the portal home -->
+        <xpath expr="//a[@href='/my/home']" position="attributes">
+            <attribute name="href">/my/account</attribute>
+        </xpath>
+        <!-- Add security settings link (as we removed it from /my/home) -->
+        <xpath expr="//*[@id='o_logout_divider']" position="before">
+            <a href="/my/security" role="menuitem" class="dropdown-item ps-3">
+                <i class="fa fa-fw fa-shield me-1 small text-primary text-primary-emphasis"/> My Security
+            </a>
+        </xpath>
+    </template>
+
+    <!-- Remove the Back button from the portal user security settings page:
+         users will no longer only come from /my/home, but from the top right menu -->
+    <template id="portal_my_security" name="GeoCat Customer Portal Security" inherit_id="portal.portal_my_security">
+        <xpath expr="//a[@href='/my/']" position="replace"/>
+    </template>
+
 </odoo>
