@@ -24,7 +24,7 @@
         <!-- Add security settings link (as we removed it from /my/home) -->
         <xpath expr="//*[@id='o_logout_divider']" position="before">
             <a href="/my/security" role="menuitem" class="dropdown-item ps-3">
-                <i class="fa fa-fw fa-shield me-1 small text-primary text-primary-emphasis"/> My Security
+                <i class="fa fa-fw fa-shield me-1 small text-primary"/> My Security
             </a>
         </xpath>
     </template>
