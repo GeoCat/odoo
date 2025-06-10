@@ -45,7 +45,6 @@ class HelpdeskTicket(models.Model):
         string='Blocked State',
         domain="[('stage_id', '=', stage_id)]",
         tracking=True, ondelete='set null',
-        groups='helpdesk.group_helpdesk_user'
     )
     consolidated_color = fields.Char(string='Text Color', compute='_compute_consolidated_color', store=False,
                                      readonly=True)
