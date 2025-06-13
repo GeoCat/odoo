@@ -87,7 +87,7 @@
             <field name="kanban_state" position="replace"/>
             <field name="stage_id" position="after">
                 <field name="all_blocked_states_json" column_invisible="True"/>
-                <field name="blocked_state" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}" groups="base.group_user"/>
+                <field name="blocked_state" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
             </field>
         </field>
     </record>
@@ -105,7 +105,7 @@
             </xpath>
             <xpath expr="//t[@t-name='card']//footer//field[@name='kanban_state']" position="replace">
                 <field name="all_blocked_states_json" invisible="True"/>
-                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" class="ms-1" groups="base.group_user"/>
+                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" class="ms-1"/>
             </xpath>
         </field>
     </record>
@@ -128,7 +128,7 @@
             </field>
             <field name="kanban_state" position="replace">
                 <field name="all_blocked_states_json" invisible="True"/>
-                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" readonly="1" groups="base.group_user"/>
+                <field name="blocked_state" invisible="not blocked_state and not all_blocked_states_json" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json'}" readonly="1"/>
             </field>
             <!-- Replace the entire group with one that includes the reporter_id (instead of phone), project, and import_ref fields -->
             <xpath expr="//group//field[@name='partner_id']/.." position="replace">

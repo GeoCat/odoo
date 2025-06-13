@@ -42,9 +42,9 @@ class HelpdeskTicket(models.Model):
                                       help='Classification of the ticket, used to determine the priority and SLA.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
-        string='Blocked State',
+        string='Blocked State', groups='helpdesk.group_helpdesk_user',
         domain="[('stage_id', '=', stage_id)]",
-        tracking=True, ondelete='set null',
+        tracking=True, ondelete='set null', index=True,
     )
     consolidated_color = fields.Char(string='Text Color', compute='_compute_consolidated_color', store=False,
                                      readonly=True)
@@ -68,11 +68,11 @@ class HelpdeskTicket(models.Model):
 
     # This field can be used to store the date when the ticket was originally created (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_date will be used.
-    ticket_date = fields.Datetime(string='Ticket Date', help='Date when the ticket was originally created.')
+    ticket_date = fields.Datetime(string='Ticket Date', help='Date when the ticket was originally created.', index=True)
 
     # This field can be used to store the user that originally reported the ticket (e.g. in WHMCS).
     # The value may be explicitly set during create(). If omitted, the create_uid will be used.
-    reporter_id = fields.Many2one('res.users', string='Reported by', copy=True)
+    reporter_id = fields.Many2one('res.users', string='Reported by', copy=True, index=True)
 
     # The following fields are used to link the ticket to a project and task.
     # This is taken from https://github.com/OCA/helpdesk/tree/18.0/helpdesk_mgmt_project
