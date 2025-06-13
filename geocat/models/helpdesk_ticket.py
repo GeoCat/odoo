@@ -38,7 +38,7 @@ class HelpdeskTicket(models.Model):
                              help='Specifies the software and/or version that a ticket applies to.')
     priority = fields.Selection(TICKET_PRIORITY, compute='_compute_priority', store=True, default='0', tracking=True)
     classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS,
-                                      tracking=True,
+                                      tracking=True, index=True,
                                       help='Classification of the ticket, used to determine the priority and SLA.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',

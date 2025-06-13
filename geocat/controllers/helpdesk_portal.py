@@ -54,6 +54,7 @@ class GeoCatCustomerPortal(CustomerPortal):
             'ticket_date desc': {'label': _('Newest')},
             'display_ref desc': {'label': _('Reference')},
             'name': {'label': _('Subject')},
+            'classification': {'label': _('Classification')},
             'user_id': {'label': _('Assigned to')},
             'write_date desc': {'label': _('Last Update')},
         }
@@ -63,6 +64,7 @@ class GeoCatCustomerPortal(CustomerPortal):
             'unassigned': {'label': _('Unassigned'), 'domain': [('user_id', '=', False)]},
             'open': {'label': _('Open'), 'domain': [('close_date', '=', False)]},
             'closed': {'label': _('Closed'), 'domain': [('close_date', '!=', False)]},
+            'reporter_id': {'label': _('Reported by me'), 'domain': [('reporter_id', '=', http.request.env.user.id)]},
         }
         searchbar_inputs = dict(sorted(self._ticket_get_searchbar_inputs().items(), key=lambda item: item[1]['sequence']))
         searchbar_groupby = dict(sorted(self._ticket_get_searchbar_groupby().items(), key=lambda item: item[1]['sequence']))
