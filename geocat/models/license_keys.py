@@ -211,7 +211,7 @@ class GeoCatBridgeLicense(models.Model):
     #     if not self.expiry_date or self.expiry_date < fields.Date.today():
     #         self.extended_date = fields.Date.today()
 
-    def license_response(self, token_hash: str) -> dict[str, Any]:
+    def _license_response(self, token_hash: str) -> dict[str, Any]:
         """ Returns a dictionary with the license data to return to the user as JSON. """
         self.ensure_one()
 

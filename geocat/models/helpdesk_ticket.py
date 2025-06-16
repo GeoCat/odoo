@@ -156,13 +156,13 @@ class HelpdeskTicket(models.Model):
         teams._ensure_submit_form_view()
 
         # Load all blocked states from the geocat.helpdesk.state model (should have been initialized first)
-        self.load_blocked_states()
+        self._load_blocked_states()
 
         # Make sure that all statuses are up-to-date
-        self.reset_consolidated_statuses()
+        self._reset_consolidated_statuses()
 
     @api.model
-    def load_blocked_states(self):
+    def _load_blocked_states(self):
         """ (Re)load all blocked states. There should only be a few, so no real performance or memory hit. """
         global _all_blocked_states
         _all_blocked_states = {}
@@ -177,7 +177,7 @@ class HelpdeskTicket(models.Model):
             })
 
     @api.model
-    def reset_consolidated_statuses(self):
+    def _reset_consolidated_statuses(self):
         """ Reset the consolidated status for all tickets. As this is a potentially heavy operation,
         only call this at startup or when states or stages are modified by an administrator. """
         self.search([])._compute_consolidated_status()

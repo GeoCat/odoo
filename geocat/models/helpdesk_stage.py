@@ -14,7 +14,7 @@ class GeoCatHelpdeskStage(models.Model):
         ticket_model = self.env['helpdesk.ticket']
         if ticket_model is not None:
             # Make sure that the consolidates statuses of all tickets match the current states and stages
-            ticket_model.reset_consolidated_statuses()
+            ticket_model._reset_consolidated_statuses()
 
     def write(self, vals):
         """ Whenever a stage is updated (e.g. renamed), we need to recompute the consolidated status. """
