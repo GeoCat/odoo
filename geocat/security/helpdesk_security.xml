@@ -11,7 +11,7 @@
             <!-- This override allows portal users to see their own tickets AND all tickets of the organization they belong to -->
             <!-- Taken from https://github.com/OCA/helpdesk/blob/18.0/helpdesk_mgmt/security/helpdesk_security.xml -->
             <field name="name">Helpdesk Portal Users: All Partner Tickets</field>
-            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="model_id" ref="geocat.model_helpdesk_ticket"/>
             <field name="domain_force">[
                 ('team_privacy_visibility', '=', 'portal'),
                 '|',
