@@ -69,11 +69,9 @@ class GeoCatMailThread(models.AbstractModel):
             if ticket:
                 _logger.info(f"Found existing ticket match with ID {ticket.id}: updating ticket")
                 thread_id = ticket.id
+                processed_routes.append((model_name, thread_id, custom_values, user_id, alias))
             else:
-                _logger.warning(f"Ticket with legacy reference '{import_ref}' not found: creating new ticket")
-                if custom_values is None:
-                    custom_values = {}
-                custom_values['import_ref'] = import_ref
-            processed_routes.append((model_name, thread_id, custom_values, user_id, alias))
+                # TODO: Bounce or ignore? Ideally, users need to now that they should not reply to really old tickets
+                _logger.warning(f"Ticket with legacy reference '{import_ref}' not found: ignoring ticket email")
 
         return super()._message_route_process(message, message_dict, processed_routes)

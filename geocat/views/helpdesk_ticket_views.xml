@@ -18,7 +18,7 @@
         <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search"/>
         <field name="arch" type="xml">
             <field name="name" position="attributes">
-                <attribute name="filter_domain">['|', ('name', 'ilike', self), ('ticket_ref', 'ilike', self), ('import_ref', 'ilike', self)]</attribute>
+                <attribute name="filter_domain">['|', '|', ('name', 'ilike', self), ('ticket_ref', 'ilike', self), ('import_ref', 'ilike', self)]</attribute>
             </field>
             <field name="user_id" position="after">
                 <field name="project_id" groups="project.group_project_user" />

@@ -43,7 +43,7 @@ class HelpdeskTicket(models.Model):
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
         string='Blocked State', groups='helpdesk.group_helpdesk_user',
-        domain="[('stage_id', '=', stage_id)]",
+        domain="[('stage_id', '=', stage_id)]", readonly=False,
         tracking=True, ondelete='set null', index=True,
     )
     consolidated_color = fields.Char(string='Text Color', compute='_compute_consolidated_color', store=False,
@@ -239,3 +239,7 @@ class HelpdeskTicket(models.Model):
             ticket.ticket_date = ticket.ticket_date or ticket.create_date
             ticket.reporter_id = ticket.reporter_id or ticket.create_uid
         return tickets
+
+    def message_post(self, *args, body='', message_type='notification', **kwargs):
+        kwargs['email_layout_xmlid'] = 'geocat.mail_layout_light_forced_footer'
+        return super().message_post(*args, body=body, message_type=message_type, **kwargs)
