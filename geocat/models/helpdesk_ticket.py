@@ -241,5 +241,5 @@ class HelpdeskTicket(models.Model):
         return tickets
 
     def message_post(self, *args, body='', message_type='notification', **kwargs):
-        kwargs['email_layout_xmlid'] = 'geocat.mail_layout_light_forced_footer'
+        kwargs['email_layout_xmlid'] = 'geocat.mail_layout_light_button_access'
         return super().message_post(*args, body=body, message_type=message_type, **kwargs)

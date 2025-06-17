@@ -60,7 +60,7 @@
         </template>
 
         <!-- Light version of the GeoCat email layout template -->
-                <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
+        <template id="mail_layout_light" inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email layout template for simple notifications">
             <!-- Decrease margin to reflect padding of light footer -->
             <xpath expr="//div[@id='content']" position="attributes">
@@ -80,7 +80,7 @@
         </template>
 
         <!-- Light version of the GeoCat email layout template with forced footer -->
-        <template id="mail_layout_light_forced_footer" inherit_id="geocat.mail_layout_light" primary="True"
+        <template id="mail_layout_light_forced_footer" inherit_id="geocat.mail_layout_light"
                   name="Mail: GeoCat email layout template for simple notifications (with forced footer)">
             <!-- Make sure the footer is always shown for this template -->
             <xpath expr="//t[@t-set='show_footer']" position="attributes">
@@ -88,6 +88,62 @@
             </xpath>
         </template>
 
+        <!-- Light version of the GeoCat email layout template with forced footer and a header with item access button -->
+        <template id="mail_layout_light_button_access" inherit_id="geocat.mail_layout_light_forced_footer">
+            <xpath expr="//table[@role='presentation']/tbody/tr" position="before">
+                <tr t-if="has_button_access or subtitles or not is_discussion">
+                    <td align="center">
+                        <div t-att-itemscope="itemscope" t-att-itemtype="'http://schema.org/EmailMessage'">
+                            <div t-att-itemprop="potentialAction" t-att-itemscope="itemscope" t-att-itemtype="'http://schema.org/ViewAction'">
+                                <link t-att-itemprop="target" t-att-href="button_access['url']"/>
+                                <link t-att-itemprop="url" t-att-href="button_access['url']"/>
+                                <meta t-att-itemprop="name" t-att-content="button_access['title']"/>
+                            </div>
+                        </div>
+                        <div summary="o_mail_notification" style="padding: 0;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="width: 100%; margin-top: 10px;">
+                                <tbody>
+                                    <tr>
+                                        <td valign="center" style="white-space:nowrap;">
+                                            <table cellspacing="0" cellpadding="0" border="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td t-if="has_button_access">
+                                                            <a t-att-href="button_access['url']"
+                                                               t-att-style="'padding: 8px 40px; color: #FFFFFF; text-decoration: none !important; background-color: ' + (company.email_secondary_color or '#0092FF') + '; border-radius: 50px; font-size: 14px; font-weight: 500;'">
+                                                                <t t-out="button_access['title']"/>
+                                                            </a>
+                                                        </td>
+                                                        <td t-if="has_button_access">&amp;nbsp;&amp;nbsp;</td>
+                                                        <td t-if="subtitles" style="font-size: 12px;">
+                                                             <t t-foreach="subtitles" t-as="subtitle">
+                                                                <span t-attf-style="{{ 'font-weight:bold;' if subtitle_first else '' }}"
+                                                                      t-out="subtitle"/>
+                                                                <br t-if="not subtitle_last"/>
+                                                            </t>
+                                                        </td>
+                                                        <td t-else="">
+                                                            <span style="font-weight:bold;" t-out="record_name"/><br/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="center">
+                                            <hr style="background-color: #555555; border: 0; height: 1px; margin: 10px 0;" width="100%"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+
+        <!-- Invitation to follow some record: often sent to users who are not yet registered in the system -->
         <template id="mail_layout_invite" inherit_id="geocat.mail_layout_master" primary="True"
                   name="Mail: GeoCat email layout template for follow invitations">
             <!-- Add an extra message at the top to indicate the user has been added as a follower -->
