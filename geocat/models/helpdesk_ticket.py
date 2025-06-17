@@ -42,7 +42,7 @@ class HelpdeskTicket(models.Model):
                                       help='Classification of the ticket, used to determine the priority and SLA.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
-        string='Blocked State', groups='helpdesk.group_helpdesk_user',
+        string='Blocked State', groups='base.group_portal, helpdesk.group_helpdesk_user',
         domain="[('stage_id', '=', stage_id)]", readonly=False,
         tracking=True, ondelete='set null', index=True,
     )
