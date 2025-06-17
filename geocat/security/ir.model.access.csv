@@ -7,3 +7,4 @@ access_license_downloads_manage,Manage License Downloads,model_geocat_license_do
 access_license_downloads_internal_user,See License Downloads,model_geocat_license_downloads,geocat.group_license_user,1,0,0,0
 access_helpdesk_ticket_states_manage,Manage Ticket States,model_geocat_helpdesk_state,helpdesk.group_helpdesk_manager,1,1,1,1
 access_helpdesk_ticket_states_internal_user,View Ticket States,model_geocat_helpdesk_state,helpdesk.group_helpdesk_user,1,0,0,0
+access_helpdesk_ticket_portal_user,View Tickets (Portal User),model_geocat_helpdesk_state,base.group_portal,1,0,0,0
