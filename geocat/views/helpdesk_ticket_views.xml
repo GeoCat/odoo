@@ -125,7 +125,7 @@
             <field name="user_id" position="replace"/>
             <field name="domain_user_ids" position="replace"/>
             <field name="tag_ids" position="before">
-                <field name="blocked_state" groups="base.group_user" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
+                <field name="blocked_state" string="Status" widget="many2one_state_selection" options="{'states_field': 'all_blocked_states_json', 'hide_label': False}"/>
             </field>
             <field name="tag_ids" position="after">
                 <field name="applies_to"/>
