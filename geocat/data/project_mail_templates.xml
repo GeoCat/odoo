@@ -5,7 +5,7 @@
         <div>
             Dear <t t-esc="assignee_name"/>,
             <br/><br/>
-            <span style="margin-top: 8px;">You have been assigned to the <t t-esc="model_description or 'document'"/> <a t-att-href="access_link"><t t-esc="object.display_name"/></a>.</span>
+            <span style="margin-top: 8px;">You have been assigned to the <t t-esc="model_description.lower() or 'document'"/> <a t-att-href="access_link"><t t-esc="object.display_name"/></a>.</span>
         </div>
     </template>
 </odoo>

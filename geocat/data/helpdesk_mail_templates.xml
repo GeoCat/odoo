@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Custom version of "You have been assigned" email template to include an access link -->
+        <template id="helpdesk_ticket_message_user_assigned">
+            <div>
+                Dear <t t-esc="object.user_id.sudo().name"/>,
+                <br/><br/>
+                <span style="margin-top: 8px;">You have been assigned to the <t t-esc="model_description.lower() or 'document'"/> <a t-att-href="access_link"><t t-esc="object.display_name"/></a>.</span>
+            </div>
+        </template>
+    </data>
+</odoo>

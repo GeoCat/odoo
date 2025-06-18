@@ -63,6 +63,7 @@
         'views/helpdesk_state_views.xml',
         'views/website_hr_recruitment_templates.xml',
         'data/mail_templates_email_layouts.xml',
+        'data/helpdesk_mail_templates.xml',
         'data/auth_signup_templates_email.xml',
         'data/project_mail_templates.xml',
         'data/sale_order_templates.xml',

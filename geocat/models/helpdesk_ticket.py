@@ -239,6 +239,51 @@ class HelpdeskTicket(models.Model):
             ticket.reporter_id = ticket.reporter_id or ticket.create_uid
         return tickets
 
+    @api.returns('mail.message', lambda value: value.id)
     def message_post(self, *args, body='', message_type='notification', **kwargs):
+        """ Override that wraps our replies in a layout with a button to access the ticket in the portal.
+        Also puts the ticket in the next stage (with sequence=1) if we are posting the first message.
+        """
         kwargs['email_layout_xmlid'] = 'geocat.mail_layout_light_button_access'
-        return super().message_post(*args, body=body, message_type=message_type, **kwargs)
+        message = super().message_post(*args, body=body, message_type=message_type, **kwargs)
+
+        # NOTE: message_post() super is called on a single record (ensure_one()) so we can safely use self now.
+        #       It should have set the answered_customer_message_count to 1, if this was a first reply.
+
+        # Check if the message is sent to the customer (not an internal note)
+        if kwargs.get('subtype_xmlid') == 'mail.mt_comment':
+            # ... and set the ticket to 'In Progress' stage if this is the first reply
+            self._update_stage_on_first_reply()
+
+        return message
+
+    def _update_stage_on_first_reply(self):
+        """ Sets ticket to 'In Progress' stage if this is the first reply and the ticket is in 'New' stage. """
+        self.ensure_one()
+        if self.stage_id.sequence == 0 and self.answered_customer_message_count == 1:
+            # If the ticket is in the 'New' stage and the first reply was posted, set it to 'In Progress'
+            in_progress_stage = self.env['helpdesk.stage'].search([('sequence', '=', 1)], limit=1)
+            if in_progress_stage:
+                self.stage_id = in_progress_stage
+
+    def _send_email_notify_to_cc(self, partners_to_notify):
+        """ Override that does nothing, so users will not receive the 'You are invited to follow ...' message.
+        The reason we do this is that these notifications are quite superfluous and not very useful.
+        """
+        pass
+
+    def _message_auto_subscribe_followers(self, updated_values, default_subtype_ids):
+        """ Overide to make sure that we get a useful assignment notification with a link. """
+        # The super() returns a list with a single value that is a tuple of (partner_id, subtype_ids, template)
+        value_list = super()._message_auto_subscribe_followers(updated_values, default_subtype_ids)
+
+        if value_list and len(value_list) == 1:
+            items = value_list[0]
+            if items and len(items) == 3:
+                partner_id, subtype_ids, template = items
+                # If the template is set, we want to replace it
+                if template == 'mail.message_user_assigned':
+                    items = (partner_id, subtype_ids, 'geocat.helpdesk_ticket_message_user_assigned')
+                    value_list = [items]
+
+        return value_list

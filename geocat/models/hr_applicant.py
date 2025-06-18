@@ -1,9 +1,10 @@
-from odoo import models
+from odoo import models, api
 
 
 class Applicant(models.Model):
     _inherit = 'hr.applicant'
 
+    @api.returns('mail.message', lambda value: value.id)
     def message_notify(self, *,
                        body='', subject=False,
                        author_id=None, email_from=None,
@@ -11,7 +12,10 @@ class Applicant(models.Model):
                        subtype_xmlid=None, subtype_id=False, partner_ids=False,
                        attachments=None, attachment_ids=None,
                        **kwargs):
-        """ Override the message_notify method to customize the original email body for interviewer assignment, so we can add a link. """
+        """ Override the message_notify method to customize the original email body for interviewer assignment, so we can add a link.
+        NOTE: This is a bit of an ugly hack, but it is the only way to customize the email body, as the body is set to a string
+        in the parent model's create/write methods, and there is no template defined or used anywhere.
+        """
 
         expected_start = "You have been assigned as an interviewer"  # See Odoo 18 parent model create/write methods
         template_id = self.env['ir.model.data']._xmlid_to_res_id('geocat.hr_applicant_interviewer_assigned',
