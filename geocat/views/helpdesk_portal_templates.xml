@@ -146,7 +146,7 @@
                         <h6>
                             <small class="text-muted">Reported on</small>
                         </h6>
-                        <span t-field="ticket.create_date" t-options='{"widget": "datetime", "hide_seconds": True}'/>
+                        <span t-field="ticket.ticket_date" t-options='{"widget": "datetime", "hide_seconds": True}'/>
                     </div>
                     <div t-attf-class="col-12 col-md-12 mt-2">
                         <h6>
@@ -157,7 +157,7 @@
                 </div>
             </xpath>
 
-            <!-- Rename "Customer" to "Reported by" and use reported_id field instead of partner_id -->
+            <!-- Rename "Customer" to "Reported by" and use reporter_id field instead of partner_id -->
             <xpath expr="//div[@t-if='ticket.partner_id']" position="replace">
                 <div t-attf-class="col-12 col-md-12 {{ 'mt-3' if ticket.user_id.name else '' }}" t-if="ticket.reporter_id">
                      <h6>

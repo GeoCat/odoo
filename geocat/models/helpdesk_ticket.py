@@ -31,7 +31,7 @@ _all_blocked_states = {}
 class HelpdeskTicket(models.Model):
     """ Override that permanently adds our GeoCat ticket classifications along with some BL. """
 
-    _description = 'GeoCat Helpdesk Ticket'
+    _description = 'Ticket'  # Note: this is used in buttons and other UI elements, e.g. "View %description%"
     _inherit = ['helpdesk.ticket']
 
     applies_to = fields.Char(string='Applies to', tracking=True,
@@ -42,7 +42,7 @@ class HelpdeskTicket(models.Model):
                                       help='Classification of the ticket, used to determine the priority and SLA.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
-        string='Blocked State', groups='base.group_portal, helpdesk.group_helpdesk_user',
+        string='Blocked State', groups='base.group_portal, helpdesk.group_helpdesk_user, helpdesk.group_helpdesk_manager',
         domain="[('stage_id', '=', stage_id)]", readonly=False,
         tracking=True, ondelete='set null', index=True,
     )
