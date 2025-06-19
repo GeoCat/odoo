@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, api
 
 
 class GeoCatHelpdeskState(models.Model):
@@ -10,11 +10,12 @@ class GeoCatHelpdeskState(models.Model):
     text_color = fields.Char(string='Text Color', default='#00000', required=True)
     stage_id = fields.Many2one('helpdesk.stage', string='Stage', required=True)
 
+    @api.model
     def _update_ticket_model(self, reset_consolidated_statuses=False):
         ticket_model = self.env['helpdesk.ticket']
         if ticket_model is not None:
             # Make sure that all blocked states are loaded at start
-            ticket_model._load_blocked_states()
+            ticket_model._reset_blocked_states()
             if reset_consolidated_statuses:
                 # Make sure that the consolidates statuses of all tickets match the current states and stages
                 ticket_model._reset_consolidated_statuses()

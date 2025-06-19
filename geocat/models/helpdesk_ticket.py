@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from functools import lru_cache
+
 from odoo import api, fields, models
 from odoo.addons.helpdesk.models.helpdesk_ticket import HelpdeskTicket as BaseHelpdeskTicket
 
@@ -22,10 +24,6 @@ TICKET_PRIORITY = [
     ('2', 'Urgent'),
     ('3', 'Immediate'),
 ]
-
-# Global variable to store all blocked states:
-# these are populated from the geocat.helpdesk.state model (see load_blocked_states())
-_all_blocked_states = {}
 
 
 class HelpdeskTicket(models.Model):
@@ -117,14 +115,28 @@ class HelpdeskTicket(models.Model):
         # so we call super() on the base class (BaseModel) instead of the inherited class.
         return super(BaseHelpdeskTicket, self - ticket_with_name)._compute_display_name()
 
+    @lru_cache(maxsize=16)
+    @api.model
+    def _blocked_states_for_stage(self, stage) -> list[dict]:
+        state_records = self.env['geocat.helpdesk.state'].sudo().search([('stage_id', '=', stage.id)])
+        state_objects = []
+        for state in state_records:
+            state_objects.append({
+                'id': state.id,
+                'name': state.name,
+                'color': state.color,
+                'stage_id': state.stage_id.id,
+            })
+        return state_objects
+
     def _set_blocked_states_for_stage(self):
         for ticket in self:
-            if not ticket.stage_id or not _all_blocked_states:
+            if not ticket.stage_id:
                 ticket.all_blocked_states_json = []
                 continue
             # Get the blocked states for the current stage
-            blocked_states = _all_blocked_states.get(ticket.stage_id.id, [])
-            ticket.all_blocked_states_json = blocked_states
+            stage_states = self._blocked_states_for_stage(ticket.stage_id)
+            ticket.all_blocked_states_json = stage_states
 
     @api.depends('stage_id')
     def _compute_all_blocked_states(self):
@@ -154,26 +166,13 @@ class HelpdeskTicket(models.Model):
         teams = self.env['helpdesk.team'].search([('use_website_helpdesk_form', '=', True)])
         teams._ensure_submit_form_view()
 
-        # Load all blocked states from the geocat.helpdesk.state model (should have been initialized first)
-        self._load_blocked_states()
-
         # Make sure that all statuses are up-to-date
         self._reset_consolidated_statuses()
 
     @api.model
-    def _load_blocked_states(self):
-        """ (Re)load all blocked states. There should only be a few, so no real performance or memory hit. """
-        global _all_blocked_states
-        _all_blocked_states = {}
-        states = self.env['geocat.helpdesk.state'].search([])
-        for state in states:
-            stage = _all_blocked_states.setdefault(state.stage_id.id, [])
-            stage.append({
-                'id': state.id,
-                'name': state.name,
-                'color': state.color,
-                'stage_id': state.stage_id.id,
-            })
+    def _reset_blocked_states(self):
+        """ Clears blocked states cache. """
+        self._blocked_states_for_stage.clear_cache()
 
     @api.model
     def _reset_consolidated_statuses(self):
