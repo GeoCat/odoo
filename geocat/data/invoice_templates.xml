@@ -3,7 +3,7 @@
     <template id="report_invoice_document" inherit_id="account.report_invoice_document">
         <xpath expr="//div[hasclass('row')]" position="replace">
             <div class="row">
-                <t t-if="o.partner_shipping_id and o.partner_shipping_id.parent_id != o.partner_id.parent_id">
+                <t t-if="o.partner_shipping_id and o.partner_shipping_id.commercial_partner_id != o.partner_id.commercial_partner_id">
                     <!-- Invoiced company does not match company where we ship to: show both addresses -->
                     <div class="col-6" name="address_not_same_as_shipping">
                         <!-- Note: we moved the address to the left in web.address_layout -->

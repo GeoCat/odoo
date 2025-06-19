@@ -6,8 +6,8 @@
         <xpath expr="//t[@t-set='address']" position="replace">
             <t t-set="address">
                 <t t-if="doc.partner_shipping_id != doc.partner_invoice_id
-                         and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
-                         and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
+                         and doc.partner_id.commercial_partner_id != doc.partner_invoice_id.commercial_partner_id
+                         and doc.partner_shipping_id.commercial_partner_id != doc.partner_invoice_id.commercial_partner_id">
                     <!-- If invoice company does not match shipping and main company, we display a separate invoice address -->
                     <strong style="font-weight: 600;">Invoicing Address</strong>
                     <div t-field="doc.partner_invoice_id"
@@ -38,8 +38,8 @@
              an optional shipping address if different from the main address -->
         <xpath expr="//t[starts-with(@t-if, 'doc.partner_shipping_id == doc.partner_invoice_id')]" position="replace">
             <t t-if="doc.partner_shipping_id != doc.partner_invoice_id
-                     and doc.partner_id.parent_id != doc.partner_invoice_id.parent_id
-                     and doc.partner_shipping_id.parent_id != doc.partner_invoice_id.parent_id">
+                     and doc.partner_id.commercial_partner_id != doc.partner_invoice_id.commercial_partner_id
+                     and doc.partner_shipping_id.commercial_partner_id != doc.partner_invoice_id.commercial_partner_id">
                 <t t-set="information_block">
                     <strong style="font-weight: 600;">Delivery Address</strong>
                     <div t-field="doc.partner_shipping_id"

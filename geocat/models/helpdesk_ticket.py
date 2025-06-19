@@ -52,7 +52,7 @@ class HelpdeskTicket(models.Model):
     consolidated_status = fields.Char(string='Ticket Status', compute='_compute_consolidated_status', store=True,
                                       readonly=True)
     all_blocked_states_json = fields.Json(
-        compute='_compute_all_blocked_states',
+        compute='_compute_all_blocked_states', compute_sudo=True,
         copy=False, store=False
     )
 
@@ -273,7 +273,7 @@ class HelpdeskTicket(models.Model):
         pass
 
     def _message_auto_subscribe_followers(self, updated_values, default_subtype_ids):
-        """ Overide to make sure that we get a useful assignment notification with a link. """
+        """ Override to make sure that we get a useful assignment notification with a link. """
         # The super() returns a list with a single value that is a tuple of (partner_id, subtype_ids, template)
         value_list = super()._message_auto_subscribe_followers(updated_values, default_subtype_ids)
 
