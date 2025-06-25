@@ -172,7 +172,8 @@ class HelpdeskTicket(models.Model):
     @api.model
     def _reset_blocked_states(self):
         """ Clears blocked states cache. """
-        self._blocked_states_for_stage.clear_cache()
+        if hasattr(self._blocked_states_for_stage, 'clear_cache'):
+            self._blocked_states_for_stage.clear_cache()
 
     @api.model
     def _reset_consolidated_statuses(self):
@@ -228,14 +229,126 @@ class HelpdeskTicket(models.Model):
             if ticket.blocked_state:
                 ticket.consolidated_status = ticket.blocked_state.name
 
+    def _track_template(self, changes):
+        """ Override to prevent sending notifications when moving the ticket back to the 'New' stage.
+        The write() override makes sure that the 'mail_auto_subscribe_no_notify' context is set.
+        """
+        res = super()._track_template(changes)
+        if 'stage_id' in res and self.env.context.get('dont_notify', False) and self.stage_id.sequence == 0:
+            # Do NOT send a notification based on the stage's email template if we set the ticket (back) to the 'New' stage ourselves!
+            del res['stage_id']
+        return res
+
+    @api.model
+    def default_get(self, fields_list):
+        """ Override to set the default project and task based on the team. """
+        defaults = super().default_get(fields_list)
+
+        if self.env.user.has_group('base.group_user'):
+            # For internal users, we do not want to set the 'New' stage (sequence=0),
+            # but the 'In Progress' stage (sequence=1). 'New' is only meant for tickets reported by portal users.
+            in_progress_stage = self.env['helpdesk.stage'].search([('sequence', '=', 1)], limit=1)
+            if in_progress_stage:
+                defaults['stage_id'] = in_progress_stage.id
+
+        return defaults
+
+    def write(self, vals):
+        """ Override to make sure that no notifications are being sent if we move the ticket BACK to "New" stage.
+        Also, when the commercial partner changes and we (GeoCat) are doing that, we want to:
+            - clear all followers that belong to the old partner
+            - add all portal users linked to the new partner as followers
+        """
+        if self.env.user._is_internal():
+            # The following logic should only be applied if the user is internal (i.e. a GeoCat employee)
+            new_partner_id = vals.get('partner_id')
+            if new_partner_id is not None:
+                # Always remove the followers linked to the old/current partner (=customer)
+                old_partner_id = self.commercial_partner_id.id
+                if old_partner_id:
+                    self.message_unsubscribe(partner_ids=self.message_partner_ids.filtered(lambda p: p.commercial_partner_id.id == old_partner_id).ids)
+
+                if new_partner_id:
+                    # Only if a new partner is set (i.e. not False), we want to add ALL portal users linked to the new partner as followers.
+                    # Note that if no portal users have been configured for the new partner, no one will be subscribed.
+                    portal_users = self.env['res.users'].search([
+                        ('partner_id', 'child_of', self.env['res.partner'].browse(new_partner_id).commercial_partner_id.id),
+                        ('groups_id', 'in', self.env.ref('base.group_portal').id)
+                    ])
+                    new_partner_ids = set(portal_users.mapped('partner_id').ids) - set(self.message_partner_ids.ids)
+                    if new_partner_ids:
+                        self.message_subscribe(partner_ids=list(new_partner_ids))
+
+            new_user_id = vals.get('user_id')
+            if new_user_id is not None:  # NOTE: if user_id was unset, new_user_id will be False!
+                # If the user_id (assignee) has changed, we want to unsubscribe the old user and subscribe the new assignee (unless the old user is the creator)
+                old_user_id = self.user_id.id
+                if old_user_id and old_user_id != self.create_uid.id:
+                    self.message_unsubscribe(partner_ids=self.message_partner_ids.filtered(lambda p: p.user_id.id == old_user_id).ids)
+
+                if new_user_id:
+                    # If the new user is set (i.e. not False), we want to subscribe the new assignee.
+                    # This should already happen automatically, but just in case, we do it explicitly here.
+                    new_partner_id = self.env['res.users'].browse(new_user_id).partner_id
+                    if new_partner_id and set(self.message_partner_ids.ids).isdisjoint(new_partner_id.ids):
+                        self.message_subscribe(partner_ids=new_partner_id.ids)
+
+        if 'stage_id' in vals and self.stage_id.sequence > 0:
+            # If we are moving the ticket BACK to the 'New' stage (sequence=0), e.g. when coming from "In Progress",
+            # we do NOT want Odoo to send the "Helpdesk: Ticket Received" notification!
+            new_stage = self.env['helpdesk.stage'].browse(vals['stage_id'])
+            if new_stage and new_stage.sequence == 0:
+                self = self.with_context(dont_notify=True)
+
+        # Call super to perform the actual write operation
+        return super(HelpdeskTicket, self).write(vals)
+
     @api.model_create_multi
     def create(self, list_value):
-        """ Override that sets the ticket date to the current date if not set. """
-        tickets = super().create(list_value)
+        """ Override that sets the ticket date to the current date if not set.
+        Also makes sure that we do not immediately notify the customer if WE created the ticket on their behalf,
+        and that we subscribe all portal users linked to the customer.
+        """
+        custom_notify = self.env.user._is_internal()
+
+        # When GeoCat creates a ticket, we don't want to send the "Helpdesk: Ticket Received" notification
+        tickets = super(HelpdeskTicket, self.with_context(dont_notify=custom_notify)).create(list_value)
+
         for ticket in tickets:
             # Set the ticket_date and reporter_id to the create_date and create_uid respectively if not set
             ticket.ticket_date = ticket.ticket_date or ticket.create_date
             ticket.reporter_id = ticket.reporter_id or ticket.create_uid
+
+            if not custom_notify:
+                # Customer or system created the ticket: super() has already sent default stage notification(s)
+                continue
+
+            # The call to super() should have subscribed the ticket creator, assignee (user_id) and the customer (partner_id).
+            # However, we also want to subscribe any portal users linked to the customer, otherwise only the main customer address will get notified.
+            if ticket.partner_id:
+                # Only if a partner is set (i.e. not False), we want to add ALL portal users linked to the partner as followers.
+                # Note that if NO portal users have been configured for the partner, no (additional) partners will be subscribed.
+                portal_users = self.env['res.users'].search([
+                    ('partner_id', 'child_of', self.env['res.partner'].browse(ticket.partner_id.id).commercial_partner_id.id),
+                    ('groups_id', 'in', self.env.ref('base.group_portal').id)
+                ])
+                new_partner_ids = set(portal_users.mapped('partner_id').ids) - set(ticket.message_partner_ids.ids)
+                if new_partner_ids:
+                    ticket.message_subscribe(partner_ids=list(new_partner_ids))
+
+            # Send a message to partner(s) if the ticket has a description, name and following partners
+            if ticket.description and ticket.name and ticket.message_partner_ids:
+                # Note: the message_type is "notification" by default:
+                #       This means that the customer will get an email, but will not see the message in the portal.
+                #       However, they will see the description in the ticket details of course.
+                #       Also, the message will be visible in the internal Chatter, but will look like a Note.
+                ticket.message_post(
+                    body=ticket.description,
+                    subject=ticket.name,
+                    subtype_xmlid='mail.mt_comment',
+                    partner_ids=ticket.message_partner_ids.ids,
+                )
+
         return tickets
 
     @api.returns('mail.message', lambda value: value.id)
@@ -271,18 +384,10 @@ class HelpdeskTicket(models.Model):
         """
         pass
 
-    def _message_auto_subscribe_followers(self, updated_values, default_subtype_ids):
-        """ Override to make sure that we get a useful assignment notification with a link. """
-        # The super() returns a list with a single value that is a tuple of (partner_id, subtype_ids, template)
-        value_list = super()._message_auto_subscribe_followers(updated_values, default_subtype_ids)
-
-        if value_list and len(value_list) == 1:
-            items = value_list[0]
-            if items and len(items) == 3:
-                partner_id, subtype_ids, template = items
-                # If the template is set, we want to replace it
-                if template == 'mail.message_user_assigned':
-                    items = (partner_id, subtype_ids, 'geocat.helpdesk_ticket_message_user_assigned')
-                    value_list = [items]
-
-        return value_list
+    def _message_auto_subscribe_notify(self, partner_ids, template):
+        """ Override to make sure that we are using our own assignment notification template that is actually USEFUL,
+        because it includes a link to the ticket (Odoo's default template does not).
+        """
+        if template == 'mail.message_user_assigned':
+            template = 'geocat.helpdesk_ticket_message_user_assigned'
+        super()._message_auto_subscribe_notify(partner_ids, template)

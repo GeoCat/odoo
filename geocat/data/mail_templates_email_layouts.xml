@@ -80,7 +80,7 @@
         </template>
 
         <!-- Light version of the GeoCat email layout template with forced footer -->
-        <template id="mail_layout_light_forced_footer" inherit_id="geocat.mail_layout_light"
+        <template id="mail_layout_light_forced_footer" inherit_id="geocat.mail_layout_light" primary="True"
                   name="Mail: GeoCat email layout template for simple notifications (with forced footer)">
             <!-- Make sure the footer is always shown for this template -->
             <xpath expr="//t[@t-set='show_footer']" position="attributes">
@@ -91,7 +91,7 @@
         <!-- Light version of the GeoCat email layout template with forced footer and a header with item access button -->
         <template id="mail_layout_light_button_access" inherit_id="geocat.mail_layout_light_forced_footer">
             <xpath expr="//table[@role='presentation']/tbody/tr" position="before">
-                <tr t-if="has_button_access or subtitles or not is_discussion">
+                <tr t-if="(button_access and has_button_access) or subtitles or not is_discussion">
                     <td align="center">
                         <div t-att-itemscope="itemscope" t-att-itemtype="'http://schema.org/EmailMessage'">
                             <div t-att-itemprop="potentialAction" t-att-itemscope="itemscope" t-att-itemtype="'http://schema.org/ViewAction'">

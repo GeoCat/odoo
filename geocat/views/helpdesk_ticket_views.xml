@@ -73,10 +73,6 @@
             <field name="ticket_ref" position="replace">
                 <field name="display_ref" string="ID" readonly="1" optional="show"/>
             </field>
-            <field name="user_id" position="after">
-                <field name="commercial_partner_id" invisible="1"/>
-                <field name="project_id" groups="project.group_project_user" />
-            </field>
             <field name="priority" position="after">
                 <field name="classification" optional="show"/>
             </field>
@@ -96,11 +92,22 @@
         </field>
     </record>
 
+    <record id="action_helpdesk_ticket_form" model="ir.actions.act_window">
+        <field name="name">Create Ticket</field>
+        <field name="res_model">helpdesk.ticket</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
     <record id="helpdesk_ticket_view_kanban" model="ir.ui.view">
         <field name="name">helpdesk.ticket.kanban</field>
         <field name="model">helpdesk.ticket</field>
         <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_kanban"/>
         <field name="arch" type="xml">
+            <kanban position="attributes">
+                <attribute name="on_create">geocat.action_helpdesk_ticket_form</attribute>
+                <attribute name="quick_create_view" remove="1"/>
+            </kanban>
             <progressbar field="kanban_state" position="replace"/> <!-- TODO: Create custom progress bar that can deal with the many2one field? -->
             <xpath expr="//t[@t-name='card']//field[@name='ticket_ref']/.." position="replace">
                 <div class="fw-bold fs-5">

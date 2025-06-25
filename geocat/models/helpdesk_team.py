@@ -103,44 +103,46 @@ class HelpdeskTeam(models.Model):
                     # Update the arch of the existing form
                     form_template.write({'arch': combined_arch})
 
-    # TODO: requires more testing
     # noinspection DuplicatedCode
-    # def _cron_auto_close_tickets(self):
-    #     """ Full override of Odoo 18's helpdesk_team._cron_auto_close_tickets method.
-    #     We only change the inner is_inactive_ticket() function so that it takes blocked_state into account.
-    #     """
-    #     teams = self.env['helpdesk.team'].search_read(
-    #         domain=[
-    #             ('auto_close_ticket', '=', True),
-    #             ('auto_close_day', '>', 0),
-    #             ('to_stage_id', '!=', False)],
-    #         fields=[
-    #             'id',
-    #             'auto_close_day',
-    #             'from_stage_ids',
-    #             'to_stage_id']
-    #     )
-    #     teams_dict = defaultdict(dict)  # key: team_id, values: the remaining result of the search_group
-    #     today = fields.datetime.today()
-    #     for team in teams:
-    #         # Compute the threshold_date
-    #         team['threshold_date'] = today - relativedelta.relativedelta(days=team['auto_close_day'])
-    #         teams_dict[team['id']] = team
-    #     tickets_domain = [('stage_id.fold', '=', False), ('team_id', 'in', list(teams_dict.keys()))]
-    #     tickets = self.env['helpdesk.ticket'].search(tickets_domain)
-    #
-    #     def is_inactive_ticket(ticket_):
-    #         team_ = teams_dict[ticket_.team_id.id]
-    #         is_write_date_ok = ticket_.write_date <= team_['threshold_date']
-    #         if team_['from_stage_ids']:
-    #             is_stage_ok = ticket_.stage_id.id in team_['from_stage_ids']
-    #         else:
-    #             is_stage_ok = not ticket_.stage_id.fold
-    #         # NOTE: we added a check for blocked_state here!!
-    #         return is_write_date_ok and is_stage_ok and not ticket_.blocked_state
-    #
-    #     inactive_tickets = tickets.filtered(is_inactive_ticket)
-    #     for ticket in inactive_tickets:
-    #         # to_stage_id is mandatory in the view but not in the model so it is better to test it.
-    #         if teams_dict[ticket.team_id.id]['to_stage_id']:
-    #             ticket.write({'stage_id': teams_dict[ticket.team_id.id]['to_stage_id'][0]})
+    def _cron_auto_close_tickets(self):
+        """ Full override of Odoo 18's helpdesk_team._cron_auto_close_tickets method.
+        We only change the inner is_inactive_ticket() function so that it takes blocked_state into account.
+        """
+        teams = self.env['helpdesk.team'].search_read(
+            domain=[
+                ('auto_close_ticket', '=', True),
+                ('auto_close_day', '>', 0),
+                ('to_stage_id', '!=', False)],
+            fields=[
+                'id',
+                'auto_close_day',
+                'from_stage_ids',
+                'to_stage_id']
+        )
+        teams_dict = defaultdict(dict)  # key: team_id, values: the remaining result of the search_group
+        today = fields.datetime.today()
+        for team in teams:
+            # Compute the threshold_date
+            team['threshold_date'] = today - relativedelta.relativedelta(days=team['auto_close_day'])
+            teams_dict[team['id']] = team
+        tickets_domain = [('stage_id.fold', '=', False), ('team_id', 'in', list(teams_dict.keys()))]
+        tickets = self.env['helpdesk.ticket'].search(tickets_domain)
+
+        def is_inactive_ticket(ticket_):
+            team_ = teams_dict[ticket_.team_id.id]
+            is_write_date_ok = ticket_.write_date <= team_['threshold_date']
+            if team_['from_stage_ids']:
+                is_stage_ok = ticket_.stage_id.id in team_['from_stage_ids']
+            else:
+                is_stage_ok = not ticket_.stage_id.fold
+            # NOTE: we ONLY added a check for blocked_state here!!
+            return is_write_date_ok and is_stage_ok and not ticket_.blocked_state.id
+
+        inactive_tickets = tickets.filtered(is_inactive_ticket)
+        for ticket in inactive_tickets:
+            to_stage_id = teams_dict[ticket.team_id.id]['to_stage_id']
+            if not to_stage_id:
+                # If there is no to_stage_id, we cannot close the ticket
+                # to_stage_id is mandatory in the view but not in the model so it is better to test it.
+                continue
+            ticket.write({'stage_id': to_stage_id[0]})

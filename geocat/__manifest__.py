@@ -25,6 +25,7 @@
         'web',
         'mail',
         'portal',
+        'contacts',
         'product',
         'account',
         'project',
