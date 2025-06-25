@@ -254,55 +254,69 @@ class HelpdeskTicket(models.Model):
 
         return defaults
 
+    @api.model
+    def _customer_portal_users(self, customer_partner_id: int):
+        """ Returns all portal users linked to the given customer partner ID. """
+        return self.env['res.users'].search([
+            ('partner_id', 'child_of', customer_partner_id),
+            ('groups_id', 'in', self.env.ref('base.group_portal').id)
+        ])
+
     def write(self, vals):
         """ Override to make sure that no notifications are being sent if we move the ticket BACK to "New" stage.
         Also, when the commercial partner changes and we (GeoCat) are doing that, we want to:
             - clear all followers that belong to the old partner
             - add all portal users linked to the new partner as followers
         """
-        if self.env.user._is_internal():
+        stage_id = vals.get('stage_id')
+        new_user_id = vals.get('user_id')
+        new_partner_id = vals.get('partner_id')
+        new_stage = self.env['helpdesk.stage'].browse(stage_id) if stage_id else None
+        is_internal_write = self.env.user._is_internal()
+
+        if is_internal_write and (new_partner_id or new_user_id):
             # The following logic should only be applied if the user is internal (i.e. a GeoCat employee)
-            new_partner_id = vals.get('partner_id')
-            if new_partner_id is not None:
-                # Always remove the followers linked to the old/current partner (=customer)
-                old_partner_id = self.commercial_partner_id.id
-                if old_partner_id:
-                    self.message_unsubscribe(partner_ids=self.message_partner_ids.filtered(lambda p: p.commercial_partner_id.id == old_partner_id).ids)
+            # and if there were changes in the partner_id or user_id fields.
+            new_portal_users = self._customer_portal_users(new_partner_id) if new_partner_id else None
+            new_user_partner_id = self.env['res.users'].browse(new_user_id).partner_id if new_user_id else None
 
-                if new_partner_id:
-                    # Only if a new partner is set (i.e. not False), we want to add ALL portal users linked to the new partner as followers.
-                    # Note that if no portal users have been configured for the new partner, no one will be subscribed.
-                    portal_users = self.env['res.users'].search([
-                        ('partner_id', 'child_of', self.env['res.partner'].browse(new_partner_id).commercial_partner_id.id),
-                        ('groups_id', 'in', self.env.ref('base.group_portal').id)
-                    ])
-                    new_partner_ids = set(portal_users.mapped('partner_id').ids) - set(self.message_partner_ids.ids)
-                    if new_partner_ids:
-                        self.message_subscribe(partner_ids=list(new_partner_ids))
+            for ticket in self:
+                if new_partner_id is not None:  # NOTE: if partner_id was unset, new_partner_id will be False!
+                    # Always remove the followers linked to the old/current partner (=customer)
+                    old_partner_id = ticket.commercial_partner_id.id
+                    if old_partner_id:
+                        ticket.message_unsubscribe(partner_ids=ticket.message_partner_ids.filtered(lambda p: p.commercial_partner_id.id == old_partner_id).ids)
 
-            new_user_id = vals.get('user_id')
-            if new_user_id is not None:  # NOTE: if user_id was unset, new_user_id will be False!
-                # If the user_id (assignee) has changed, we want to unsubscribe the old user and subscribe the new assignee (unless the old user is the creator)
-                old_user_id = self.user_id.id
-                if old_user_id and old_user_id != self.create_uid.id:
-                    self.message_unsubscribe(partner_ids=self.message_partner_ids.filtered(lambda p: p.user_id.id == old_user_id).ids)
+                    if new_portal_users:
+                        # Only if a new partner is set (i.e. not False), we want to add ALL portal users linked to the new partner as followers.
+                        # Note that if no portal users have been configured for the new partner, no one will be subscribed.
+                        new_partner_ids = set(new_portal_users.mapped('partner_id').ids) - set(ticket.message_partner_ids.ids)
+                        if new_partner_ids:
+                            ticket.message_subscribe(partner_ids=list(new_partner_ids))
 
-                if new_user_id:
-                    # If the new user is set (i.e. not False), we want to subscribe the new assignee.
-                    # This should already happen automatically, but just in case, we do it explicitly here.
-                    new_partner_id = self.env['res.users'].browse(new_user_id).partner_id
-                    if new_partner_id and set(self.message_partner_ids.ids).isdisjoint(new_partner_id.ids):
-                        self.message_subscribe(partner_ids=new_partner_id.ids)
+                if new_user_id is not None:  # NOTE: if user_id was unset, new_user_id will be False!
+                    # If the user_id (assignee) has changed, we want to unsubscribe the old user and subscribe the new assignee (unless the old user is the creator)
+                    old_user_id = ticket.user_id.id
+                    if old_user_id and old_user_id != ticket.create_uid.id:
+                        ticket.message_unsubscribe(partner_ids=ticket.message_partner_ids.filtered(lambda p: p.user_ids.id == old_user_id).ids)
 
-        if 'stage_id' in vals and self.stage_id.sequence > 0:
-            # If we are moving the ticket BACK to the 'New' stage (sequence=0), e.g. when coming from "In Progress",
+                    if new_user_partner_id and set(ticket.message_partner_ids.ids).isdisjoint(new_user_partner_id.ids):
+                        # If the new user is set (i.e. not False), we want to subscribe the new assignee.
+                        # This should already happen automatically, but just in case, we do it explicitly here.
+                        ticket.message_subscribe(partner_ids=new_user_partner_id.ids)
+
+        tickets_notify = self
+        contextual_result = False
+        if new_stage and new_stage.sequence == 0:
+            # For tickets that are moved BACK to the 'New' stage (sequence=0), e.g. when coming from "In Progress",
             # we do NOT want Odoo to send the "Helpdesk: Ticket Received" notification!
-            new_stage = self.env['helpdesk.stage'].browse(vals['stage_id'])
-            if new_stage and new_stage.sequence == 0:
-                self = self.with_context(dont_notify=True)
+            tickets_no_notify = self.filtered(lambda t: t.stage_id.sequence > 0).with_context(dont_notify=True)
+            tickets_notify = self.filtered(lambda t: t.stage_id.sequence <= 0)  # False stage_id (probably no tickets meet this condition, but just in case)
+            # Call super() on tickets that are moved back to the 'New' stage
+            contextual_result = super(HelpdeskTicket, tickets_no_notify).write(vals)
 
-        # Call super to perform the actual write operation
-        return super(HelpdeskTicket, self).write(vals)
+        # Return True if there was a contextual result or non-contextual result
+        return contextual_result or super(HelpdeskTicket, tickets_notify).write(vals)
 
     @api.model_create_multi
     def create(self, list_value):
@@ -329,10 +343,7 @@ class HelpdeskTicket(models.Model):
             if ticket.partner_id:
                 # Only if a partner is set (i.e. not False), we want to add ALL portal users linked to the partner as followers.
                 # Note that if NO portal users have been configured for the partner, no (additional) partners will be subscribed.
-                portal_users = self.env['res.users'].search([
-                    ('partner_id', 'child_of', self.env['res.partner'].browse(ticket.partner_id.id).commercial_partner_id.id),
-                    ('groups_id', 'in', self.env.ref('base.group_portal').id)
-                ])
+                portal_users = self._customer_portal_users(ticket.partner_id.id)
                 new_partner_ids = set(portal_users.mapped('partner_id').ids) - set(ticket.message_partner_ids.ids)
                 if new_partner_ids:
                     ticket.message_subscribe(partner_ids=list(new_partner_ids))
