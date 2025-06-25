@@ -144,9 +144,9 @@
             <!-- Replace the entire group with one that includes the reporter_id (instead of phone), project, and import_ref fields -->
             <xpath expr="//group//field[@name='partner_id']/.." position="replace">
                 <group>
-                    <field name="partner_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" widget="res_partner_many2one"/>
-                    <field name="reporter_id" widget="res_partner_many2one" readonly="1"/>
-                    <field name="email_cc" groups="base.group_no_one"/>
+                    <field name="partner_id" domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]" widget="many2one" options="{'no_create': True}"/>
+                    <field name="reporter_id" readonly="1"/>
+                    <field name="email_cc" groups="base.group_no_one" readonly="1" help="CC email addresses added by the reporter (only applies to tickets coming in by email)"/>
                     <field name="user_id" class="field_user_id" domain="['&amp;', ('id', 'in', domain_user_ids), ('share', '=', False)]" widget="many2one_avatar_user"/>
                     <field name="domain_user_ids" invisible="1"/>
                     <field name="project_id" groups="project.group_project_user" options="{'no_create': True}" domain="['|', ('partner_id', '=', commercial_partner_id), ('id', '=', default_project_id)]" />

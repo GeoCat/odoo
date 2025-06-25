@@ -37,7 +37,8 @@ class HelpdeskTicket(models.Model):
     priority = fields.Selection(TICKET_PRIORITY, compute='_compute_priority', store=True, default='0', tracking=True)
     classification = fields.Selection(TICKET_CLASS, string='Classification', required=True, default=UNKNOWN_CLASS,
                                       tracking=True, index=True,
-                                      help='Classification of the ticket, used to determine the priority and SLA.')
+                                      help='Classification of the ticket, used to determine the priority and SLA.'
+                                           '"P"-tickets count towards the SLA and have a priority associated with them.')
     blocked_state = fields.Many2one(
         'geocat.helpdesk.state',
         string='Blocked State', domain="[('stage_id', '=', stage_id)]", readonly=False,
