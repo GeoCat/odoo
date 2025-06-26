@@ -323,8 +323,10 @@ class HelpdeskTicket(models.Model):
         """ Override that sets the ticket date to the current date if not set.
         Also makes sure that we do not immediately notify the customer if WE created the ticket on their behalf,
         and that we subscribe all portal users linked to the customer.
+        Note that if the ticket is created by a portal user using the web form, the creator actually is the
+        super user (bot). In that case, we want to notify the customer as usual.
         """
-        custom_notify = self.env.user._is_internal()
+        custom_notify = self.env.user._is_internal() and not self.env.user._is_superuser()
 
         # When GeoCat creates a ticket, we don't want to send the "Helpdesk: Ticket Received" notification
         tickets = super(HelpdeskTicket, self.with_context(dont_notify=custom_notify)).create(list_value)

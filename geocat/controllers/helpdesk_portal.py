@@ -1,9 +1,10 @@
+from re import compile
 from operator import itemgetter
 
 from markupsafe import Markup
 from werkzeug.exceptions import NotFound
 
-from odoo import http, _
+from odoo import http, _, SUPERUSER_ID
 from odoo.addons.base.models.ir_qweb_fields import nl2br, nl2br_enclose
 from odoo.addons.helpdesk.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
@@ -12,6 +13,8 @@ from odoo.osv import expression
 from odoo.tools import groupby as groupbyelem
 from odoo.tools import html2plaintext
 from ..models.helpdesk_ticket import TICKET_CLASS, DEFAULT_CLASS
+
+HTML_TAG_PATTERN = compile(r'<[^>]+>')
 
 
 class GeoCatCustomerPortal(CustomerPortal):
@@ -154,29 +157,49 @@ class GeoCatCustomerPortal(CustomerPortal):
 
 class GeoCatWebsiteForm(WebsiteForm):
 
-    # noinspection DuplicatedCode
+    @staticmethod
+    def _looks_like_html(value):
+        """ Check if the value looks like HTML by checking for angle brackets. """
+        return bool(HTML_TAG_PATTERN.search(value))
+
+    def html(self, field_label, field_input):
+        """ Override to ensure that HTML content stays HTML (i.e. is not escaped) and that plain text is. """
+        if field_label == 'description' and self._looks_like_html(field_input):
+            # Quill wraps all paragraphs inside <p> tags and adds a blank line as <p><br></p>.
+            # Odoo renders this with way too much line space, so it rather has double <br> tags.
+            modified_input = field_input.replace('<p><br></p>', '<br>').replace('<p>', '').replace('</p>', '<br>').replace('\n', '')
+            if modified_input.endswith('<br>'):
+                # Remove trailing <br>
+                modified_input = modified_input[:-len('<br>')]
+            return Markup(modified_input)
+        else:
+            # Use plaintext2html for any other field, so that it is escaped properly
+            return super().html(field_label, field_input)
+
+    def __new__(cls, *more):
+        """ Override to ensure that the custom html input filter is used. """
+        # This is a workaround to ensure that the custom html input filter is used
+        # instead of the default one from website_form.
+        class_ = super(GeoCatWebsiteForm, cls).__new__(cls)
+        class_._input_filters['html'] = cls.html
+        return class_
+
     def insert_record(self, request, model, values, custom, meta=None):
         """ This override is an exact copy of the original method. We only want to override the h4 headers. """
-        res = super().insert_record(request, model, values, custom, meta=meta)
+        # Call super() on the original method to ensure that we bypass the insert_record from the website_helpdesk module
+        res = super(WebsiteForm, self).insert_record(request, model, values, custom, meta=meta)
         if model.sudo().model != 'helpdesk.ticket':
+            # If the model is not a helpdesk ticket, just return the result of the super call.
             return res
-        ticket = request.env['helpdesk.ticket'].sudo().browse(res)
-        custom_label = nl2br_enclose(_("Other Information"), 'h6')  # Title for custom fields
-        default_field = model.website_form_default_field_id  # Typically the description field
-        default_field_data = values.get(default_field.name, '')
-        default_field_content = nl2br_enclose(html2plaintext(default_field_data), 'p')
-        custom_content = ((default_field_content if default_field_data else '')
-                          + (custom_label + custom if custom else '')
-                          + (self._meta_label + meta if meta else ''))
 
-        if default_field.name:
-            if default_field.ttype == 'html':
-                custom_content = nl2br(custom_content)
-            ticket[default_field.name] = custom_content
-            ticket._message_log(
-                body=custom_content,
-                message_type='comment',
-            )
+        # By default, portal users are not allowed to create helpdesk tickets and we keep it that way.
+        # This means that the ticket is created by the super user (bot) and not by the portal user.
+        # However, we do want to set the reporter_id to the user ID associated with the partner ID,
+        # so that the portal user sees that they created the ticket (even though create_uid is the bot).
+        ticket = request.env['helpdesk.ticket'].sudo().browse(res)
+        if ticket and ticket.reporter_id.id == ticket.create_uid.id == SUPERUSER_ID:
+            ticket.write({'reporter_id': request.env.user.id})
+
         return res
 
 
