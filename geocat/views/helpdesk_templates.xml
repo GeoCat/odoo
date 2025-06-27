@@ -51,6 +51,7 @@
 
             <xpath expr="//form[@id='helpdesk_ticket_form']" position="attributes">
                 <attribute name="data-success-page">/my/ticket/submitted</attribute>
+                <attribute name="role">form</attribute>
             </xpath>
 
             <!-- Make partner_name field readonly (derived from logged-in user) -->
@@ -90,6 +91,35 @@
                                 </div>
                             </t>
                             </fieldset>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Turn description field into a rich/HTML textarea -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//textarea[@name='description']/../../.." position="replace">
+                <div class="mb-0 py-2 s_website_form_field col-12" data-type="text" data-name="Field">
+                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                        <label class="col-form-label col-sm-auto s_website_form_label " style="width: 200px" for="helpdesk6">
+                            <span class="s_website_form_label_content">Ask Your Question</span>
+                            <span class="s_website_form_mark"> *</span>
+                        </label>
+                        <div class="col-sm">
+                            <textarea type="text" class="form-control s_website_form_input o_wysiwyg_loader rich_text" name="description" required="true" id="helpdesk6" rows="5" minlength="20"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Allow multiple attachments -->
+            <xpath expr="//div[hasclass('s_website_form_field')]//input[@name='Attachment']/../../.." position="replace">
+                <div class="mb-0 py-2 s_website_form_field col-12 s_website_form_custom" data-type="binary" data-name="Field">
+                    <div class="row s_col_no_resize s_col_no_bgcolor">
+                        <label class="col-sm-auto s_website_form_label" style="width: 200px" for="helpdesk7">
+                            <span class="s_website_form_label_content">Attachment(s)</span>
+                        </label>
+                        <div class="col-sm">
+                            <input type="file" class="form-control s_website_form_input" name="Attachment" id="helpdesk7" multiple="multiple" accept="*"/>
                         </div>
                     </div>
                 </div>
