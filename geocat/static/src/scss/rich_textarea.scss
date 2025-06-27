@@ -1,0 +1,23 @@
+// Rich text area styling and overrides for the Quill editor (see rich_textarea.js)
+
+.rich-text-area {
+  min-height: 100px;
+  max-height: 800px;
+  height: 200px;
+  display: grid;
+  resize: vertical;
+  overflow: auto;
+  box-sizing: border-box;
+  grid-template-rows: [ql-toolbar] min-content [ql-container] auto;
+}
+
+.ql-container {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  overflow: hidden !important; // Prevents the scrollbar from overflowing in rounded corner
+  border-radius: 0 0 var(--border-radius) var(--border-radius) !important; // Ensures the bottom corners are rounded
+}
+
+.ql-toolbar {
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important; // Ensures the top corners are rounded
+}

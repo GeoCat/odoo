@@ -5,13 +5,12 @@ from markupsafe import Markup
 from werkzeug.exceptions import NotFound
 
 from odoo import http, _, SUPERUSER_ID
-from odoo.addons.base.models.ir_qweb_fields import nl2br, nl2br_enclose
 from odoo.addons.helpdesk.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
 from odoo.addons.website_helpdesk.controllers.main import WebsiteHelpdesk, WebsiteForm
+from odoo.exceptions import ValidationError
 from odoo.osv import expression
 from odoo.tools import groupby as groupbyelem
-from odoo.tools import html2plaintext
 from ..models.helpdesk_ticket import TICKET_CLASS, DEFAULT_CLASS
 
 HTML_TAG_PATTERN = compile(r'<[^>]+>')
@@ -171,14 +170,17 @@ class GeoCatWebsiteForm(WebsiteForm):
             if modified_input.endswith('<br>'):
                 # Remove trailing <br>
                 modified_input = modified_input[:-len('<br>')]
+            if not modified_input:
+                # Raise ValueError to make sure user cannot submit an empty description
+                return ValueError("Description cannot be empty.")
             return Markup(modified_input)
         else:
-            # Use plaintext2html for any other field, so that it is escaped properly
+            # Use original plaintext2html for any other field, so that it is escaped properly
             return super().html(field_label, field_input)
 
     def __new__(cls, *more):
         """ Override to ensure that the custom html input filter is used. """
-        # This is a workaround to ensure that the custom html input filter is used
+        # This is a workaround to ensure that our custom html input filter is used
         # instead of the default one from website_form.
         class_ = super(GeoCatWebsiteForm, cls).__new__(cls)
         class_._input_filters['html'] = cls.html
@@ -193,7 +195,7 @@ class GeoCatWebsiteForm(WebsiteForm):
             return res
 
         # By default, portal users are not allowed to create helpdesk tickets and we keep it that way.
-        # This means that the ticket is created by the super user (bot) and not by the portal user.
+        # This means that the ticket is created by the superuser (bot) and not by the portal user.
         # However, we do want to set the reporter_id to the user ID associated with the partner ID,
         # so that the portal user sees that they created the ticket (even though create_uid is the bot).
         ticket = request.env['helpdesk.ticket'].sudo().browse(res)

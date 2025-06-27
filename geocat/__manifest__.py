@@ -88,6 +88,8 @@
              'geocat/static/src/scss/web_editor.frontend.scss'),
             ('after', 'website_hr_recruitment/static/src/scss/website_hr_recruitment.scss',
              'geocat/static/src/scss/website_hr_recruitment.scss'),
+            'geocat/static/src/js/rich_textarea.js',
+            'geocat/static/src/scss/rich_textarea.scss',
         ],
         'web.assets_backend': [
             ('after', 'mail/static/src/core/common/chat_hub.xml', 'geocat/static/src/core/common/chat_hub_patch.xml'),
